@@ -11,25 +11,34 @@
 </head>
 <body>
 
+<!-- Platypus logo, defined once and reused everywhere with <use> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="platypus" viewBox="0 0 126 320">
+    <path fill="currentColor" d="M100.6,307.8 L91.7,300.3 L91.2,289.1 L85.9,282.9 L84.8,270.3 L72.0,257.7 L52.6,258.2 L51.4,265.1 L56.4,271.1 L53.7,274.1 L31.7,273.9 L23.4,266.6 L23.4,253.2 L32.0,250.6 L38.6,244.4 L40.4,236.6 L44.9,232.0 L43.4,228.9 L35.4,227.1 L28.2,216.9 L29.4,212.8 L45.2,197.1 L45.3,168.6 L42.0,165.8 L31.4,165.9 L27.7,175.1 L20.9,181.9 L13.9,182.3 L11.2,178.3 L12.5,155.4 L20.0,148.8 L36.0,148.3 L39.5,145.7 L40.2,132.9 L44.6,130.2 L44.7,126.9 L41.4,126.3 L38.0,131.1 L26.6,131.2 L23.0,128.6 L22.8,123.4 L36.3,114.8 L44.3,112.9 L46.2,104.9 L50.8,100.3 L51.5,88.6 L56.4,82.9 L51.2,75.4 L51.4,49.1 L56.7,42.9 L57.2,31.4 L62.1,26.3 L63.3,19.1 L72.9,11.4 L78.3,12.3 L80.0,16.6 L74.2,26.3 L74.4,42.6 L85.1,59.4 L86.3,72.3 L96.7,82.6 L97.1,122.0 L108.0,139.4 L108.7,151.1 L114.2,158.6 L114.2,218.3 L108.5,226.3 L108.1,242.9 L102.8,249.4 L102.9,303.7 L100.6,307.8 Z"/>
+    <circle style="fill:var(--eye, #16808C)" cx="71.3" cy="82.7" r="2.6"/>
+  </symbol>
+</svg>
+
+<!-- ================= LANDING PAGE ================= -->
+<div id="landing">
+
 <nav class="nav">
   <div class="wrap nav-row">
     <a class="nav-mark" href="#top">
       FirstDay
-      <svg viewBox="0 0 126 320" aria-hidden="true">
-        <path fill="var(--mark)" d="M100.6,307.8 L91.7,300.3 L91.2,289.1 L85.9,282.9 L84.8,270.3 L72.0,257.7 L52.6,258.2 L51.4,265.1 L56.4,271.1 L53.7,274.1 L31.7,273.9 L23.4,266.6 L23.4,253.2 L32.0,250.6 L38.6,244.4 L40.4,236.6 L44.9,232.0 L43.4,228.9 L35.4,227.1 L28.2,216.9 L29.4,212.8 L45.2,197.1 L45.3,168.6 L42.0,165.8 L31.4,165.9 L27.7,175.1 L20.9,181.9 L13.9,182.3 L11.2,178.3 L12.5,155.4 L20.0,148.8 L36.0,148.3 L39.5,145.7 L40.2,132.9 L44.6,130.2 L44.7,126.9 L41.4,126.3 L38.0,131.1 L26.6,131.2 L23.0,128.6 L22.8,123.4 L36.3,114.8 L44.3,112.9 L46.2,104.9 L50.8,100.3 L51.5,88.6 L56.4,82.9 L51.2,75.4 L51.4,49.1 L56.7,42.9 L57.2,31.4 L62.1,26.3 L63.3,19.1 L72.9,11.4 L78.3,12.3 L80.0,16.6 L74.2,26.3 L74.4,42.6 L85.1,59.4 L86.3,72.3 L96.7,82.6 L97.1,122.0 L108.0,139.4 L108.7,151.1 L114.2,158.6 L114.2,218.3 L108.5,226.3 L108.1,242.9 L102.8,249.4 L102.9,303.7 L100.6,307.8 Z"/>
-        <circle fill="var(--blue)" cx="71.3" cy="82.7" r="2.6"/>
-      </svg>
+      <svg viewBox="0 0 126 320" aria-hidden="true"><use href="#platypus"/></svg>
     </a>
     <div class="nav-links">
       <a href="#how-it-works">How it works</a>
       <a href="#features">What's included</a>
       <a href="#pricing">Pricing</a>
+      <a href="#" class="mobile-only" data-action="login">Log in</a>
     </div>
     <div class="nav-cta">
-      <a class="nav-login" href="#login">Log in</a>
-      <a class="btn btn-primary btn-small" href="#get-started">Get started</a>
+      <a class="nav-login" href="#" data-action="login">Log in</a>
+      <a class="btn btn-primary btn-small" href="#" data-action="start" id="nav-start">Get started</a>
     </div>
-    <button class="nav-toggle" aria-label="Open menu">
+    <button class="nav-toggle" data-action="nav-toggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -42,18 +51,15 @@
       <h1>Practice the job. Before you start it.</h1>
       <p class="hero-sub">Submit your resume and cover letter for feedback, run a mock interview, and study the key terms for your field. Then take on real tasks from your (simulated) boss — and get graded like it's the real job.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#get-started">Start free</a>
+        <a class="btn btn-primary" href="#" data-action="start">Start free</a>
         <a class="btn btn-ghost" href="#how-it-works">See how it works</a>
       </div>
-      <p class="hero-note">No credit card required. Set up in about 15 minutes.</p>
+      <p class="hero-note">No credit card required. Set up in under a minute.</p>
     </div>
 
     <div class="mascot-stage" aria-hidden="true">
       <div class="mascot-circle"></div>
-      <svg class="mascot-hero" viewBox="0 0 126 320">
-        <path fill="var(--mark)" d="M100.6,307.8 L91.7,300.3 L91.2,289.1 L85.9,282.9 L84.8,270.3 L72.0,257.7 L52.6,258.2 L51.4,265.1 L56.4,271.1 L53.7,274.1 L31.7,273.9 L23.4,266.6 L23.4,253.2 L32.0,250.6 L38.6,244.4 L40.4,236.6 L44.9,232.0 L43.4,228.9 L35.4,227.1 L28.2,216.9 L29.4,212.8 L45.2,197.1 L45.3,168.6 L42.0,165.8 L31.4,165.9 L27.7,175.1 L20.9,181.9 L13.9,182.3 L11.2,178.3 L12.5,155.4 L20.0,148.8 L36.0,148.3 L39.5,145.7 L40.2,132.9 L44.6,130.2 L44.7,126.9 L41.4,126.3 L38.0,131.1 L26.6,131.2 L23.0,128.6 L22.8,123.4 L36.3,114.8 L44.3,112.9 L46.2,104.9 L50.8,100.3 L51.5,88.6 L56.4,82.9 L51.2,75.4 L51.4,49.1 L56.7,42.9 L57.2,31.4 L62.1,26.3 L63.3,19.1 L72.9,11.4 L78.3,12.3 L80.0,16.6 L74.2,26.3 L74.4,42.6 L85.1,59.4 L86.3,72.3 L96.7,82.6 L97.1,122.0 L108.0,139.4 L108.7,151.1 L114.2,158.6 L114.2,218.3 L108.5,226.3 L108.1,242.9 L102.8,249.4 L102.9,303.7 L100.6,307.8 Z"/>
-        <circle fill="var(--blue-pale)" cx="71.3" cy="82.7" r="2.6"/>
-      </svg>
+      <svg class="mascot-hero" viewBox="0 0 126 320"><use href="#platypus"/></svg>
     </div>
   </div>
 </header>
@@ -123,14 +129,14 @@
           <div class="task-card">
             <div>
               <span class="task-card-title">Automate weekly report export</span>
-              <span class="task-status">In progress</span>
+              <span class="task-status" id="demo-status">In progress</span>
             </div>
             <div class="task-card-actions">
               <span class="task-hint">Build it, then submit.</span>
-              <button class="btn btn-primary btn-small task-submit" type="button">Submit task</button>
+              <button class="btn btn-primary btn-small" type="button" data-action="demo-submit">Submit task</button>
             </div>
           </div>
-          <div class="task-grade">
+          <div class="task-grade" id="demo-grade">
             <span class="grade-badge">B+</span>
             <p>"Solid automation — next time, add error handling for when the export source is unavailable."</p>
           </div>
@@ -193,7 +199,7 @@
   <div class="wrap">
     <h2>Show up already knowing the job.</h2>
     <div class="cta-band-row">
-      <a class="btn btn-primary" href="#">Start free</a>
+      <a class="btn btn-primary" href="#" data-action="start">Start free</a>
       <a class="btn btn-ghost" href="#pricing">View pricing</a>
     </div>
   </div>
@@ -203,46 +209,54 @@
   <div class="wrap foot-row">
     <span>&copy; 2026 FirstDay</span>
     <div class="foot-links">
-      <a href="#">Product</a>
-      <a href="#">Pricing</a>
-      <a href="#">Log in</a>
+      <a href="#features">Product</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" data-action="login">Log in</a>
       <a href="#">Contact</a>
     </div>
   </div>
 </footer>
 
-<script>
-  const toggle = document.querySelector('.nav-toggle');
-  const links = document.querySelector('.nav-links');
-  const login = document.querySelector('.nav-login');
-  toggle.addEventListener('click', () => {
-    const open = links.style.display === 'flex';
-    links.style.display = open ? 'none' : 'flex';
-    login.style.display = open ? 'none' : 'block';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '72px';
-    links.style.left = '0';
-    links.style.right = '0';
-    links.style.background = '#fff';
-    links.style.padding = '20px 32px';
-    links.style.borderBottom = '1px solid var(--line)';
-    login.style.position = 'absolute';
-    login.style.top = open ? '-999px' : '212px';
-    login.style.left = '32px';
-  });
-</script>
-<script>
-  const submitBtn = document.querySelector('.task-submit');
-  if (submitBtn) {
-    submitBtn.addEventListener('click', () => {
-      document.querySelector('.task-status').textContent = 'Graded';
-      document.querySelector('.task-grade').classList.add('show');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitted';
-    });
-  }
-</script>
+</div>
 
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <header class="app-bar">
+    <div class="app-bar-row">
+      <a class="nav-mark" href="#" data-view="dashboard">
+        FirstDay
+        <svg viewBox="0 0 126 320" aria-hidden="true"><use href="#platypus"/></svg>
+      </a>
+      <div class="app-user">
+        <span class="track-pill" id="app-track"></span>
+        <span class="app-name" id="app-name"></span>
+        <button class="app-link" data-action="signout">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="app-side" aria-label="App sections">
+      <button class="side-item" data-view="dashboard">Dashboard</button>
+      <button class="side-item" data-view="terms">Key terms</button>
+      <div class="side-label">Next build</div>
+      <span class="side-item is-locked">Boss tasks <em>Soon</em></span>
+      <span class="side-item is-locked">Resume &amp; cover letter <em>Soon</em></span>
+      <span class="side-item is-locked">Mock interviews <em>Soon</em></span>
+      <span class="side-item is-locked">Chat with your boss <em>Soon</em></span>
+    </aside>
+    <main class="app-main" id="app-main"></main>
+  </div>
+</div>
+
+<!-- ================= ONBOARDING MODAL ================= -->
+<div class="modal" id="onboard" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+    <button class="modal-close" data-action="close-onboard" aria-label="Close">&times;</button>
+    <div id="onboard-body"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
