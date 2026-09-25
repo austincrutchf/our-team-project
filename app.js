@@ -1,7 +1,10 @@
 /* =========================================================
-   FirstDay — app.js (Phase 1)
-   Onboarding, dashboard, and the Key Terms module.
-   Progress is saved in the browser (localStorage).
+   FirstDay — app.js
+   Accounts (Firebase Auth), cloud-synced progress (Firestore),
+   onboarding, dashboard, key terms, and account settings.
+
+   If firebase-config.js hasn't been filled in yet, the app
+   still works in "this device only" mode using localStorage.
    ========================================================= */
 (() => {
   'use strict';
@@ -86,18 +89,6 @@
     { title: 'Chat with your boss', text: 'Ask questions and get feedback from your manager between tasks.' }
   ];
 
-  /* ---------------- Saved state ---------------- */
-  const STORE_KEY = 'firstday:v1';
-  const loadState = () => {
-    try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; }
-    catch (e) { return null; }
-  };
-  const saveState = () => {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
-  };
-  let state = loadState(); // { name, track, mastered: { [track]: [term] }, quizBest: { [track]: pct } }
-  if (state && !TRACKS[state.track]) state = null;
-
   /* ---------------- Helpers ---------------- */
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -107,10 +98,53 @@
     for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
     return a;
   };
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const uiErr = msg => Object.assign(new Error(msg), { ui: true });
 
+  /* ---------------- Firebase setup ---------------- */
+  const cfg = window.FIRSTDAY_FIREBASE_CONFIG || {};
+  const CLOUD = Boolean(window.firebase && cfg.apiKey && !/PASTE/i.test(cfg.apiKey));
+  let auth = null, db = null, FV = null;
+
+  if (CLOUD) {
+    firebase.initializeApp(cfg);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    FV = firebase.firestore.FieldValue;
+    // Offline support: progress is cached and syncs when the connection returns.
+    db.enablePersistence({ synchronizeTabs: true }).catch(() => { /* private mode or unsupported — fine */ });
+    auth.useDeviceLanguage();
+  }
+
+  /* ---------------- Local fallback storage ---------------- */
+  const LOCAL_KEY = 'firstday:v1';
+  const loadLocal = () => { try { const r = localStorage.getItem(LOCAL_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } };
+  const saveLocal = d => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(d)); } catch (e) { /* ignore */ } };
+  const clearLocal = () => { try { localStorage.removeItem(LOCAL_KEY); } catch (e) { /* ignore */ } };
+
+  const normalize = d => ({
+    name: d && typeof d.name === 'string' && d.name.trim() ? d.name.trim().slice(0, 40) : 'Intern',
+    track: d && TRACKS[d.track] ? d.track : null,
+    mastered: d && d.mastered && typeof d.mastered === 'object' ? d.mastered : {},
+    quizBest: d && d.quizBest && typeof d.quizBest === 'object' ? d.quizBest : {}
+  });
+
+  /* ---------------- App state ---------------- */
+  let state = null;          // { name, track, mastered, quizBest }
+  let user = null;           // Firebase user
+  let unsubDoc = null;       // Firestore listener
+  let pendingName = null;    // name typed at sign-up
+  let deleting = false;
+  let currentView = 'dashboard';
+
+  if (!CLOUD) {
+    const local = loadLocal();
+    if (local && TRACKS[local.track]) state = normalize(local);
+  }
+
+  const userRef = () => db.collection('users').doc(user.uid);
   const trackTerms = () => TERMS[state.track];
   const masteredList = () => {
-    state.mastered = state.mastered || {};
     state.mastered[state.track] = state.mastered[state.track] || [];
     return state.mastered[state.track];
   };
@@ -120,106 +154,518 @@
     const i = list.indexOf(term);
     if (on && i === -1) list.push(term);
     if (!on && i > -1) list.splice(i, 1);
-    saveState();
+    persist();
   };
   const masteredCount = () => trackTerms().filter(x => isMastered(x.t)).length;
-  const bestQuiz = () => (state.quizBest && state.quizBest[state.track] != null) ? state.quizBest[state.track] : null;
+  const bestQuiz = () => state.quizBest[state.track] != null ? state.quizBest[state.track] : null;
+
+  /* ---------------- Saving + sync status ---------------- */
+  let saveTimer = null;
+  let inflight = 0;
+
+  function persist() {
+    if (!state) return;
+    if (!CLOUD) { saveLocal(state); setSync('local'); return; }
+    if (!user) return;
+    clearTimeout(saveTimer);
+    setSync('saving');
+    saveTimer = setTimeout(flush, 450);
+  }
+
+  function flush() {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    if (!CLOUD || !user || !state || deleting) return Promise.resolve();
+    inflight += 1;
+    if (!navigator.onLine) setSync('offline');
+    return userRef().update({
+      name: state.name,
+      track: state.track,
+      mastered: state.mastered,
+      quizBest: state.quizBest,
+      updatedAt: FV.serverTimestamp()
+    }).then(() => {
+      inflight -= 1;
+      if (!inflight && !saveTimer) setSync('saved');
+    }).catch(err => {
+      inflight -= 1;
+      console.error(err);
+      setSync('error');
+      toast(friendly(err));
+    });
+  }
+
+  function setSync(s) {
+    const el = $('#sync-status');
+    if (!el) return;
+    if (s === 'saving' && !navigator.onLine) s = 'offline';
+    const labels = {
+      saving: 'Saving…',
+      saved: 'All changes saved',
+      offline: 'Offline — will sync',
+      error: "Couldn't save",
+      local: 'Saved on this device'
+    };
+    el.textContent = labels[s] || '';
+    el.dataset.s = s;
+  }
+
+  window.addEventListener('online', () => setSync(inflight || saveTimer ? 'saving' : (CLOUD ? 'saved' : 'local')));
+  window.addEventListener('offline', () => { if (CLOUD) setSync('offline'); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && saveTimer) flush(); });
+
+  /* ---------------- Friendly errors ---------------- */
+  const ERRORS = {
+    'auth/email-already-in-use': 'An account with this email already exists. Try logging in instead.',
+    'auth/invalid-email': "That email address doesn't look right.",
+    'auth/missing-email': 'Enter your email address.',
+    'auth/weak-password': 'Use at least 8 characters for your password.',
+    'auth/missing-password': 'Enter your password.',
+    'auth/invalid-credential': 'Email or password is incorrect.',
+    'auth/invalid-login-credentials': 'Email or password is incorrect.',
+    'auth/wrong-password': 'Email or password is incorrect.',
+    'auth/user-not-found': 'Email or password is incorrect.',
+    'auth/user-disabled': 'This account has been disabled.',
+    'auth/too-many-requests': 'Too many attempts. Wait a few minutes, or reset your password.',
+    'auth/network-request-failed': "Can't reach the server. Check your connection and try again.",
+    'auth/popup-blocked': 'Your browser blocked the sign-in window. Allow pop-ups for this site and try again.',
+    'auth/account-exists-with-different-credential': 'This email already has an account with a password. Log in with your email and password instead.',
+    'auth/unauthorized-domain': "This website's address isn't approved in Firebase yet. Add it under Authentication → Settings → Authorized domains.",
+    'auth/operation-not-allowed': "This sign-in method isn't turned on yet. Enable it in Firebase under Authentication → Sign-in method.",
+    'auth/requires-recent-login': 'For security, please confirm your sign-in again.',
+    'auth/user-mismatch': 'That Google account is different from the one you are signed in with.',
+    'permission-denied': "Your account couldn't be saved. Check that the Firestore rules from firestore.rules are published.",
+    'unavailable': "You're offline. Your changes will sync when you reconnect."
+  };
+  const friendly = err => (err && err.ui) ? err.message : (err && ERRORS[err.code]) || 'Something went wrong. Please try again.';
 
   /* ---------------- Elements ---------------- */
   const landing = $('#landing');
   const app = $('#app');
   const main = $('#app-main');
-  const modal = $('#onboard');
-  const modalBody = $('#onboard-body');
+  const modal = $('#modal');
+  const modalBody = $('#modal-body');
   const nav = $('.nav');
 
-  /* ---------------- Onboarding ---------------- */
-  let draft = { name: '', track: null, step: 1, mode: 'new', note: '' };
-
-  function openOnboarding(mode = 'new', note = '') {
-    draft = {
-      name: state ? state.name : '',
-      track: state ? state.track : null,
-      step: mode === 'track' ? 2 : 1,
-      mode, note
-    };
-    renderOnboarding();
-    modal.hidden = false;
-    document.body.style.overflow = 'hidden';
+  /* ---------------- Toast ---------------- */
+  let toastTimer = null;
+  function toast(msg) {
+    const el = $('#toast');
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, 4200);
   }
 
-  function closeOnboarding() {
+  /* ---------------- Auth state (cloud) ---------------- */
+  if (CLOUD) {
+    document.body.classList.add('auth-pending');
+    setTimeout(() => document.body.classList.remove('auth-pending'), 3000);
+
+    auth.getRedirectResult().catch(err => { openModal('login'); showFormError(friendly(err)); });
+
+    auth.onAuthStateChanged(u => {
+      document.body.classList.remove('auth-pending');
+      if (unsubDoc) { unsubDoc(); unsubDoc = null; }
+      user = u;
+
+      if (!u) {
+        state = null; deck = null; quiz = null; termsTab = 'study';
+        deleting = false;
+        if (!app.hidden) showLanding();
+        updateNavStart();
+        return;
+      }
+
+      let creating = false;
+      unsubDoc = userRef().onSnapshot(snap => {
+        if (deleting) return;
+
+        if (!snap.exists) {
+          // Only create a profile once the server confirms none exists
+          if (snap.metadata.fromCache || creating) return;
+          creating = true;
+          userRef().set(newUserDoc(u)).catch(err => { toast(friendly(err)); });
+          return;
+        }
+
+        const incoming = normalize(snap.data());
+        if (!state) { state = incoming; setSync('saved'); enterApp(); return; }
+        if (snap.metadata.hasPendingWrites || saveTimer) return;
+        applyRemote(incoming);
+      }, err => {
+        console.error(err);
+        toast(friendly(err));
+      });
+    });
+  }
+
+  function newUserDoc(u) {
+    const local = loadLocal();
+    const name = (pendingName || (u.displayName || '').split(' ')[0] || (local && local.name) || (u.email || '').split('@')[0] || 'Intern').trim().slice(0, 40);
+    const doc = {
+      name,
+      email: u.email || null,
+      track: local && TRACKS[local.track] ? local.track : null,
+      mastered: (local && local.mastered) || {},
+      quizBest: (local && local.quizBest) || {},
+      createdAt: FV.serverTimestamp(),
+      updatedAt: FV.serverTimestamp()
+    };
+    if (local) {
+      clearLocal();
+      setTimeout(() => toast('Your saved progress was moved into your account.'), 600);
+    }
+    pendingName = null;
+    return doc;
+  }
+
+  // Another device changed the data — update without interrupting what the user is doing
+  function applyRemote(incoming) {
+    if (JSON.stringify(incoming) === JSON.stringify(state)) return;
+    const trackChanged = incoming.track !== state.track;
+    state = incoming;
+    if (app.hidden || !state.track) return;
+    refreshHeader();
+    if (currentView === 'terms' && !trackChanged) return;
+    if (currentView === 'account' && document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    go(currentView);
+  }
+
+  function enterApp() {
+    closeModal(true);
+    if (!state.track) { openModal('track-first'); return; }
+    openApp(currentView || 'dashboard');
+  }
+
+  /* ---------------- Modal ---------------- */
+  let modalMode = null;
+  let modalLocked = false;
+  let draftTrack = null;
+  const memo = { email: '' };
+
+  const GOOGLE_ICON = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+
+  function openModal(mode) {
+    modalMode = mode;
+    modalLocked = mode === 'track-first';
+    if (mode === 'track' || mode === 'track-first') draftTrack = state ? state.track : null;
+    renderModal();
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    const first = $('input, .track-opt, .btn-google', modalBody);
+    if (first) first.focus();
+  }
+
+  function closeModal(force) {
+    if (modalLocked && !force) return;
     modal.hidden = true;
+    modalMode = null;
+    modalLocked = false;
     document.body.style.overflow = '';
   }
 
-  function renderOnboarding() {
-    if (draft.step === 1) {
+  function passwordField(id, autocomplete, withStrength) {
+    return `
+      <div class="pw-wrap">
+        <input class="input" id="${id}" name="password" type="password" autocomplete="${autocomplete}" required ${withStrength ? 'aria-describedby="pw-help"' : ''}>
+        <button type="button" class="pw-toggle" data-action="pw-toggle" aria-label="Show password">Show</button>
+      </div>
+      ${withStrength ? '<div class="strength" aria-hidden="true"><span id="pw-bar"></span></div><p class="hint" id="pw-help">At least 8 characters. Longer with a mix of letters, numbers, and symbols is stronger.</p>' : ''}`;
+  }
+
+  function renderModal() {
+    $('.modal-close', modal).hidden = modalLocked;
+    const mode = modalMode;
+
+    // ---- Device-only mode (Firebase not configured yet)
+    if (!CLOUD && (mode === 'signup' || mode === 'login')) {
       modalBody.innerHTML = `
-        <p class="eyebrow">Step 1 of 2</p>
-        <h2 id="onboard-title">Let's set up your first day.</h2>
-        ${draft.note ? `<p class="page-sub">${esc(draft.note)}</p>` : ''}
-        <label class="field-label" for="ob-name">What should your boss call you?</label>
-        <input class="input" id="ob-name" type="text" maxlength="40" autocomplete="given-name" placeholder="First name" value="${esc(draft.name)}">
-        <p class="form-error" id="ob-error" role="alert"></p>
-        <div class="modal-foot">
-          <span class="hint">Your progress is saved on this device.</span>
-          <button class="btn btn-primary" data-action="ob-next">Continue</button>
-        </div>`;
-      const input = $('#ob-name');
-      input.focus();
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') obNext(); });
-    } else {
-      const switching = draft.mode === 'track';
+        <p class="eyebrow">Get started</p>
+        <h2 id="modal-title">Let's set up your first day.</h2>
+        <div class="notice notice-warn">Cloud accounts aren't connected yet, so progress will only be saved in this browser.</div>
+        <form class="auth-form" data-form="local" novalidate>
+          <label class="field-label" for="f-name">First name</label>
+          <input class="input" id="f-name" name="name" maxlength="40" autocomplete="given-name" required>
+          <p class="form-error" role="alert"></p>
+          <button class="btn btn-primary btn-block" type="submit">Continue</button>
+        </form>`;
+      return;
+    }
+
+    if (mode === 'signup') {
       modalBody.innerHTML = `
-        <p class="eyebrow">${switching ? 'Change track' : 'Step 2 of 2'}</p>
-        <h2 id="onboard-title">Pick your track.</h2>
-        <p class="page-sub">Your key terms, tasks, and interviews are built around this. You can change it anytime.</p>
+        <p class="eyebrow">Create your account</p>
+        <h2 id="modal-title">Start your first day.</h2>
+        <p class="page-sub">Your progress syncs to every device you sign in on.</p>
+        <button type="button" class="btn-google" data-action="google">${GOOGLE_ICON}<span>Continue with Google</span></button>
+        <div class="divider">or sign up with email</div>
+        <form class="auth-form" data-form="signup" novalidate>
+          <label class="field-label" for="f-name">First name</label>
+          <input class="input" id="f-name" name="name" maxlength="40" autocomplete="given-name" required>
+          <label class="field-label" for="f-email">Email</label>
+          <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required value="${esc(memo.email)}">
+          <label class="field-label" for="f-pw">Password</label>
+          ${passwordField('f-pw', 'new-password', true)}
+          <p class="form-error" role="alert"></p>
+          <button class="btn btn-primary btn-block" type="submit"><span>Create account</span></button>
+        </form>
+        <p class="switch">Already have an account? <button class="text-btn" data-action="mode" data-mode="login">Log in</button></p>`;
+      return;
+    }
+
+    if (mode === 'login') {
+      modalBody.innerHTML = `
+        <p class="eyebrow">Welcome back</p>
+        <h2 id="modal-title">Log in to FirstDay.</h2>
+        <button type="button" class="btn-google" data-action="google">${GOOGLE_ICON}<span>Continue with Google</span></button>
+        <div class="divider">or log in with email</div>
+        <form class="auth-form" data-form="login" novalidate>
+          <label class="field-label" for="f-email">Email</label>
+          <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required value="${esc(memo.email)}">
+          <div class="label-row">
+            <label class="field-label" for="f-pw">Password</label>
+            <button type="button" class="text-btn" data-action="mode" data-mode="reset">Forgot password?</button>
+          </div>
+          ${passwordField('f-pw', 'current-password', false)}
+          <p class="form-error" role="alert"></p>
+          <button class="btn btn-primary btn-block" type="submit"><span>Log in</span></button>
+        </form>
+        <p class="switch">New to FirstDay? <button class="text-btn" data-action="mode" data-mode="signup">Create an account</button></p>`;
+      return;
+    }
+
+    if (mode === 'reset') {
+      modalBody.innerHTML = `
+        <p class="eyebrow">Reset password</p>
+        <h2 id="modal-title">Forgot your password?</h2>
+        <p class="page-sub">Enter your email and we'll send you a link to set a new one.</p>
+        <form class="auth-form" data-form="reset" novalidate>
+          <label class="field-label" for="f-email">Email</label>
+          <input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required value="${esc(memo.email)}">
+          <p class="form-error" role="alert"></p>
+          <div id="reset-done"></div>
+          <button class="btn btn-primary btn-block" type="submit"><span>Send reset link</span></button>
+        </form>
+        <p class="switch"><button class="text-btn" data-action="mode" data-mode="login">Back to log in</button></p>`;
+      return;
+    }
+
+    if (mode === 'track' || mode === 'track-first') {
+      const first = mode === 'track-first';
+      modalBody.innerHTML = `
+        <p class="eyebrow">${first ? 'One last step' : 'Change track'}</p>
+        <h2 id="modal-title">${first ? `Welcome, ${esc(state.name)}. Pick your track.` : 'Pick your track.'}</h2>
+        <p class="page-sub">Your key terms, tasks, and interviews are built around this. Progress on each track is saved separately.</p>
         <div class="track-grid">
           ${Object.entries(TRACKS).map(([id, t]) => `
-            <button type="button" class="track-opt ${draft.track === id ? 'is-selected' : ''}" data-track="${id}" aria-pressed="${draft.track === id}">
+            <button type="button" class="track-opt ${draftTrack === id ? 'is-selected' : ''}" data-track="${id}" aria-pressed="${draftTrack === id}">
               <strong>${t.name}</strong><span>${t.blurb}</span>
             </button>`).join('')}
         </div>
         <div class="modal-foot">
-          ${switching ? '<span></span>' : '<button class="text-btn" data-action="ob-back">Back</button>'}
-          <button class="btn btn-primary" data-action="ob-finish" ${draft.track ? '' : 'disabled'}>
-            ${switching ? 'Switch track' : 'Start my first day'}
-          </button>
+          ${first && CLOUD ? '<button class="text-btn text-btn-muted" data-action="signout">Sign out</button>' : '<span></span>'}
+          <button class="btn btn-primary" data-action="track-finish" ${draftTrack ? '' : 'disabled'}>${first ? 'Start my first day' : 'Switch track'}</button>
         </div>`;
+      return;
+    }
+
+    if (mode === 'delete') {
+      const u = auth.currentUser;
+      const hasPw = u.providerData.some(p => p.providerId === 'password');
+      modalBody.innerHTML = `
+        <p class="eyebrow">Delete account</p>
+        <h2 id="modal-title">Delete your account for good?</h2>
+        <p class="page-sub">This permanently deletes your account and all of your progress on every track. It can't be undone.</p>
+        <form class="auth-form" data-form="delete" novalidate>
+          ${hasPw ? `<label class="field-label" for="f-pw">Enter your password to confirm</label>${passwordField('f-pw', 'current-password', false)}`
+                  : '<p class="notice">You\'ll be asked to confirm with Google.</p>'}
+          <p class="form-error" role="alert"></p>
+          <div class="modal-foot">
+            <button type="button" class="text-btn" data-action="close-modal">Cancel</button>
+            <button class="btn btn-danger" type="submit"><span>Delete my account</span></button>
+          </div>
+        </form>`;
     }
   }
 
-  function obNext() {
-    const value = $('#ob-name').value.trim();
-    if (!value) { $('#ob-error').textContent = 'Add your name to continue.'; return; }
-    draft.name = value;
-    draft.step = 2;
-    renderOnboarding();
+  function showFormError(msg) {
+    const scope = !modal.hidden ? modal : main;
+    const el = $('.form-error', scope);
+    if (el) el.textContent = msg; else toast(msg);
+  }
+  function clearFormError() {
+    $$('.form-error').forEach(el => { el.textContent = ''; });
+  }
+  function setBusy(btn, on) {
+    if (!btn) return;
+    btn.disabled = on;
+    btn.classList.toggle('is-busy', on);
+    btn.setAttribute('aria-busy', on);
   }
 
-  function obFinish() {
-    if (!draft.track) return;
-    if (!state) state = { name: draft.name, track: draft.track, mastered: {}, quizBest: {} };
-    else { state.name = draft.name || state.name; state.track = draft.track; }
-    saveState();
-    closeOnboarding();
-    openApp('dashboard');
+  function passwordStrength(pw) {
+    if (!pw) return 0;
+    if (pw.length < 8) return 1;
+    let score = 0;
+    if (pw.length >= 12) score++;
+    if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+    if (/\d/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    return score >= 3 ? 3 : 2;
   }
+
+  /* ---------------- Auth actions ---------------- */
+  async function googleSignIn(btn) {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    clearFormError();
+    setBusy(btn, true);
+    try {
+      await auth.signInWithPopup(provider);
+    } catch (err) {
+      if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+        await auth.signInWithRedirect(provider);
+        return;
+      }
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') return;
+      showFormError(friendly(err));
+    } finally {
+      setBusy(btn, false);
+    }
+  }
+
+  async function deleteAccount(password) {
+    const u = auth.currentUser;
+    const hasPw = u.providerData.some(p => p.providerId === 'password');
+    if (hasPw) {
+      if (!password) throw uiErr('Enter your password to confirm.');
+      await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email, password));
+    } else {
+      await u.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+    deleting = true;
+    clearTimeout(saveTimer); saveTimer = null;
+    if (unsubDoc) { unsubDoc(); unsubDoc = null; }
+    const backup = { ...state, email: u.email || null, createdAt: FV.serverTimestamp(), updatedAt: FV.serverTimestamp() };
+    try {
+      await userRef().delete();
+      await u.delete();
+    } catch (err) {
+      deleting = false;
+      await userRef().set(backup).catch(() => {});
+      throw err;
+    }
+    closeModal(true);
+    toast('Your account was deleted.');
+  }
+
+  async function signOut() {
+    if (!CLOUD) { showLanding(); return; }
+    if (saveTimer) await flush();
+    await auth.signOut();
+    toast('Signed out.');
+  }
+
+  /* ---------------- Forms ---------------- */
+  document.addEventListener('submit', async e => {
+    const form = e.target.closest('[data-form]');
+    if (!form) return;
+    e.preventDefault();
+    clearFormError();
+    const f = Object.fromEntries(new FormData(form));
+    const btn = $('[type="submit"]', form);
+    const name = (f.name || '').trim();
+    const email = (f.email || '').trim();
+    const pw = f.password || '';
+
+    setBusy(btn, true);
+    try {
+      switch (form.dataset.form) {
+        case 'signup': {
+          if (!name) throw uiErr('Add your first name.');
+          if (!EMAIL_RE.test(email)) throw uiErr('Enter a valid email address.');
+          if (pw.length < 8) throw uiErr('Use at least 8 characters for your password.');
+          pendingName = name.slice(0, 40);
+          let cred;
+          try { cred = await auth.createUserWithEmailAndPassword(email, pw); }
+          catch (err) { pendingName = null; throw err; }
+          cred.user.updateProfile({ displayName: pendingName || name }).catch(() => {});
+          cred.user.sendEmailVerification().catch(() => {});
+          return; // the auth listener takes it from here
+        }
+        case 'login': {
+          if (!EMAIL_RE.test(email)) throw uiErr('Enter a valid email address.');
+          if (!pw) throw uiErr('Enter your password.');
+          await auth.signInWithEmailAndPassword(email, pw);
+          return;
+        }
+        case 'reset': {
+          if (!EMAIL_RE.test(email)) throw uiErr('Enter a valid email address.');
+          try { await auth.sendPasswordResetEmail(email); }
+          catch (err) { if (err.code !== 'auth/user-not-found') throw err; }
+          $('#reset-done').innerHTML = `<p class="form-success">If an account exists for <strong>${esc(email)}</strong>, a reset link is on its way. Check your spam folder too.</p>`;
+          return;
+        }
+        case 'local': {
+          if (!name) throw uiErr('Add your first name.');
+          state = normalize({ name, track: null });
+          closeModal(true);
+          openModal('track-first');
+          return;
+        }
+        case 'profile': {
+          if (!name) throw uiErr('Your name can’t be empty.');
+          state.name = name.slice(0, 40);
+          persist();
+          if (CLOUD && auth.currentUser) auth.currentUser.updateProfile({ displayName: state.name }).catch(() => {});
+          refreshHeader();
+          toast('Name updated.');
+          return;
+        }
+        case 'delete': {
+          await deleteAccount(pw);
+          return;
+        }
+      }
+    } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') return;
+      showFormError(friendly(err));
+      if (err.code === 'auth/email-already-in-use') memo.email = email;
+    } finally {
+      setBusy(btn, false);
+    }
+  });
+
+  document.addEventListener('input', e => {
+    if (e.target.name === 'email') memo.email = e.target.value.trim();
+    if (e.target.id === 'f-pw' && modalMode === 'signup') {
+      const bar = $('#pw-bar');
+      if (bar) bar.dataset.level = passwordStrength(e.target.value);
+    }
+  });
 
   /* ---------------- App navigation ---------------- */
+  function refreshHeader() {
+    if (!state || !state.track) return;
+    $('#app-name').textContent = state.name;
+    $('#app-track').textContent = TRACKS[state.track].name;
+    updateNavStart();
+  }
+
   function openApp(view) {
     landing.hidden = true;
     app.hidden = false;
-    $('#app-name').textContent = state.name;
-    $('#app-track').textContent = TRACKS[state.track].name;
+    refreshHeader();
+    setSync(CLOUD ? (navigator.onLine ? 'saved' : 'offline') : 'local');
     go(view);
-    window.scrollTo(0, 0);
   }
 
   function go(view) {
+    currentView = view;
     $$('.side-item[data-view]').forEach(b => b.classList.toggle('is-active', b.dataset.view === view));
     if (view === 'terms') renderTerms();
+    else if (view === 'account') renderAccount();
     else renderDashboard();
     window.scrollTo(0, 0);
   }
@@ -227,12 +673,20 @@
   function showLanding() {
     app.hidden = true;
     landing.hidden = false;
+    currentView = 'dashboard';
     updateNavStart();
     window.scrollTo(0, 0);
   }
 
   function updateNavStart() {
-    $('#nav-start').textContent = state ? 'Open FirstDay' : 'Get started';
+    const signedIn = Boolean(state && state.track);
+    $('#nav-start').textContent = signedIn ? 'Open FirstDay' : 'Get started';
+    $$('[data-action="login"]').forEach(a => { a.textContent = signedIn ? 'My account' : 'Log in'; });
+  }
+
+  function needsVerify() {
+    const u = CLOUD && auth.currentUser;
+    return Boolean(u && !u.emailVerified && u.providerData.some(p => p.providerId === 'password'));
   }
 
   /* ---------------- Dashboard ---------------- */
@@ -249,6 +703,13 @@
         <h1>Welcome, ${esc(state.name)}.</h1>
         <p class="page-sub">Here's where you stand before day one.</p>
       </div>
+
+      ${needsVerify() ? `
+        <div class="notice notice-warn dash-notice">
+          <span>Verify your email so you can always recover your account.</span>
+          <button class="text-btn" data-action="resend-verify">Resend link</button>
+          <button class="text-btn" data-action="refresh-verify">I've verified</button>
+        </div>` : ''}
 
       <div class="stat-cards">
         <div class="card">
@@ -282,9 +743,73 @@
             <h3>${esc(m.title)}</h3>
             <p>${esc(m.text)}</p>
           </div>`).join('')}
+      </div>`;
+  }
+
+  /* ---------------- Account ---------------- */
+  function renderAccount() {
+    const u = CLOUD ? auth.currentUser : null;
+    const hasPw = Boolean(u && u.providerData.some(p => p.providerId === 'password'));
+    const hasGoogle = Boolean(u && u.providerData.some(p => p.providerId === 'google.com'));
+    const methods = [hasGoogle && 'Google', hasPw && 'Email and password'].filter(Boolean).join(', ');
+
+    main.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">Settings</p>
+        <h1>Account</h1>
+        <p class="page-sub">${CLOUD ? 'Changes sync to every device you’re signed in on.' : 'Cloud accounts aren’t connected yet, so this profile only lives in this browser.'}</p>
       </div>
 
-      <p class="reset-row"><button class="text-btn text-btn-muted" data-action="reset">Reset all progress on this device</button></p>`;
+      <div class="card settings">
+        <h3 class="settings-title">Profile</h3>
+        <form data-form="profile" novalidate>
+          <label class="field-label" for="p-name">First name</label>
+          <div class="inline-row">
+            <input class="input" id="p-name" name="name" maxlength="40" autocomplete="given-name" value="${esc(state.name)}">
+            <button class="btn btn-ghost" type="submit"><span>Save</span></button>
+          </div>
+          <p class="form-error" role="alert"></p>
+        </form>
+        ${u ? `
+          <dl class="meta">
+            <div><dt>Email</dt><dd>${esc(u.email || '—')}</dd></div>
+            <div><dt>Sign-in method</dt><dd>${esc(methods || '—')}</dd></div>
+            ${hasPw ? `<div><dt>Email verified</dt><dd>${u.emailVerified ? 'Yes'
+              : 'Not yet · <button class="text-btn" data-action="resend-verify">Resend link</button> · <button class="text-btn" data-action="refresh-verify">I’ve verified</button>'}</dd></div>` : ''}
+          </dl>` : ''}
+      </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">Track</h3>
+        <p class="page-sub">You’re on the <strong>${esc(TRACKS[state.track].name)}</strong> track. Progress on each track is saved separately.</p>
+        <button class="btn btn-ghost btn-small" data-action="change-track">Change track</button>
+      </div>
+
+      ${hasPw ? `
+        <div class="card settings">
+          <h3 class="settings-title">Password</h3>
+          <p class="page-sub">We’ll email you a secure link to set a new password.</p>
+          <button class="btn btn-ghost btn-small" data-action="send-reset"><span>Send password reset email</span></button>
+        </div>` : ''}
+
+      <div class="card settings">
+        <h3 class="settings-title">Session</h3>
+        <p class="page-sub">${CLOUD ? 'You’ll stay signed in on this device until you sign out.' : 'Return to the home page. Your progress stays saved in this browser.'}</p>
+        <button class="btn btn-ghost btn-small" data-action="signout">${CLOUD ? 'Sign out on this device' : 'Back to home page'}</button>
+      </div>
+
+      <div class="card settings danger">
+        <h3 class="settings-title">Danger zone</h3>
+        <div class="danger-row">
+          <div><strong>Reset progress</strong><p class="hint">Clears mastered terms and quiz scores on every track.</p></div>
+          <button class="btn btn-danger-ghost btn-small" data-action="reset-progress">Reset progress</button>
+        </div>
+        ${u ? `
+          <div class="danger-row">
+            <div><strong>Delete account</strong><p class="hint">Permanently deletes your account and all progress.</p></div>
+            <button class="btn btn-danger btn-small" data-action="delete-open">Delete account</button>
+          </div>` : ''}
+      </div>`;
   }
 
   /* ---------------- Key terms ---------------- */
@@ -312,12 +837,12 @@
 
   function renderTermsBody() {
     const body = $('#terms-body');
+    if (!body) return;
     if (termsTab === 'list') renderList(body);
     else if (termsTab === 'quiz') renderQuiz(body);
     else renderStudy(body);
   }
 
-  /* Study (flashcards) */
   function newDeck() {
     deck = { track: state.track, cards: shuffle(trackTerms()) };
     fc = { i: 0, flipped: false };
@@ -365,7 +890,6 @@
     renderTermsBody();
   }
 
-  /* All terms (glossary) */
   function renderList(body) {
     const sorted = trackTerms().slice().sort((a, b) => a.t.localeCompare(b.t));
     body.innerHTML = `
@@ -403,7 +927,6 @@
     btn.textContent = on ? 'Mastered' : 'Mark mastered';
   }
 
-  /* Quiz */
   function newQuiz() {
     const pool = trackTerms();
     quiz = {
@@ -473,10 +996,8 @@
     if (quiz.i >= quiz.qs.length) {
       quiz.done = true;
       const pct = Math.round((quiz.score / quiz.qs.length) * 100);
-      state.quizBest = state.quizBest || {};
       const prev = state.quizBest[state.track];
-      if (prev == null || pct > prev) state.quizBest[state.track] = pct;
-      saveState();
+      if (prev == null || pct > prev) { state.quizBest[state.track] = pct; persist(); }
     }
     renderTermsBody();
   }
@@ -495,22 +1016,27 @@
     $('.nav-toggle').setAttribute('aria-expanded', open);
   }
 
-  /* ---------------- Events ---------------- */
-  document.addEventListener('click', e => {
+  /* ---------------- Click handling ---------------- */
+  document.addEventListener('click', async e => {
     const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track]');
     if (!el) {
-      // Close the mobile menu after following a normal nav link
       if (e.target.closest('.nav-links a')) toggleNav(false);
       return;
     }
     if (el.tagName === 'A') e.preventDefault();
 
-    if (el.dataset.track) { draft.track = el.dataset.track; renderOnboarding(); return; }
+    if (el.dataset.track) {
+      draftTrack = el.dataset.track;
+      renderModal();
+      const again = $(`[data-track="${draftTrack}"]`, modalBody);
+      if (again) again.focus();
+      return;
+    }
     if (el.dataset.view) { go(el.dataset.view); return; }
     if (el.dataset.tab) {
       termsTab = el.dataset.tab;
       if (termsTab === 'quiz' && quiz && quiz.done) newQuiz();
-      if (termsTab === 'study' && fc.i >= (deck ? deck.cards.length : 0)) newDeck();
+      if (termsTab === 'study' && deck && fc.i >= deck.cards.length) newDeck();
       renderTerms();
       return;
     }
@@ -518,26 +1044,71 @@
     switch (el.dataset.action) {
       case 'start':
         toggleNav(false);
-        state ? openApp('dashboard') : openOnboarding('new');
+        state && state.track ? openApp('dashboard') : openModal('signup');
         break;
       case 'login':
         toggleNav(false);
-        state ? openApp('dashboard')
-              : openOnboarding('new', "There's no saved progress on this device yet — set up your profile to get started.");
+        if (state && state.track) openApp(el.textContent.trim() === 'My account' ? 'account' : 'dashboard');
+        else openModal('login');
         break;
-      case 'signout': showLanding(); break;
-      case 'change-track': openOnboarding('track'); break;
-      case 'reset':
-        if (confirm('Reset all FirstDay progress on this device? This can’t be undone.')) {
-          try { localStorage.removeItem(STORE_KEY); } catch (err) { /* ignore */ }
-          state = null; deck = null; quiz = null; termsTab = 'study';
-          showLanding();
+      case 'mode':
+        clearFormError();
+        openModal(el.dataset.mode);
+        break;
+      case 'google': googleSignIn(el); break;
+      case 'pw-toggle': {
+        const input = el.previousElementSibling;
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        el.textContent = show ? 'Hide' : 'Show';
+        el.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        input.focus();
+        break;
+      }
+      case 'close-modal': closeModal(); break;
+      case 'track-finish': {
+        if (!draftTrack) return;
+        const first = modalMode === 'track-first';
+        state.track = draftTrack;
+        persist();
+        closeModal(true);
+        if (first) toast(`You're all set on the ${TRACKS[state.track].name} track.`);
+        openApp(first ? 'dashboard' : currentView);
+        break;
+      }
+      case 'change-track': openModal('track'); break;
+      case 'signout': closeModal(true); signOut(); break;
+      case 'send-reset': {
+        setBusy(el, true);
+        try { await auth.sendPasswordResetEmail(auth.currentUser.email); toast(`Reset link sent to ${auth.currentUser.email}.`); }
+        catch (err) { toast(friendly(err)); }
+        finally { setBusy(el, false); }
+        break;
+      }
+      case 'resend-verify': {
+        try { await auth.currentUser.sendEmailVerification(); toast(`Verification link sent to ${auth.currentUser.email}.`); }
+        catch (err) { toast(friendly(err)); }
+        break;
+      }
+      case 'refresh-verify': {
+        try {
+          await auth.currentUser.reload();
+          toast(auth.currentUser.emailVerified ? 'Email verified. Thanks!' : "Not verified yet — click the link in your email first.");
+          go(currentView);
+        } catch (err) { toast(friendly(err)); }
+        break;
+      }
+      case 'reset-progress':
+        if (confirm('Reset all progress on every track? This can’t be undone.')) {
+          state.mastered = {};
+          state.quizBest = {};
+          deck = null; quiz = null;
+          persist();
+          toast('Progress reset.');
+          go(currentView);
         }
         break;
-      case 'close-onboard': closeOnboarding(); break;
-      case 'ob-next': obNext(); break;
-      case 'ob-back': draft.step = 1; renderOnboarding(); break;
-      case 'ob-finish': obFinish(); break;
+      case 'delete-open': openModal('delete'); break;
       case 'fc-flip': fc.flipped = !fc.flipped; renderTermsBody(); break;
       case 'fc-got': nextCard(true); break;
       case 'fc-learning': nextCard(false); break;
@@ -551,9 +1122,8 @@
     }
   });
 
-  // Close the modal by clicking the backdrop or pressing Escape
-  modal.addEventListener('click', e => { if (e.target === modal) closeOnboarding(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeOnboarding(); });
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
 
   updateNavStart();
 })();
