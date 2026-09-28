@@ -327,6 +327,48 @@ footer{ padding:48px 0 56px; }
 .app-link{ background:none; border:none; color:var(--mark); font-size:0.9rem; text-decoration:underline; text-underline-offset:3px; padding:4px; }
 
 .app-shell{ display:grid; grid-template-columns:240px 1fr; min-height:calc(100vh - 64px); }
+#app[data-theme="dark"]{
+  --paper:#111E24;
+  --paper-tint:#182A31;
+  --ink:#EDF3F4;
+  --ink-soft:#AABDC2;
+  --navy:#D5E8EB;
+  --navy-deep:#071A20;
+  --blue-pale:#24474C;
+  --mark:#F4F8F9;
+  --line:#344950;
+  background:var(--paper);
+  color:var(--ink);
+}
+#app[data-theme="dark"] .app-name,
+#app[data-theme="dark"] .track-pill{ color:var(--ink); background:var(--paper); }
+#app[data-theme="dark"] .app-shell,
+#app[data-theme="dark"] .card,
+#app[data-theme="dark"] .flashcard,
+#app[data-theme="dark"] .input,
+#app[data-theme="dark"] .chip-btn:not(.is-on),
+#app[data-theme="dark"] .quiz-opt,
+#app[data-theme="dark"] .msg,
+#app[data-theme="dark"] .workspace,
+#app[data-theme="dark"] .task-row,
+#app[data-theme="dark"] .result-card,
+#app[data-theme="dark"] .review-stats > div,
+#app[data-theme="dark"] .rv-panel,
+#app[data-theme="dark"] .track-opt,
+#app[data-theme="dark"] .fbar,
+#app[data-theme="dark"] .sheet td.ed,
+#app[data-theme="dark"] .sheet th,
+#app[data-theme="dark"] .side-item:hover,
+#app[data-theme="dark"] .side-item.is-active{
+  background-color:var(--paper);
+  color:var(--ink);
+  border-color:var(--line);
+}
+#app[data-theme="dark"] .btn-primary{ background:var(--blue); color:#fff; }
+#app[data-theme="dark"] .btn-primary:hover{ background:#116D77; }
+#app[data-theme="dark"] .chip-btn.is-on{ background:var(--blue-pale); border-color:var(--blue); color:#BFE8EC; }
+#app[data-theme="dark"] .settings-theme{ max-width:220px; }
+.settings-hint{ margin-top:8px; }
 .app-side{
   border-right:1px solid var(--line); background:var(--paper-tint);
   padding:24px 14px; display:flex; flex-direction:column; gap:2px;

@@ -806,7 +806,9 @@ function overdueTickets(tickets, now) {
 
   /* ---------------- Saved progress (this browser) ---------------- */
   const LOCAL_KEY = 'firstday:v1';
+  const THEME_KEY = 'firstday:theme';
   const loadLocal = () => { try { const r = localStorage.getItem(LOCAL_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } };
+  const loadTheme = () => { try { return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'; } catch (e) { return 'light'; } };
   const saveLocal = d => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(d)); } catch (e) { /* ignore */ } };
 
   const normalize = d => ({
@@ -861,6 +863,8 @@ function overdueTickets(tickets, now) {
   const modal = $('#modal');
   const modalBody = $('#modal-body');
   const nav = $('.nav');
+  let theme = loadTheme();
+  app.dataset.theme = theme;
 
   /* ---------------- Toast ---------------- */
   let toastTimer = null;
@@ -999,6 +1003,7 @@ function overdueTickets(tickets, now) {
     else if (view === 'terms') renderTerms();
     else if (view === 'docs') renderDocs();
     else if (view === 'account') renderAccount();
+    else if (view === 'settings') renderSettings();
     else renderDashboard();
     window.scrollTo(0, 0);
   }
@@ -1124,6 +1129,30 @@ function overdueTickets(tickets, now) {
           <div><strong>Reset progress</strong><p class="hint">Clears assignment grades and drafts, mastered terms, and quiz scores on every track.</p></div>
           <button class="btn btn-danger-ghost btn-small" data-action="reset-progress">Reset progress</button>
         </div>
+      </div>`;
+  }
+
+  function renderSettings() {
+    main.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">You</p>
+        <h1>Settings</h1>
+        <p class="page-sub">Choose how FirstDay looks on this device.</p>
+      </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">Appearance</h3>
+        <label class="field-label" for="setting-theme">Color theme</label>
+        <select class="input settings-theme" id="setting-theme" data-theme-setting>
+          <option value="light" ${theme === 'light' ? 'selected' : ''}>Light</option>
+          <option value="dark" ${theme === 'dark' ? 'selected' : ''}>Dark</option>
+        </select>
+        <p class="hint settings-hint">Your choice is saved in this browser.</p>
+      </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">Change password</h3>
+        <p class="page-sub">Password changes aren’t available because FirstDay currently saves your profile on this device and doesn’t use password-based sign-in.</p>
       </div>`;
   }
 
@@ -3924,6 +3953,12 @@ function overdueTickets(tickets, now) {
 
   document.addEventListener('change', e => {
     const el = e.target;
+    if (el.matches('[data-theme-setting]')) {
+      theme = el.value === 'dark' ? 'dark' : 'light';
+      app.dataset.theme = theme;
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
+      return;
+    }
     if (el.dataset && el.dataset.doc === 'cut') {
       docs.prefs.remove[el.dataset.id] = el.checked;
       saveDocs(); keepScroll(renderDocs);
