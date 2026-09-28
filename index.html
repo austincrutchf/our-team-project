@@ -12,7 +12,7 @@
 <body>
 
 <!-- Platypus logo, defined once and reused everywhere with <use> -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
   <symbol id="platypus" viewBox="0 0 126 320">
     <path fill="currentColor" d="M100.6,307.8 L91.7,300.3 L91.2,289.1 L85.9,282.9 L84.8,270.3 L72.0,257.7 L52.6,258.2 L51.4,265.1 L56.4,271.1 L53.7,274.1 L31.7,273.9 L23.4,266.6 L23.4,253.2 L32.0,250.6 L38.6,244.4 L40.4,236.6 L44.9,232.0 L43.4,228.9 L35.4,227.1 L28.2,216.9 L29.4,212.8 L45.2,197.1 L45.3,168.6 L42.0,165.8 L31.4,165.9 L27.7,175.1 L20.9,181.9 L13.9,182.3 L11.2,178.3 L12.5,155.4 L20.0,148.8 L36.0,148.3 L39.5,145.7 L40.2,132.9 L44.6,130.2 L44.7,126.9 L41.4,126.3 L38.0,131.1 L26.6,131.2 L23.0,128.6 L22.8,123.4 L36.3,114.8 L44.3,112.9 L46.2,104.9 L50.8,100.3 L51.5,88.6 L56.4,82.9 L51.2,75.4 L51.4,49.1 L56.7,42.9 L57.2,31.4 L62.1,26.3 L63.3,19.1 L72.9,11.4 L78.3,12.3 L80.0,16.6 L74.2,26.3 L74.4,42.6 L85.1,59.4 L86.3,72.3 L96.7,82.6 L97.1,122.0 L108.0,139.4 L108.7,151.1 L114.2,158.6 L114.2,218.3 L108.5,226.3 L108.1,242.9 L102.8,249.4 L102.9,303.7 L100.6,307.8 Z"/>
     <circle style="fill:var(--eye, #16808C)" cx="71.3" cy="82.7" r="2.6"/>
@@ -38,13 +38,13 @@
       <a class="nav-login" href="#" data-action="login">Log in</a>
       <a class="btn btn-primary btn-small" href="#" data-action="start" id="nav-start">Get started</a>
     </div>
-    <button class="nav-toggle" data-action="nav-toggle" aria-label="Open menu" aria-expanded="false">
+    <button type="button" class="nav-toggle" data-action="nav-toggle" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
-<header class="hero" id="top">
+<section class="hero" id="top" aria-label="Introduction">
   <div class="wrap hero-grid">
     <div>
       <div class="eyebrow">For interns and new hires</div>
@@ -62,7 +62,7 @@
       <svg class="mascot-hero" viewBox="0 0 126 320"><use href="#platypus"/></svg>
     </div>
   </div>
-</header>
+</section>
 
 <section class="trust">
   <div class="wrap trust-row">
@@ -116,7 +116,7 @@
     </div>
     <div class="feat-grid">
       <div class="feat-lead">
-        <div class="feat-lead-tag">Most used</div>
+        <div class="feat-lead-tag">On the Job</div>
         <h3>Real tasks, graded like the real thing</h3>
         <div class="task-demo">
           <div class="task-msg">
@@ -221,7 +221,7 @@
 
 <!-- ================= APP ================= -->
 <div id="app" hidden>
-  <header class="app-bar">
+  <header class="app-bar" aria-label="FirstDay app">
     <div class="app-bar-row">
       <a class="nav-mark" href="#" data-view="dashboard">
         FirstDay
@@ -231,22 +231,22 @@
         <span class="sync" id="sync-status" role="status" aria-live="polite"></span>
         <span class="track-pill" id="app-track"></span>
         <span class="app-name" id="app-name"></span>
-        <button class="app-link" data-action="signout">Sign out</button>
+        <button type="button" class="app-link" data-action="signout">Sign out</button>
       </div>
     </div>
   </header>
 
   <div class="app-shell">
     <aside class="app-side" aria-label="App sections">
-      <button class="side-item" data-view="dashboard">Dashboard</button>
-      <button class="side-item" data-view="terms">Key terms</button>
+      <button type="button" class="side-item" data-view="dashboard">Dashboard</button>
+      <button type="button" class="side-item" data-view="job">On the Job</button>
+      <button type="button" class="side-item" data-view="terms">Key terms</button>
+      <button type="button" class="side-item" data-view="docs">Resume &amp; cover letter</button>
       <div class="side-label">Next build</div>
-      <span class="side-item is-locked">Boss tasks <em>Soon</em></span>
-      <span class="side-item is-locked">Resume &amp; cover letter <em>Soon</em></span>
       <span class="side-item is-locked">Mock interviews <em>Soon</em></span>
       <span class="side-item is-locked">Chat with your boss <em>Soon</em></span>
       <div class="side-label">You</div>
-      <button class="side-item" data-view="account">Account</button>
+      <button type="button" class="side-item" data-view="account">Account</button>
     </aside>
     <main class="app-main" id="app-main"></main>
   </div>
@@ -255,18 +255,13 @@
 <!-- ================= MODAL (sign up, log in, track, etc.) ================= -->
 <div class="modal" id="modal" hidden>
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <button class="modal-close" data-action="close-modal" aria-label="Close">&times;</button>
+    <button type="button" class="modal-close" data-action="close-modal" aria-label="Close">&times;</button>
     <div id="modal-body"></div>
   </div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<!-- Firebase (free tier) — accounts + cloud sync -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
