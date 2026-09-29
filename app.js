@@ -1721,6 +1721,20 @@ function overdueTickets(tickets, now) {
   };
   const uiErr = msg => Object.assign(new Error(msg), { ui: true });
 
+  const THEME_KEY = 'firstday:theme';
+  let currentTheme = 'light';
+  try { currentTheme = localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'; } catch (_) {}
+  document.documentElement.dataset.theme = currentTheme;
+
+  function setColorTheme(theme) {
+    currentTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = currentTheme;
+    try { localStorage.setItem(THEME_KEY, currentTheme); } catch (_) {}
+    $$('[data-theme-choice]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.themeChoice === currentTheme));
+    });
+  }
+
   /* ---------------- Saved progress (this browser) ---------------- */
   const LOCAL_KEY = 'firstday:v1';
   const loadLocal = () => { try { const r = localStorage.getItem(LOCAL_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } };
@@ -1811,6 +1825,74 @@ function overdueTickets(tickets, now) {
   let modalLocked = false;
   let draftTrack = null;
   let upgradeWant = null;    // track id someone tried to add (paid)
+  let loginLockoutTimer = null;
+  const LOGIN_LOCKOUT_KEY = 'firstday:login-lockout';
+  const LOGIN_FAILURE_LIMIT = 5;
+
+  function getLoginLockout() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(LOGIN_LOCKOUT_KEY) || '{}');
+      return {
+        failures: Number(stored.failures) || 0,
+        level: Number(stored.level) || 0,
+        until: Number(stored.until) || 0
+      };
+    } catch (_) {
+      return { failures: 0, level: 0, until: 0 };
+    }
+  }
+
+  function saveLoginLockout(lockout) {
+    try { localStorage.setItem(LOGIN_LOCKOUT_KEY, JSON.stringify(lockout)); } catch (_) {}
+  }
+
+  function recordLoginFailure() {
+    const lockout = getLoginLockout();
+    lockout.failures += 1;
+    if (lockout.failures >= LOGIN_FAILURE_LIMIT) {
+      lockout.level += 1;
+      lockout.failures = 0;
+      lockout.until = Date.now() + 60000 * (10 ** (lockout.level - 1));
+    }
+    saveLoginLockout(lockout);
+    return lockout;
+  }
+
+  function updateLoginLockout() {
+    const message = $('#login-lockout', modalBody);
+    const button = $('[data-form="emailLogin"] button[type="submit"]', modalBody);
+    if (!message || !button) return;
+    const remaining = Math.max(0, getLoginLockout().until - Date.now());
+    if (remaining > 0) {
+      const seconds = Math.ceil(remaining / 1000);
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const remainder = (seconds % 60).toString().padStart(2, '0');
+      message.textContent = `Too many incorrect sign-in attempts. Try again in ${minutes}:${remainder}.`;
+      message.hidden = false;
+      button.disabled = true;
+    } else {
+      message.hidden = true;
+      button.disabled = false;
+      if (loginLockoutTimer) {
+        clearInterval(loginLockoutTimer);
+        loginLockoutTimer = null;
+      }
+    }
+  }
+
+  function startLoginLockoutTimer() {
+    if (loginLockoutTimer) clearInterval(loginLockoutTimer);
+    updateLoginLockout();
+    if (getLoginLockout().until > Date.now()) {
+      loginLockoutTimer = setInterval(updateLoginLockout, 250);
+    }
+  }
+
+  function clearLoginLockout() {
+    try { localStorage.removeItem(LOGIN_LOCKOUT_KEY); } catch (_) {}
+    if (loginLockoutTimer) clearInterval(loginLockoutTimer);
+    loginLockoutTimer = null;
+  }
 
   /* ---------------- Pricing + checkout ---------------- */
   const PRO_PRICE = 4.99;    // per month, USD
@@ -1852,6 +1934,8 @@ function overdueTickets(tickets, now) {
     modal.hidden = true;
     modalMode = null;
     modalLocked = false;
+    if (loginLockoutTimer) clearInterval(loginLockoutTimer);
+    loginLockoutTimer = null;
     document.body.style.overflow = '';
   }
 
@@ -1905,9 +1989,16 @@ function overdueTickets(tickets, now) {
           <label class="field-label" for="l-password">Password</label>
           <input class="input" id="l-password" type="password" name="password" autocomplete="current-password" required>
           <p class="form-error" role="alert"></p>
+          <p class="auth-lockout" id="login-lockout" role="status" aria-live="polite" hidden></p>
           <button class="btn btn-primary btn-block" type="submit"><span>Log in</span></button>
         </form>
         <p class="form-switch">New here? <button type="button" class="text-btn" data-action="switch-signup">Create an account</button></p>`;
+      if (isSignup) {
+        if (loginLockoutTimer) clearInterval(loginLockoutTimer);
+        loginLockoutTimer = null;
+      } else {
+        startLoginLockoutTimer();
+      }
       return;
     }
 
@@ -2061,11 +2152,22 @@ function overdueTickets(tickets, now) {
         const email = (fd.get('email') || '').toString().trim();
         const password = (fd.get('password') || '').toString();
         if (!email || !password) throw uiErr('Enter your email and password.');
+        if (getLoginLockout().until > Date.now()) {
+          updateLoginLockout();
+          throw uiErr('Sign-in is temporarily locked.');
+        }
         if (!window.FirstDayAuth) throw uiErr('Sign-in isn\u2019t set up on this copy of the site yet.');
         setBusy(btn, true);
         const res = await window.FirstDayAuth.signInWithPassword({ email, password });
         setBusy(btn, false);
-        if (!res.ok) throw uiErr(res.message);
+        if (!res.ok) {
+          if (res.invalidCredentials) {
+            const lockout = recordLoginFailure();
+            if (lockout.until > Date.now()) updateLoginLockout();
+          }
+          throw uiErr(res.message);
+        }
+        clearLoginLockout();
         // Success continues via the firstday:auth event fired by auth.js.
       } else if (form.dataset.form === 'code') {
         const code = (fd.get('code') || '').toString().trim().toUpperCase();
@@ -2084,6 +2186,7 @@ function overdueTickets(tickets, now) {
       }
     } catch (err) {
       setBusy(btn, false);
+      if (form.dataset.form === 'emailLogin') updateLoginLockout();
       showFormError(friendly(err));
     }
   });
@@ -2303,6 +2406,15 @@ function overdueTickets(tickets, now) {
           </div>
           <p class="form-error" role="alert"></p>
         </form>
+      </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">Appearance</h3>
+        <p class="page-sub">Choose the color theme for FirstDay.</p>
+        <div class="theme-switch" role="group" aria-label="Color theme">
+          <button class="theme-option" type="button" data-action="set-theme" data-theme-choice="light" aria-pressed="${currentTheme === 'light'}">Light</button>
+          <button class="theme-option" type="button" data-action="set-theme" data-theme-choice="dark" aria-pressed="${currentTheme === 'dark'}">Dark</button>
+        </div>
       </div>
 
       <div class="card settings">
@@ -5604,6 +5716,7 @@ function overdueTickets(tickets, now) {
         break;
       case 'switch-login': openModal('login'); break;
       case 'switch-signup': openModal('signup'); break;
+      case 'set-theme': setColorTheme(el.dataset.themeChoice); break;
       case 'accept-terms': {
         state.tosAcceptedAt = new Date().toISOString();
         persist();

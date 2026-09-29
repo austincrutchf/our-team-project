@@ -92,7 +92,11 @@
       },
       async signInWithPassword({ email, password }) {
         const { error } = await client.auth.signInWithPassword({ email, password });
-        if (error) return { ok: false, message: friendlyAuthError(error) };
+        if (error) return {
+          ok: false,
+          message: friendlyAuthError(error),
+          invalidCredentials: /invalid login credentials|invalid_credentials/i.test(`${error.code || ''} ${error.message || ''}`)
+        };
         return { ok: true };
       },
       signOut() { return client.auth.signOut(); },
