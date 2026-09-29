@@ -26,7 +26,29 @@
       { t: 'VPN', d: 'Virtual Private Network — an encrypted connection that lets remote employees securely reach the company network.' },
       { t: 'SLA', d: 'Service Level Agreement — a commitment that defines expected response and resolution times for a service.' },
       { t: 'Patch management', d: 'The process of testing and applying software updates that fix bugs and security vulnerabilities.' },
-      { t: 'DNS', d: 'Domain Name System — the system that translates website names into the IP addresses computers use.' }
+      { t: 'DNS', d: 'Domain Name System — the system that translates website names into the IP addresses computers use.' },
+      { t: 'Firewall', d: "A security system that monitors network traffic and blocks connections that don't meet set rules." },
+      { t: 'IP address', d: 'A unique number that identifies a device on a network so data can reach it.' },
+      { t: 'DHCP', d: 'Dynamic Host Configuration Protocol — the service that automatically hands out IP addresses to devices when they join a network.' },
+      { t: 'Multi-factor authentication', d: 'A login method that requires two or more kinds of proof, such as a password plus a code from your phone.' },
+      { t: 'Phishing', d: 'A scam email, text, or message that pretends to be from a trusted source to trick people into sharing passwords or clicking harmful links.' },
+      { t: 'Malware', d: 'Malicious software, like viruses, spyware, or ransomware, designed to damage systems or steal data.' },
+      { t: 'Encryption', d: 'Scrambling data so only someone with the right key can read it.' },
+      { t: 'Backup', d: 'A copy of data stored separately so it can be restored if the original is lost, deleted, or damaged.' },
+      { t: 'Cloud computing', d: 'Using servers, storage, and software over the internet from a provider like AWS or Microsoft Azure instead of owning the hardware.' },
+      { t: 'SaaS', d: 'Software as a Service — software you use through a browser or app on a subscription, like Google Workspace or Salesforce, instead of installing it yourself.' },
+      { t: 'Server', d: 'A computer that provides files, apps, or services to other computers over a network.' },
+      { t: 'Bandwidth', d: 'The maximum amount of data a network connection can carry at once.' },
+      { t: 'Latency', d: 'The delay between sending a request and getting a response, usually measured in milliseconds.' },
+      { t: 'Least privilege', d: 'Giving each user only the access they need to do their job, and nothing more.' },
+      { t: 'Root cause analysis', d: "Digging past the symptoms of a problem to find the underlying reason it happened, so it doesn't happen again." },
+      { t: 'Escalation', d: "Passing an issue to someone with more expertise or authority when it can't be solved at the current level." },
+      { t: 'Incident', d: 'An unplanned outage or disruption to an IT service, like email going down for the whole company.' },
+      { t: 'Script', d: 'A short program that automates a series of commands, like creating user accounts or cleaning up old files.' },
+      { t: 'Endpoint', d: 'Any device that connects to the company network, such as a laptop, phone, or tablet.' },
+      { t: 'Remote desktop', d: 'A tool that lets you see and control another computer over the network, often used by IT to fix problems without being there.' },
+      { t: 'Knowledge base', d: 'A searchable library of how-to articles and known fixes that help users and IT staff solve common problems.' },
+      { t: 'Uptime', d: 'The percentage of time a system is running and available, often promised as something like 99.9%.' }
     ],
     finance: [
       { t: 'EBITDA', d: 'Earnings before interest, taxes, depreciation, and amortization — a common measure of operating profitability.' },
@@ -36,7 +58,29 @@
       { t: 'P/E ratio', d: "A company's share price divided by its earnings per share." },
       { t: 'Basis point', d: 'One hundredth of a percentage point (0.01%), used to describe changes in rates and yields.' },
       { t: 'Working capital', d: 'Current assets minus current liabilities — a measure of short-term financial health.' },
-      { t: 'Due diligence', d: "An investigation of a business's financials, legal standing, and risks before a deal is completed." }
+      { t: 'Due diligence', d: "An investigation of a business's financials, legal standing, and risks before a deal is completed." },
+      { t: 'Revenue', d: 'The total money a company brings in from selling its products or services, before any costs are subtracted.' },
+      { t: 'Gross margin', d: 'Revenue minus the direct cost of making the product, shown as a percentage of revenue.' },
+      { t: 'Net income', d: 'The profit left after subtracting every expense, including interest and taxes, from revenue — the bottom line.' },
+      { t: 'Free cash flow', d: 'Cash from operations minus capital expenditures — the cash a company has left to repay debt, pay dividends, or reinvest.' },
+      { t: 'Balance sheet', d: "A snapshot of what a company owns (assets), owes (liabilities), and the owners' stake (equity) on a specific date." },
+      { t: 'Income statement', d: "A report of a company's revenue, expenses, and profit over a period, like a quarter or a year." },
+      { t: 'Cash flow statement', d: 'A report showing how cash moved in and out of a company over a period, split into operating, investing, and financing activities.' },
+      { t: 'Market capitalization', d: "The total value of a company's shares: share price times the number of shares outstanding." },
+      { t: 'Enterprise value', d: 'The value of a whole business to all its investors: market cap plus debt, minus cash.' },
+      { t: 'Dividend', d: 'A payment a company makes to its shareholders, usually in cash, out of its profits.' },
+      { t: 'Bond', d: 'A loan an investor makes to a company or government, which pays interest and returns the original amount on a set date.' },
+      { t: 'Yield', d: 'The income an investment pays each year as a percentage of its price.' },
+      { t: 'Equity', d: 'Ownership in a company. On a balance sheet, it equals assets minus liabilities.' },
+      { t: 'Leverage', d: 'Using borrowed money to fund investments or operations. More leverage can boost returns but also increases risk.' },
+      { t: 'Diversification', d: "Spreading money across different investments so one bad performer doesn't sink the whole portfolio." },
+      { t: 'Compound interest', d: 'Earning interest on both your original money and the interest it has already earned.' },
+      { t: 'Present value', d: 'What a future amount of money is worth today, after accounting for the return you could earn in the meantime.' },
+      { t: 'IRR', d: "Internal rate of return — the yearly return that makes an investment's net present value equal zero, used to compare projects." },
+      { t: 'NPV', d: "Net present value — the value today of all of a project's future cash flows minus its upfront cost. A positive NPV means it creates value." },
+      { t: 'CapEx', d: 'Capital expenditures — money spent on long-term assets like buildings, equipment, or technology.' },
+      { t: 'Variance analysis', d: 'Comparing actual results to the budget or forecast and explaining the differences.' },
+      { t: 'Forecast', d: "A projection of future results, like next year's revenue, based on past data and assumptions." }
     ],
     marketing: [
       { t: 'KPI', d: 'Key performance indicator — a measurable value that shows whether a goal is being met.' },
@@ -46,7 +90,29 @@
       { t: 'SEO', d: 'Search engine optimization — improving content so it ranks higher in unpaid search results.' },
       { t: 'A/B test', d: 'An experiment that shows two versions of something to different groups to see which performs better.' },
       { t: 'Buyer persona', d: 'A research-based profile of an ideal customer used to guide messaging and targeting.' },
-      { t: 'ROAS', d: 'Return on ad spend — revenue generated for every dollar spent on advertising.' }
+      { t: 'ROAS', d: 'Return on ad spend — revenue generated for every dollar spent on advertising.' },
+      { t: 'Impressions', d: 'The number of times an ad or post was displayed, whether or not anyone clicked.' },
+      { t: 'Reach', d: 'The number of unique people who saw your content at least once.' },
+      { t: 'Engagement rate', d: 'The share of people who interacted with content (likes, comments, shares, clicks) out of those who saw it.' },
+      { t: 'CPC', d: 'Cost per click — how much you pay, on average, each time someone clicks your ad.' },
+      { t: 'CPM', d: 'Cost per mille — what you pay for every 1,000 ad impressions.' },
+      { t: 'Funnel', d: 'The stages people move through from first hearing about a brand to buying — usually awareness, consideration, and conversion.' },
+      { t: 'Call to action', d: 'A prompt that tells people exactly what to do next, like “Shop now” or “Sign up free.”' },
+      { t: 'Landing page', d: 'A web page built for one campaign with a single goal, like sign-ups, where people arrive after clicking an ad.' },
+      { t: 'Brand awareness', d: 'How familiar your target audience is with your brand and what it offers.' },
+      { t: 'Target audience', d: 'The specific group of people a campaign is meant to reach.' },
+      { t: 'Retargeting', d: "Showing ads to people who already visited your site or interacted with your brand but didn't buy." },
+      { t: 'Organic traffic', d: 'Visitors who find your website through unpaid search results rather than ads.' },
+      { t: 'Paid media', d: 'Any marketing exposure you pay for, such as search ads, social ads, or sponsored posts.' },
+      { t: 'Churn rate', d: 'The percentage of customers who stop buying or cancel during a period.' },
+      { t: 'Customer lifetime value', d: 'The total revenue a business expects from one customer over the whole relationship, often called LTV.' },
+      { t: 'Content calendar', d: 'A schedule of what content will be published, when, and on which channels.' },
+      { t: 'Influencer marketing', d: 'Partnering with people who have large or trusted social followings to promote a product.' },
+      { t: 'Segmentation', d: 'Dividing a market or customer list into groups with shared traits so messaging can be tailored to each.' },
+      { t: 'Bounce rate', d: 'The percentage of visitors who leave a website after viewing only one page.' },
+      { t: 'Open rate', d: 'The percentage of email recipients who opened the email.' },
+      { t: 'Value proposition', d: 'A clear statement of the benefit a product delivers and why customers should choose it over alternatives.' },
+      { t: 'Market share', d: "A company's sales as a percentage of total sales in its market." }
     ],
     accounting: [
       { t: 'Accrual accounting', d: 'Recording revenue when it is earned and expenses when they are incurred, regardless of when cash moves.' },
@@ -56,7 +122,29 @@
       { t: 'Reconciliation', d: 'Comparing two sets of records, such as a bank statement and the ledger, to make sure they match.' },
       { t: 'Depreciation', d: 'Spreading the cost of a physical asset over the years it is expected to be useful.' },
       { t: 'Journal entry', d: 'A record of a transaction using debits and credits that must balance.' },
-      { t: 'Month-end close', d: 'The process of finalizing, reviewing, and locking the books at the end of each month.' }
+      { t: 'Month-end close', d: 'The process of finalizing, reviewing, and locking the books at the end of each month.' },
+      { t: 'Debit', d: 'An entry on the left side of an account. Debits increase assets and expenses and decrease liabilities, equity, and revenue.' },
+      { t: 'Credit', d: 'An entry on the right side of an account. Credits increase liabilities, equity, and revenue and decrease assets.' },
+      { t: 'Assets', d: 'Things a company owns that have value, such as cash, inventory, equipment, and money owed by customers.' },
+      { t: 'Liabilities', d: 'Amounts a company owes to others, like loans, unpaid bills, and wages owed.' },
+      { t: 'Chart of accounts', d: 'The complete, numbered list of every account a company uses to record transactions.' },
+      { t: 'Trial balance', d: "A report listing every account's balance to confirm that total debits equal total credits." },
+      { t: 'Accrued expense', d: 'An expense that has been incurred but not yet paid or billed, like wages employees earned at month-end.' },
+      { t: 'Prepaid expense', d: "A cost paid in advance for something used later, like a year of insurance; it's recorded as an asset and expensed over time." },
+      { t: 'Deferred revenue', d: "Cash received from customers for goods or services not yet delivered; it's a liability until it's earned." },
+      { t: 'Invoice', d: 'A bill sent to a customer listing what was sold, the amount owed, and when payment is due.' },
+      { t: 'Purchase order', d: 'A document a buyer sends a supplier to officially order goods at an agreed price and quantity.' },
+      { t: 'Three-way match', d: 'Checking that the purchase order, receiving report, and supplier invoice agree before paying a bill.' },
+      { t: 'Cost of goods sold', d: 'The direct costs of producing the products a company sold during a period, like materials and factory labor.' },
+      { t: 'Inventory', d: 'Goods a company holds to sell, including raw materials and finished products.' },
+      { t: 'Audit', d: "An independent examination of a company's financial records to confirm they're accurate and follow accounting rules." },
+      { t: 'GAAP', d: 'Generally Accepted Accounting Principles — the standard rules U.S. companies follow when preparing financial statements.' },
+      { t: 'Internal controls', d: "Processes that protect a company's assets and prevent errors or fraud, like requiring two approvals for large payments." },
+      { t: 'Petty cash', d: 'A small amount of cash kept on hand for minor expenses, tracked with receipts.' },
+      { t: 'Payroll', d: 'The process of calculating and paying employee wages, including taxes and deductions.' },
+      { t: 'Write-off', d: "Removing an asset's value from the books when it can't be recovered, like a customer debt that will never be paid." },
+      { t: 'Aging report', d: "A report that sorts unpaid customer invoices by how long they've been outstanding, like 0–30, 31–60, and 90+ days." },
+      { t: 'Fiscal year', d: "The 12-month period a company uses for accounting and reporting, which doesn't have to match the calendar year." }
     ],
     consulting: [
       { t: 'Deliverable', d: 'A specific output promised to the client, such as a report, model, or presentation.' },
@@ -66,7 +154,29 @@
       { t: 'Hypothesis-driven approach', d: 'Starting with a likely answer and using analysis to prove or disprove it, instead of analyzing everything first.' },
       { t: 'Utilization rate', d: "The share of a consultant's working hours that are billed to clients." },
       { t: 'Engagement', d: 'A single client project, from kickoff to final delivery.' },
-      { t: 'Executive summary', d: 'A short opening section that gives busy leaders the key findings and recommendations up front.' }
+      { t: 'Executive summary', d: 'A short opening section that gives busy leaders the key findings and recommendations up front.' },
+      { t: 'Issue tree', d: 'A diagram that breaks a big problem into smaller questions, branch by branch, so each can be analyzed.' },
+      { t: 'Statement of work', d: "The document that defines a project's scope, deliverables, timeline, and fees before work begins." },
+      { t: 'Kickoff meeting', d: 'The first meeting of a project, where the team and client align on goals, scope, roles, and timeline.' },
+      { t: 'Workstream', d: 'One focused part of a larger project, usually owned by a small team, like pricing or operations.' },
+      { t: 'Benchmarking', d: "Comparing a client's performance or practices to competitors or industry leaders." },
+      { t: 'Market sizing', d: 'Estimating the total size of a market, often with a quick logical calculation built from assumptions.' },
+      { t: '80/20 rule', d: 'The idea that roughly 80% of results come from 20% of causes, used to focus effort where it matters most.' },
+      { t: 'Pyramid principle', d: 'A way of communicating that starts with the main answer, then gives supporting arguments, then the details.' },
+      { t: 'SWOT analysis', d: "A framework that looks at a company's Strengths, Weaknesses, Opportunities, and Threats." },
+      { t: 'Steering committee', d: 'A group of senior client leaders who oversee a project, review progress, and make key decisions.' },
+      { t: 'Change management', d: 'Helping people and organizations adopt a new process, system, or structure so it actually sticks.' },
+      { t: 'Billable hours', d: 'Time a consultant spends working directly on client projects that the client can be charged for.' },
+      { t: 'So what', d: 'The implication of a finding — why it matters and what the client should do about it.' },
+      { t: 'Implementation roadmap', d: 'A step-by-step plan showing how and when a recommendation will be put into action.' },
+      { t: 'Pain point', d: 'A specific problem or frustration a customer or client is experiencing.' },
+      { t: 'Quick win', d: 'An improvement that can be made fast and cheaply to show early results and build momentum.' },
+      { t: 'Best practice', d: 'A method widely recognized as the most effective way to do something, often borrowed from industry leaders.' },
+      { t: 'Synthesis', d: 'Pulling many findings together into a few clear insights and a recommendation.' },
+      { t: 'Buy-in', d: 'Agreement and support from the people who need to approve or carry out a decision.' },
+      { t: 'Value chain', d: 'The full set of activities a company performs to create and deliver its product, from raw materials to customer service.' },
+      { t: "Porter's Five Forces", d: 'A framework for judging how competitive an industry is, using rivalry, new entrants, substitutes, buyer power, and supplier power.' },
+      { t: 'Interview guide', d: 'A prepared list of questions consultants use when interviewing clients, customers, or experts.' }
     ],
     hr: [
       { t: 'Onboarding', d: 'The process of integrating a new hire, from paperwork and setup to training and introductions.' },
@@ -76,14 +186,54 @@
       { t: 'Retention', d: 'An organization’s ability to keep its employees over time.' },
       { t: 'Open enrollment', d: 'The yearly window when employees can sign up for or change their benefits.' },
       { t: 'Exempt employee', d: 'An employee who, under U.S. labor law, is not entitled to overtime pay, typically salaried professionals.' },
-      { t: 'Headcount', d: 'The number of people employed, often used when planning budgets and hiring.' }
+      { t: 'Headcount', d: 'The number of people employed, often used when planning budgets and hiring.' },
+      { t: 'Offboarding', d: "The process of handling an employee's departure, including returning equipment, removing system access, and final pay." },
+      { t: 'Turnover rate', d: 'The percentage of employees who leave a company during a period.' },
+      { t: 'Job description', d: "A document outlining a role's responsibilities, qualifications, pay range, and who it reports to." },
+      { t: 'Requisition', d: 'An internal request to fill a position, usually approved before a job is posted.' },
+      { t: 'Background check', d: "A screening of a candidate's history, such as criminal records, employment, or education, usually after an offer and with their consent." },
+      { t: 'Form I-9', d: 'The U.S. form employers use to verify that every new hire is authorized to work in the country.' },
+      { t: 'Form W-4', d: 'The U.S. tax form an employee fills out so the employer knows how much federal income tax to withhold from pay.' },
+      { t: 'FMLA', d: 'Family and Medical Leave Act — a U.S. law giving eligible employees up to 12 weeks of unpaid, job-protected leave for certain family and medical reasons.' },
+      { t: 'PTO', d: 'Paid time off — a bank of paid days employees can use for vacation, illness, or personal time.' },
+      { t: '401(k) match', d: "Money an employer adds to an employee's retirement account based on what the employee contributes." },
+      { t: 'Employee handbook', d: "A document explaining a company's policies, expectations, benefits, and procedures." },
+      { t: 'Non-exempt employee', d: 'An employee who is entitled to overtime pay under U.S. labor law, usually paid hourly.' },
+      { t: 'Pay band', d: 'The salary range, from minimum to maximum, a company sets for a job level.' },
+      { t: 'Employee engagement', d: 'How committed, motivated, and connected employees feel to their work and company.' },
+      { t: 'Exit interview', d: "A conversation with a departing employee to learn why they're leaving and what could improve." },
+      { t: 'Structured interview', d: 'An interview where every candidate is asked the same questions and scored with the same rubric.' },
+      { t: 'DEI', d: 'Diversity, equity, and inclusion — efforts to build a workforce from different backgrounds and make sure everyone is treated fairly and feels they belong.' },
+      { t: 'Employer brand', d: 'How a company is seen as a place to work by candidates and employees.' },
+      { t: 'HRIS', d: 'Human Resources Information System — software that stores employee records, payroll, benefits, and time off in one place.' },
+      { t: 'Probationary period', d: "An initial period, often 60 to 90 days, when a new hire's performance is closely reviewed." },
+      { t: 'Succession planning', d: 'Identifying and developing employees who can step into key roles when leaders leave or retire.' },
+      { t: "Workers' compensation", d: 'Insurance that covers medical costs and lost wages for employees injured on the job.' }
     ]
   };
 
   const COMING_NEXT = [
-    { title: 'Mock interviews', text: 'Answer interview questions for your track and get scored on your answers.' },
     { title: 'Chat with your boss', text: 'Ask questions and get feedback from your manager between tasks.' }
   ];
+
+  const LANDING_FAQ = [
+    ['Is FirstDay actually free?', 'Yes — one track at a time, every core tool: assignments, resume and cover letter review, mock interviews, key terms. No credit card. Pro just adds the ability to keep more than one track open.'],
+    ['Do I need to already know the field?', 'No — that’s the point. The vocabulary and the first assignment are written assuming you’re starting from zero.'],
+    ['Is anything I write sent anywhere?', 'No. Grading, resume feedback, and everything else runs in your browser, and your progress is saved on this device, not on a server. Signing in with Google or an email and password only shares your name and email, for login — never your work.'],
+    ['What if I pick the wrong track?', 'Switch anytime from Settings — it’s free, and progress on each track is kept separately, so nothing is lost if you switch back later.']
+  ];
+
+  const TERMS_CONTENT = [
+    ['What this is', 'FirstDay is a practice tool built by a high school student for the 2026 Congressional App Challenge. It’s not a real employer, and nothing you do here — tasks, interviews, resume feedback — is reviewed by an actual company.'],
+    ['Accounts', 'You need to be at least 13 years old to create an account. Use real info when you sign up (or use Google) so account recovery actually works, and keep your password to yourself.'],
+    ['Your work stays with you', 'Resumes, cover letters, task answers, and interview answers are graded automatically in your browser and saved on your device, not on a server. We don’t read them. Signing in only shares your name and email, for login.'],
+    ['Fair use', 'Don’t try to break, scrape, or abuse the practice tools, and don’t submit anyone else’s personal information.'],
+    ['Pro', 'Pro unlocks extra tracks for a monthly fee, handled through Stripe. This isn’t an auto-renewing subscription tracked in-app yet — reach out through the Contact link if you need anything changed.'],
+    ['No guarantees', 'This is a practice tool, not professional career advice. Grading is automated and won’t be perfect — use your judgment.'],
+    ['Changes', 'These terms might change as the app grows. The date below will update when they do.'],
+    ['Ending your account', 'Stop using FirstDay anytime. Want your account or data gone completely? Reach out through the Contact link and we’ll take care of it.']
+  ];
+  const TERMS_UPDATED = 'September 28, 2026';
 
   /* =========================================================
      ON THE JOB — assignments from your (simulated) manager
@@ -596,6 +746,230 @@ function overdueTickets(tickets, now) {
     ]
   };
 
+  /* ---------------- Mock interviews ---------------- */
+  function starChecks() {
+    return [
+      { label: 'Gives a specific example', weight: 25,
+        test: a => words(a) >= 40,
+        tip: a => `Give a specific example — right now this is ${words(a)} words. Aim for at least a few full sentences so the interviewer has something to go on.` },
+      { label: 'Describes what you specifically did', weight: 25,
+        test: a => (a.match(/\bI\s+[a-z]+/gi) || []).length >= 3,
+        tip: 'Use "I" to describe what you specifically did — not just what "we" or the team did.' },
+      { label: 'Explains the outcome', weight: 25,
+        test: a => /(result|resulted|as a result|so that|which (led|meant)|ended up|outcome|improved|reduced|increased|fixed|resolved|learned|since then|from then on|because of (this|that))/i.test(a),
+        tip: 'Close the loop — say what happened as a result, or what you learned from it.' },
+      { label: 'Tells it like a short story', weight: 25,
+        test: a => sentences(a).length >= 3,
+        tip: 'Walk through it in order: what was going on, what you did about it, and how it turned out.' }
+    ];
+  }
+
+  function fitChecks() {
+    return [
+      { label: 'Gives a specific example or experience', weight: 25,
+        test: a => words(a) >= 40,
+        tip: a => `Ground this in something specific you've actually done — right now this is ${words(a)} words.` },
+      { label: 'Uses your own concrete details', weight: 25,
+        test: a => (a.match(/\bI\s+[a-z]+/gi) || []).length >= 2,
+        tip: 'Use "I" to talk about what you specifically did or built, not just general interests.' },
+      { label: 'Says why this field, specifically', weight: 25,
+        test: a => /(because|which is why|that'?s why|so I|drawn to|interested in|want to|what I like|the reason)/i.test(a),
+        tip: 'Connect it back to why this field specifically — not just that you like it, but what draws you to it.' },
+      { label: 'Tells it like a short story', weight: 25,
+        test: a => sentences(a).length >= 3,
+        tip: 'Walk through it in a few sentences: how you got interested, a specific example, then why it points to this field.' }
+    ];
+  }
+
+  const INTERVIEWS = {
+    it: [
+      { id: 'iv-it-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why IT support and systems work interests you.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I like computers."'],
+        sample: "I've always been the person friends and family call when their Wi-Fi breaks or their laptop won't update — I like the puzzle of figuring out what's actually wrong. In school I set up and managed the network for our robotics team's competition laptops, which taught me to stay calm when several things break at once. I'm drawn to IT support specifically because you get a clear win every time you close a ticket, and the problems are different every day.",
+        checks: fitChecks() },
+      { id: 'iv-it-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time you made a mistake with a system or a piece of technology. What happened, and what did you do?',
+        hints: ["It's fine to admit a real mistake — what matters is what you did next.", 'Say specifically what you’d do differently, not just "I learned to be more careful."'],
+        sample: "I once pushed a script that renamed files across a shared folder without previewing it first, and it broke the naming convention our team relied on. I let my supervisor know right away instead of trying to quietly fix it, then wrote a small undo script using the log I'd saved. Since then I always run a dry run or work on a copy first before anything touches shared files.",
+        checks: starChecks() },
+      { id: 'iv-it-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you disagreed with a teammate or a manager about how to solve a technical problem.',
+        hints: ["Focus on how you resolved it, not just who was right.", "It's okay if you ended up being wrong — say what changed your mind."],
+        sample: "A teammate wanted to reimage a laptop that kept freezing, but I thought it was a single bad driver. I asked if we could try my fix first since it would take ten minutes instead of an hour, and we agreed on a time limit. I fixed it with a driver update, which resolved the freezing for good, and we agreed that if it hadn't worked we'd have gone straight to his approach — having that fallback made it an easy conversation.",
+        checks: starChecks() },
+      { id: 'iv-it-tech', tag: 'On the job', category: 'technical',
+        prompt: "A new hire says their laptop won't turn on at all. Walk me through how you'd troubleshoot it.",
+        hints: ['Start with the simplest, most common cause before anything complicated.', "Mention what you'd ask the person, not just what you'd check yourself."],
+        sample: "First I'd ask what they've already tried and whether any lights or sounds happen when they press power — that tells me if it's totally dead or stuck mid-boot. I'd check the obvious stuff first: is it actually plugged in, is the outlet working, is the charging cable or port damaged. If it still won't power on with a charger I know works, I'd try a long press of the power button to clear a stuck state, then escalate to hardware repair and log a ticket with everything I already tried so we don't repeat steps.",
+        checks: [
+          { label: 'Checks the power source first', weight: 25, test: a => /plug|power (cable|cord|outlet|adapter|strip)|charg(e|er|ing)|outlet|battery/i.test(a),
+            tip: 'Start with the obvious: is it plugged in, is the outlet working, is the cable or charger damaged.' },
+          { label: 'Asks the user questions to gather info', weight: 25, test: a => /ask|confirm|check (if|whether)|when did|does it|any (lights|sounds|noise)/i.test(a),
+            tip: "Mention what you'd ask the person — what they've already tried, whether there's any sign of life at all." },
+          { label: 'Starts simple before assuming the worst', weight: 25, test: a => /simplest|rule out|start with|first|before (anything|assuming)|basic/i.test(a),
+            tip: "Say that you'd rule out the simple, common causes before assuming it's a serious hardware failure." },
+          { label: 'Mentions escalating or documenting the issue', weight: 25, test: a => /ticket|escalate|log|document|record|hardware (repair|team)/i.test(a),
+            tip: "If your own steps don't fix it, mention logging a ticket or escalating to hardware repair with what you've already tried." }
+        ] }
+    ],
+    finance: [
+      { id: 'iv-fin-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why finance is the field you want to start your career in.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I’m good with numbers."'],
+        sample: "I got interested in finance after building a stock-tracking spreadsheet for a class project and realizing how much a single assumption — like a growth rate — could change a valuation. I've since taught myself the basics of reading a 10-K and built a couple of simple models on my own. I want to start in finance because the work is both analytical and has a real, visible outcome — a model either holds up or it doesn't.",
+        checks: fitChecks() },
+      { id: 'iv-fin-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time you made an error in a calculation, model, or analysis. What did you do?',
+        hints: ["It's fine to admit a real mistake — what matters is what you did next.", 'Say specifically what you’d do differently, not just "I learned to double-check."'],
+        sample: "While building a practice DCF, I forgot to discount the terminal value back to present, which made the valuation look far too high. I caught it because the number seemed unreasonable compared to the company's actual market cap, so I went back through the formula step by step and found the missing discount factor and fixed the model. Since then I always sanity-check a valuation against a real benchmark before I trust the output.",
+        checks: starChecks() },
+      { id: 'iv-fin-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you disagreed with someone about a number or an assumption in an analysis.',
+        hints: ["Focus on how you resolved it, not just who was right.", "It's okay if you ended up being wrong — say what changed your mind."],
+        sample: "On a group project, a teammate wanted to use last year's 20% growth rate for next year's forecast, but I thought that was too aggressive given the market had slowed. Instead of just overriding it, I pulled a couple of comparable companies' recent growth rates and showed the range was closer to 8–12%. I proposed 10% as a middle ground, and we ended up agreeing on that number and noting the assumption clearly so anyone reviewing the model could see why.",
+        checks: starChecks() },
+      { id: 'iv-fin-tech', tag: 'On the job', category: 'technical',
+        prompt: "Walk me through how you'd figure out whether a company is a good investment.",
+        hints: ['Cover more than one angle — the numbers alone rarely tell the whole story.', 'Mention comparing the company to something, not just describing it in isolation.'],
+        sample: "I'd start with the financial statements — revenue growth, margins, and whether cash flow actually backs up the reported earnings. Then I'd look at valuation, comparing the P/E or EV/EBITDA to similar companies to see if it's cheap or expensive relative to peers. I'd also factor in qualitative risk, like how much debt they're carrying and whether they have a real competitive advantage, since a cheap stock with a shrinking moat is still a bad investment.",
+        checks: [
+          { label: 'Mentions the financial statements or key metrics', weight: 25, test: a => /income statement|balance sheet|cash flow|revenue|earnings|margin|EBITDA/i.test(a),
+            tip: "Start with the fundamentals — revenue, margins, cash flow, or earnings." },
+          { label: 'Mentions a valuation method', weight: 25, test: a => /DCF|discounted cash flow|comparable|comps|multiple|P\/E|EV\/EBITDA|valuation/i.test(a),
+            tip: 'Mention how you’d actually value it — a DCF, or comparing multiples like P/E.' },
+          { label: 'Mentions risk', weight: 25, test: a => /risk|debt|competition|competitive|moat|leverage/i.test(a),
+            tip: "Bring up risk — debt levels, competition, or how durable their advantage is." },
+          { label: 'Compares to peers or a benchmark', weight: 25, test: a => /peer|comparable|industry|benchmark|compare|similar compan/i.test(a),
+            tip: "A number means little on its own — mention comparing it to peers or an industry benchmark." }
+        ] }
+    ],
+    marketing: [
+      { id: 'iv-mkt-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why marketing is the field you want to break into.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I’m creative."'],
+        sample: "I ran the Instagram account for my school's spring fundraiser last year and watched our reach triple once I started posting at different times and testing different captions. That hooked me — I liked that you could actually measure what worked instead of just guessing. I want to start in marketing because I like combining that creative side with the data side to figure out what actually gets someone to act.",
+        checks: fitChecks() },
+      { id: 'iv-mkt-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time a campaign, post, or piece of content you made didn’t perform the way you expected.',
+        hints: ["It's fine to admit it flopped — what matters is what you did next.", 'Say specifically what you’d do differently next time.'],
+        sample: "I once spent most of my prep time on the graphic for a post and barely thought about the caption, and it underperformed everything else that week. When I looked at what similar posts from other accounts were doing, I noticed the caption was almost always what drove people to comment or share, not just the image. After that I started writing the caption first and treating the visual as support instead of the other way around, which improved how my posts performed.",
+        checks: starChecks() },
+      { id: 'iv-mkt-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you disagreed with someone on your team about a marketing decision, like messaging or a channel to use.',
+        hints: ["Focus on how you resolved it, not just who was right.", "It's okay if you ended up being wrong — say what changed your mind."],
+        sample: "A teammate wanted to put our whole budget into Instagram ads, but I noticed our data showed most of our recent sign-ups actually came from email. Instead of arguing, I pulled the numbers from the last two campaigns and showed the split, then I suggested we divide the budget with more weight toward email. We ended up doing that and set a checkpoint to revisit it after a month based on results.",
+        checks: starChecks() },
+      { id: 'iv-mkt-tech', tag: 'On the job', category: 'technical',
+        prompt: 'How would you measure whether a marketing campaign actually worked?',
+        hints: ['Say that the right metric depends on the campaign’s goal — awareness and sales aren’t measured the same way.', "Mention comparing the result to something, not just reporting a number."],
+        sample: "It depends on the goal of the campaign — if it's about awareness I'd look at reach and impressions, but if it's about driving sales I'd look at conversion rate and cost per acquisition. I'd compare those numbers to a baseline or a goal set before the campaign started, not just look at them in isolation. I'd also want to see it against similar past campaigns so I know if the result is actually good or just average.",
+        checks: [
+          { label: 'Names a specific metric', weight: 25, test: a => /CTR|click-through|conversion|ROAS|CAC|engagement|reach|impressions|cost per/i.test(a),
+            tip: 'Name an actual metric — conversion rate, CTR, ROAS, reach, and so on.' },
+          { label: 'Compares to a goal or baseline', weight: 25, test: a => /goal|baseline|benchmark|target|compare|before and after/i.test(a),
+            tip: "A number alone doesn't mean much — mention comparing it to a goal or baseline set beforehand." },
+          { label: 'Matches the metric to the campaign’s objective', weight: 25, test: a => /objective|depends on|awareness|sales|leads|purpose of the campaign/i.test(a),
+            tip: "Say that the right metric depends on what the campaign was actually trying to do." },
+          { label: 'Compares to past campaigns', weight: 25, test: a => /past campaign|previous|history|trend|similar/i.test(a),
+            tip: "Mention checking it against past campaigns so you know if the result is actually good." }
+        ] }
+    ],
+    accounting: [
+      { id: 'iv-acct-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why accounting is the field you want to start in.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I’m good at math."'],
+        sample: "I've always liked that accounting has a right answer — the books either balance or they don't, and I find that satisfying to work toward. I managed the budget for a school club last year, tracking every dollar in a spreadsheet so we could show exactly where fundraising money went. I want to start in accounting because I like the precision of it, and because it's a skill that's useful in almost any company or industry.",
+        checks: fitChecks() },
+      { id: 'iv-acct-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time you found an error in your own work, like a number that didn’t add up. What did you do?',
+        hints: ["It's fine to admit a real mistake — what matters is what you did next.", "Say what you actually did to fix it, not just that you \"caught\" it."],
+        sample: "While reconciling a club's expense log, I noticed the running total didn't match our bank statement by about forty dollars. Instead of just adjusting the number to make it match, I went back through every transaction and found a reimbursement that had been entered twice. I flagged it to the treasurer and we fixed the duplicate entry so the record was actually accurate, not just balanced.",
+        checks: starChecks() },
+      { id: 'iv-acct-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you disagreed with someone about how a transaction or expense should be recorded or categorized.',
+        hints: ["Focus on how you resolved it, not just who was right.", "It's okay if you ended up being wrong — say what changed your mind."],
+        sample: "A club member wanted to log a personal purchase as a group expense because it was 'close enough' to what we needed. I explained that mixing that in would make our records inaccurate, and I suggested we keep it out of the books and let the group vote on reimbursing them separately instead. I updated the log accordingly, which resolved the issue and kept our expense records accurate for anyone who reviewed them later.",
+        checks: starChecks() },
+      { id: 'iv-acct-tech', tag: 'On the job', category: 'technical',
+        prompt: 'Explain the difference between cash and accrual accounting, and why the difference matters.',
+        hints: ['Define both sides clearly before explaining why it matters.', 'Mention why a company would care, not just the textbook definition.'],
+        sample: "Cash accounting records a transaction when cash is actually received or paid, while accrual accounting records it when it's earned or incurred, regardless of when the cash moves. The difference matters because accrual gives a more accurate picture of a company's financial health in a given period — cash accounting can make a company look better or worse than it really is just based on payment timing. That's why GAAP generally requires accrual accounting for larger companies.",
+        checks: [
+          { label: 'Explains cash-basis timing', weight: 25, test: a => /cash (in|out)|when (cash|money) (is )?(received|paid)|actually (received|paid)/i.test(a),
+            tip: 'Explain cash accounting: it records money when it’s actually received or paid.' },
+          { label: 'Explains accrual-basis timing', weight: 25, test: a => /earned|incurred|when it'?s? earned|regardless of (when|the) cash/i.test(a),
+            tip: 'Explain accrual accounting: it records revenue and expenses when they’re earned or incurred, not when cash moves.' },
+          { label: 'Says why it matters for accuracy', weight: 25, test: a => /accurate|misleading|picture of|matching/i.test(a),
+            tip: "Say why it matters — accrual gives a more accurate picture of financial health." },
+          { label: 'Mentions GAAP or standard practice', weight: 25, test: a => /GAAP|standard|required|larger compan/i.test(a),
+            tip: "Mention that GAAP generally requires accrual accounting for larger companies." }
+        ] }
+    ],
+    consulting: [
+      { id: 'iv-con-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why consulting is the path you want to start on.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I like problem-solving."'],
+        sample: "I like being dropped into a problem I don't know much about yet and figuring out how to structure it. That happened a lot when I did case competitions in school, where we'd get an unfamiliar business problem and two hours to build a recommendation. I want to start in consulting because you get exposed to a different industry and problem every engagement, and the job forces you to think clearly under time pressure.",
+        checks: fitChecks() },
+      { id: 'iv-con-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time your initial approach to a problem or analysis turned out to be wrong. What did you do?',
+        hints: ["It's fine to admit the first approach was wrong — what matters is catching it and adjusting.", "Say what you actually did once you noticed, not just that you noticed."],
+        sample: "On a case competition, our team spent the first hour building a detailed pricing model before I realized the actual issue was customer churn, not price. Once I noticed our numbers weren't explaining the client's real problem, I flagged it to the team and we restructured around a churn analysis instead, even though it meant scrapping work. We still finished on time, which fixed what would have been a much bigger problem the night before the final presentation.",
+        checks: starChecks() },
+      { id: 'iv-con-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you disagreed with a teammate about how to structure or prioritize a project.',
+        hints: ["Focus on how you resolved it, not just who was right.", "It's okay if you ended up being wrong — say what changed your mind."],
+        sample: "A teammate wanted to dive straight into building slides, but I thought we needed to agree on the actual recommendation first so the slides wouldn't need to be redone. I suggested we spend fifteen minutes outlining our answer and the points supporting it, and I timed us to keep it tight. It felt slower at first, but we finished faster as a result, since we weren't rebuilding slides around a changing argument.",
+        checks: starChecks() },
+      { id: 'iv-con-tech', tag: 'On the job', category: 'technical',
+        prompt: 'A client wants to know roughly how many coffee shops there are in Chicago. How would you estimate that?',
+        hints: ['Break the problem into a chain of smaller, reasonable assumptions.', "Finish by checking your number against something you actually know."],
+        sample: "I'd start with Chicago's population, then estimate what share of people drink coffee out regularly and how often per week. From there I'd estimate how many customers a typical coffee shop can serve in a day based on hours and turnover, and divide total weekly demand by that capacity to get a rough number of shops. At the end I'd sanity-check the number against something I actually know, like how many coffee shops I'd guess are in a neighborhood I'm familiar with, scaled up.",
+        checks: [
+          { label: 'Starts from population', weight: 25, test: a => /population|residents|people (in|live)/i.test(a),
+            tip: "Start with Chicago's population as your base number." },
+          { label: 'Estimates frequency or demand per person', weight: 25, test: a => /per (person|capita|week|day)|frequency|average|how often/i.test(a),
+            tip: 'Estimate how often an average person buys coffee out, to turn population into demand.' },
+          { label: 'Breaks the problem into steps', weight: 25, test: a => /break (it |this )?down|start with|assume|estimate|step/i.test(a),
+            tip: "Walk through it as a chain of steps and assumptions, not a single guess." },
+          { label: 'Sanity-checks the final number', weight: 25, test: a => /sanity[- ]check|reasonable|cross[- ]check|compare (it |this )?to|gut check/i.test(a),
+            tip: "Finish by sanity-checking your estimate against something you actually know." }
+        ] }
+    ],
+    hr: [
+      { id: 'iv-hr-fit', tag: 'Getting to know you', category: 'behavioral',
+        prompt: 'Tell me about yourself, and why HR or people operations is the field you want to start in.',
+        hints: ['Keep it tight — a few focused sentences beats a rambling two minutes.', 'End with why this role specifically, not just "I’m a people person."'],
+        sample: "I was the go-to person in my friend group and on my team for sorting out conflicts and making sure everyone actually felt heard, and I realized I liked that role more than any specific subject in school. I organized onboarding for new members of a club I was in, building a simple welcome guide so people didn't feel lost their first week. I want to start in HR because I like that the job is really about making the workplace fair and functional for everyone in it.",
+        checks: fitChecks() },
+      { id: 'iv-hr-mistake', tag: 'Handling a mistake', category: 'behavioral',
+        prompt: 'Tell me about a time you handled a people situation and, looking back, would have done differently.',
+        hints: ["It's fine to admit it — what matters is what you'd do differently now.", "Say specifically what changed about your approach."],
+        sample: "I once gave a teammate feedback about missed deadlines in front of the rest of the group, thinking it would save time since we were all in the same meeting. She was embarrassed and it made the rest of the meeting awkward for everyone. I apologized afterward and talked to her one-on-one instead, and since then I always give that kind of feedback privately first.",
+        checks: starChecks() },
+      { id: 'iv-hr-conflict', tag: 'Working with others', category: 'behavioral',
+        prompt: 'Tell me about a time you had to stay neutral or fair in a disagreement between two people.',
+        hints: ["Focus on how you handled both sides fairly, not just the outcome.", "Mention what you actually did, not just that you 'stayed neutral.'"],
+        sample: "Two people on a group project each thought the other wasn't contributing enough, and both came to me separately to complain. I made sure to hear each person out fully before saying anything, and I then brought them together to talk through what each of them actually needed from the other. It turned out to be a miscommunication about who owned which part, and I watched it get fixed faster once they heard it from each other directly instead of through me relaying messages back and forth.",
+        checks: starChecks() },
+      { id: 'iv-hr-tech', tag: 'On the job', category: 'technical',
+        prompt: 'An employee tells you a coworker keeps taking credit for their work. How do you handle it?',
+        hints: ['Say what you’d do first, not just the eventual outcome.', "Mention getting the other person's side before deciding anything."],
+        sample: "First I'd listen to the full story without jumping to conclusions, and ask for specific examples so I understand what actually happened. I'd keep the conversation confidential and let them know I'd look into it fairly rather than assuming either side is right. Then I'd talk to the coworker separately to hear their side, and depending on what I learn, either help mediate a conversation between them or document the issue if it's part of a pattern.",
+        checks: [
+          { label: 'Listens and gathers specifics first', weight: 25, test: a => /listen|hear (them|her|him) out|ask (for )?(specific )?examples|understand|gather/i.test(a),
+            tip: "Start by listening and asking for specific examples before deciding anything." },
+          { label: 'Keeps it confidential and fair', weight: 25, test: a => /confidential|both sides|fair|neutral|assum(e|ing)/i.test(a),
+            tip: "Mention keeping it confidential and not assuming either side is automatically right." },
+          { label: 'Gets the other person’s side', weight: 25, test: a => /talk to (the|her|him|them)|other side|coworker'?s? side|hear (their|his|her)/i.test(a),
+            tip: "Mention talking to the coworker separately to hear their side too." },
+          { label: 'Has a concrete next step', weight: 25, test: a => /document|follow up|mediate|escalate|pattern/i.test(a),
+            tip: "End with a concrete next step — documenting it, mediating a conversation, or following up." }
+        ] }
+    ]
+  };
+
   /* ---------------- Quiz content ---------------- */
   // Quiz clues never contain the term itself or what an acronym stands for.
   const CLUES = {
@@ -646,7 +1020,139 @@ function overdueTickets(tickets, now) {
     'Retention': 'An organization\u2019s ability to keep its people over time.',
     'Open enrollment': 'The yearly window when workers can sign up for or change their benefits.',
     'Exempt employee': 'A worker who, under U.S. labor law, isn\u2019t entitled to overtime pay, typically a salaried professional.',
-    'Headcount': 'The number of people employed, often used when planning budgets and hiring.'
+    'Headcount': 'The number of people employed, often used when planning budgets and hiring.',
+    'Firewall': 'A security barrier that watches incoming and outgoing network traffic and blocks anything that breaks the rules.',
+    'IP address': 'The numeric label, like 192.168.1.25, that identifies a device on a network so data knows where to go.',
+    'DHCP': 'The network service that automatically gives each device an address when it connects, so nobody has to set one by hand.',
+    'Multi-factor authentication': 'Requiring a second proof of identity, like a phone code or fingerprint, on top of a password before someone can sign in.',
+    'Phishing': 'A fake message dressed up as a trusted sender to trick someone into giving up a password or clicking a harmful link.',
+    'Malware': 'Harmful software, such as a virus or ransomware, built to damage computers or steal information.',
+    'Encryption': 'Scrambling data into unreadable code so only someone with the right key can turn it back into something useful.',
+    'Backup': 'A separate copy of files kept somewhere else so they can be restored if the originals are lost or damaged.',
+    'Cloud computing': 'Renting servers, storage, and software over the internet from a big provider instead of buying and running your own machines.',
+    'SaaS': 'Software you subscribe to and use online, like Slack or Salesforce, while the vendor handles hosting and updates.',
+    'Server': 'A computer whose job is to provide files, websites, or apps to other computers over a network.',
+    'Bandwidth': 'The maximum amount of data a connection can move at one time, like the number of lanes on a highway.',
+    'Latency': 'The delay, usually measured in milliseconds, between sending a request and hearing back.',
+    'Least privilege': 'The security rule of giving each person only the access their job requires, and nothing extra.',
+    'Root cause analysis': 'Digging past the symptoms to find the real reason a problem happened, so it stops coming back.',
+    'Escalation': 'Handing an issue up to someone with more expertise or authority when it can\u2019t be solved at the current level.',
+    'Incident': 'An unplanned outage or disruption to a service people rely on, like email going down company-wide.',
+    'Script': 'A short program that runs a series of commands automatically, like creating 40 user accounts at once.',
+    'Endpoint': 'Any device that connects to a company\u2019s network, like a laptop, phone, or tablet, and needs to be secured.',
+    'Remote desktop': 'A tool that lets a technician see and control someone else\u2019s computer over the network without being in the room.',
+    'Knowledge base': 'A searchable library of how-to articles and known fixes so people can solve common problems without waiting.',
+    'Uptime': 'The percentage of time a system is up and available, often promised as a number like 99.9%.',
+    'Revenue': 'The total money brought in from sales before any costs are taken out, often called the top line.',
+    'Gross margin': 'The share of each sales dollar left after paying the direct cost of making the product, shown as a percentage.',
+    'Net income': 'The profit left after every expense, including interest and taxes, is subtracted — the bottom line.',
+    'Free cash flow': 'Cash the business generates from operations minus what it spends on equipment and buildings — what\u2019s truly left over.',
+    'Balance sheet': 'A snapshot on one date of what a company owns, what it owes, and what\u2019s left for the owners.',
+    'Income statement': 'The report that shows sales, expenses, and profit over a period such as a quarter or a year.',
+    'Cash flow statement': 'The report that tracks money moving in and out over a period, split into operating, investing, and financing.',
+    'Market capitalization': 'Share price times the number of shares outstanding — what the stock market says the company\u2019s equity is worth.',
+    'Enterprise value': 'What it would cost to buy the whole business: the value of its shares plus its debt, minus the cash it holds.',
+    'Dividend': 'A regular cash payment a company sends its shareholders out of its profits.',
+    'Bond': 'A loan investors make to a company or government that pays regular interest and returns the full amount on a set date.',
+    'Yield': 'The yearly income an investment pays, expressed as a percentage of what it costs.',
+    'Equity': 'Ownership in a business; on the books it equals what the company owns minus what it owes.',
+    'Leverage': 'Using borrowed money to fund a business or investment, which magnifies both gains and losses.',
+    'Diversification': 'Spreading money across many different investments so one bad pick can\u2019t sink the whole portfolio.',
+    'Compound interest': 'Earning returns on both the original amount and the returns already earned, so growth snowballs over time.',
+    'Present value': 'What money you\u2019ll receive in the future is worth in today\u2019s dollars, given what you could earn in the meantime.',
+    'IRR': 'The single yearly percentage a project is expected to earn, found where its discounted cash flows net to zero.',
+    'NPV': 'Today\u2019s value of all a project\u2019s future cash, minus what it costs up front. Above zero means the project creates value.',
+    'CapEx': 'Money spent on long-lasting assets such as buildings, machines, or major technology, rather than day-to-day costs.',
+    'Variance analysis': 'Comparing actual results to the plan and explaining why the numbers came in higher or lower.',
+    'Forecast': 'A projection of future numbers, like next year\u2019s sales, built from past data and assumptions.',
+    'Impressions': 'The number of times an ad or post was shown on a screen, counting repeat views.',
+    'Reach': 'The number of different people who saw a piece of content at least once.',
+    'Engagement rate': 'Likes, comments, shares, and clicks divided by the number of people who saw the post.',
+    'CPC': 'Ad spend divided by the number of times people selected the ad.',
+    'CPM': 'What an advertiser pays for every thousand times an ad is shown.',
+    'Funnel': 'The stages a customer moves through, from first hearing about a brand to finally buying, narrowing at each step.',
+    'Call to action': 'The short instruction, like \u201cShop now\u201d or \u201cSign up free,\u201d that tells people exactly what to do next.',
+    'Landing page': 'A single web page built around one campaign and one goal, where people arrive after clicking an ad.',
+    'Brand awareness': 'How well the target audience recognizes a company and knows what it offers.',
+    'Target audience': 'The specific group of people a campaign is designed to reach.',
+    'Retargeting': 'Showing ads to people who already visited a site or looked at a product but left without buying.',
+    'Organic traffic': 'Website visitors who arrive through unpaid search results instead of paid ads.',
+    'Paid media': 'Exposure a brand buys, such as search ads, sponsored posts, and billboards.',
+    'Churn rate': 'The percentage of customers who cancel or stop buying during a given period.',
+    'Customer lifetime value': 'The total revenue a business expects to earn from one customer over the entire relationship.',
+    'Content calendar': 'A schedule showing what posts and articles will go out, on which channels, and on what dates.',
+    'Influencer marketing': 'Paying or partnering with popular social media creators to promote a product to their followers.',
+    'Segmentation': 'Splitting customers into groups with shared traits, like age or buying habits, so each gets tailored messages.',
+    'Bounce rate': 'The percentage of visitors who leave a site after viewing just one page without doing anything else.',
+    'Open rate': 'The percentage of people who received an email and actually opened it.',
+    'Value proposition': 'A clear statement of the main benefit a product delivers and why someone should pick it over the alternatives.',
+    'Market share': 'One company\u2019s sales as a percentage of all sales in its industry.',
+    'Debit': 'The left-side entry in an account, which increases assets and expenses.',
+    'Credit': 'The right-side entry in an account, which increases liabilities, equity, and revenue.',
+    'Assets': 'Things a company owns that hold value, like cash, inventory, and equipment.',
+    'Liabilities': 'Amounts a company owes to others, like loans, unpaid bills, and wages not yet paid.',
+    'Chart of accounts': 'The master numbered list of every account a business uses to categorize its transactions.',
+    'Trial balance': 'A report listing every account\u2019s ending balance to check that total debits equal total credits.',
+    'Accrued expense': 'A cost a company has already incurred but hasn\u2019t paid or been billed for yet, like wages earned but not yet paid.',
+    'Prepaid expense': 'A cost paid up front for something used later, like a year of insurance, recorded as an asset and used up over time.',
+    'Deferred revenue': 'Cash collected from a customer before the work is delivered, held as a liability until it\u2019s earned.',
+    'Invoice': 'A bill sent to a customer that lists what was provided, how much is owed, and the due date.',
+    'Purchase order': 'The official document a buyer sends a supplier to order goods at an agreed price and quantity.',
+    'Three-way match': 'Checking that what was ordered, what was received, and what the supplier billed all agree before paying.',
+    'Cost of goods sold': 'The direct cost of making the products that were actually sold during a period, like materials and factory labor.',
+    'Inventory': 'Goods a business holds and plans to sell, from raw materials to finished products.',
+    'Audit': 'An independent review of a company\u2019s financial records to confirm they\u2019re accurate and follow the rules.',
+    'GAAP': 'The standard set of U.S. rules companies follow when preparing financial statements, so reports can be compared.',
+    'Internal controls': 'Procedures that prevent mistakes and fraud, like requiring a second approval before a large payment goes out.',
+    'Petty cash': 'A small stash of cash kept in the office for minor purchases, tracked with receipts.',
+    'Payroll': 'The process of calculating employee pay, withholding taxes and deductions, and paying people on time.',
+    'Write-off': 'Removing an amount from the books because it will never be collected or has lost its value.',
+    'Aging report': 'A report that sorts unpaid customer bills by how long they\u2019ve been outstanding, such as 0–30, 31–60, and 90+ days.',
+    'Fiscal year': 'The 12-month period a company uses for its books and reporting, which may not run January to December.',
+    'Issue tree': 'A branching diagram that splits one big question into smaller questions that can each be analyzed.',
+    'Statement of work': 'The signed document spelling out a project\u2019s scope, outputs, timeline, and fees before work starts.',
+    'Kickoff meeting': 'The first meeting of a project, where the team and client agree on goals, roles, and the timeline.',
+    'Workstream': 'One focused slice of a larger project with its own owner and tasks, like pricing or operations.',
+    'Benchmarking': 'Comparing a client\u2019s performance to competitors or industry leaders to see where it stands.',
+    'Market sizing': 'Estimating how big a market is, often by building a quick calculation from reasonable assumptions.',
+    '80/20 rule': 'The idea that a small share of causes, roughly a fifth, produces most of the results.',
+    'Pyramid principle': 'Structuring communication so the main answer comes first, followed by supporting points, then the detail underneath.',
+    'SWOT analysis': 'A four-box framework covering a company\u2019s internal pluses and minuses and the outside chances and dangers it faces.',
+    'Steering committee': 'A group of senior client leaders who meet regularly to review a project\u2019s progress and make the big decisions.',
+    'Change management': 'Helping employees adopt a new process or system through communication and training so it actually sticks.',
+    'Billable hours': 'Time spent working directly on client work that can be charged to the client.',
+    'So what': 'The implication behind a finding: why it matters and what the client should do about it.',
+    'Implementation roadmap': 'A step-by-step timeline showing who will do what, and when, to put a recommendation into action.',
+    'Pain point': 'A specific frustration or problem that a customer or client keeps running into.',
+    'Quick win': 'A fast, low-cost improvement that shows early results and builds support for bigger changes.',
+    'Best practice': 'A method widely seen as the most effective way to do something, often borrowed from industry leaders.',
+    'Synthesis': 'Pulling many separate findings together into a few clear insights and one recommendation.',
+    'Buy-in': 'Real agreement and support from the people who must approve or carry out a decision.',
+    'Value chain': 'The full sequence of activities a company performs to create and deliver its product, from sourcing to after-sale service.',
+    "Porter's Five Forces": 'A framework that judges how tough an industry is by looking at rivals, new entrants, substitutes, and the power of buyers and suppliers.',
+    'Interview guide': 'A prepared list of questions used to keep conversations with clients, customers, or experts focused and consistent.',
+    'Offboarding': 'The steps taken when someone leaves a company, like collecting their laptop, shutting off access, and final pay.',
+    'Turnover rate': 'The percentage of employees who leave during a given period.',
+    'Job description': 'A written summary of a role\u2019s duties, required qualifications, and who it reports to.',
+    'Requisition': 'An internal request, approved by leadership, to open and fill a position.',
+    'Background check': 'A screening of a candidate\u2019s past, like employment, education, or criminal records, done with their written consent.',
+    'Form I-9': 'The U.S. form used to confirm every new hire is legally allowed to work in the country.',
+    'Form W-4': 'The U.S. form a new employee fills out so payroll knows how much federal income tax to hold back from each check.',
+    'FMLA': 'A U.S. law giving eligible workers up to 12 weeks of unpaid, job-protected time off for things like a new baby or a serious illness.',
+    'PTO': 'A bank of paid days employees can use for vacation, sick days, or personal time.',
+    '401(k) match': 'Money an employer adds to a worker\u2019s retirement savings based on how much the worker puts in.',
+    'Employee handbook': 'The company guide that explains policies, rules, benefits, and procedures for staff.',
+    'Non-exempt employee': 'A worker who, under U.S. labor law, must be paid time-and-a-half for hours over 40 in a week.',
+    'Pay band': 'The salary range, from minimum to maximum, a company sets for a certain job level.',
+    'Employee engagement': 'How committed, motivated, and connected people feel to their work and their company.',
+    'Exit interview': 'A conversation with someone who is leaving to learn why and what the company could do better.',
+    'Structured interview': 'An interview format where every candidate gets the same questions and is scored with the same rubric.',
+    'DEI': 'Efforts to build a workforce from many backgrounds and make sure everyone is treated fairly and feels they belong.',
+    'Employer brand': 'A company\u2019s reputation as a place to work, among job seekers and its own staff.',
+    'HRIS': 'The central software that stores employee records, payroll, benefits, and time-off balances.',
+    'Probationary period': 'The first few months of a new job, often 60 to 90 days, when performance gets a closer look.',
+    'Succession planning': 'Identifying and developing people who could step into key roles when current leaders leave or retire.',
+    "Workers' compensation": 'Insurance that pays medical bills and lost wages for people hurt while doing their job.'
   };
   // Workplace scenarios. The first option is the right answer; options are shuffled when shown.
   const CONTEXT = {
@@ -671,7 +1177,76 @@ function overdueTickets(tickets, now) {
         why: 'The site itself is up, since the IP address works. DNS is what turns the name people type into that IP address.' },
       { term: 'API', prompt: 'Your team\u2019s app shows live weather data that comes from another company\u2019s service. What makes that connection possible?',
         options: ['An API', 'A VPN', 'An SLA', 'Active Directory'],
-        why: 'An API is how one program requests data from another, like your app asking a weather service for today\u2019s forecast.' }
+        why: 'An API is how one program requests data from another, like your app asking a weather service for today\u2019s forecast.' },
+      { term: 'Help desk ticket', prompt: 'A coworker stops you in the hallway to say her monitor keeps flickering. You\u2019re on your way to a meeting. What\u2019s the best move?',
+        options: ['Ask her to submit a help desk ticket so it\u2019s tracked', 'Promise to remember it later', 'Tell her to restart and hope for the best', 'Escalate it straight to the CIO'],
+        why: 'A help desk ticket makes sure the issue is logged, assigned, and followed up instead of forgotten.' },
+      { term: 'Firewall', prompt: 'Security wants to stop outside computers from reaching the office\u2019s internal file server, while still letting employees use it. What should be configured?',
+        options: ['A firewall rule', 'A new DNS record', 'A cron job', 'A longer SLA'],
+        why: 'Firewalls allow or block traffic based on rules, like \u201conly internal devices can reach this server.\u201d' },
+      { term: 'IP address', prompt: 'Two printers on the same office network keep dropping offline, and you notice both are set to 192.168.1.50. What\u2019s the problem?',
+        options: ['An IP address conflict', 'The printers need encryption', 'The VPN is too slow', 'The SLA was missed'],
+        why: 'Every device on a network needs its own IP address. Two devices sharing one will fight over it and drop off.' },
+      { term: 'DHCP', prompt: 'Visitors\u2019 laptops connect to the guest Wi-Fi but show \u201cNo valid IP configuration.\u201d Office PCs with addresses typed in by hand work fine. What\u2019s most likely down?',
+        options: ['The DHCP server', 'Active Directory', 'The firewall\u2019s logging', 'The help desk ticket system'],
+        why: 'Devices that rely on DHCP can\u2019t get an address when it\u2019s down, while devices with addresses set by hand keep working.' },
+      { term: 'Multi-factor authentication', prompt: 'An employee\u2019s password was leaked in a data breach, but the attacker still couldn\u2019t get into her email because they didn\u2019t have her phone. What protected her?',
+        options: ['Multi-factor authentication', 'A strong firewall', 'Patch management', 'A daily backup'],
+        why: 'Multi-factor authentication requires a second proof, like a code on your phone, so a stolen password alone isn\u2019t enough.' },
+      { term: 'Phishing', prompt: 'An employee forwards an email \u201cfrom the CEO\u201d asking her to urgently buy $500 in gift cards and keep it quiet. The sender is a Gmail address. What is this?',
+        options: ['A phishing attempt', 'A normal help desk ticket', 'A patch notice', 'An API request'],
+        why: 'Urgency, secrecy, gift cards, and an outside email address are classic signs of phishing. Report it and don\u2019t reply.' },
+      { term: 'Malware', prompt: 'After opening an email attachment, a user\u2019s files are all renamed and a message demands payment to unlock them. What has infected the computer?',
+        options: ['Malware (ransomware)', 'A DNS error', 'A failed cron job', 'An expired VPN connection'],
+        why: 'Ransomware is a type of malware that locks files until a ransom is paid. Disconnect the machine from the network right away.' },
+      { term: 'Encryption', prompt: 'A sales laptop full of customer data is left on a train. IT isn\u2019t worried the data will be read. Why not?',
+        options: ['The hard drive was encrypted', 'The laptop had a strong firewall', 'The DHCP server was off', 'The laptop was on the VPN'],
+        why: 'Without the key, an encrypted drive is just scrambled data to whoever finds it.' },
+      { term: 'Backup', prompt: 'A server\u2019s hard drive fails overnight. The team restores everything from last night\u2019s copy and loses only an hour of work. What saved them?',
+        options: ['A backup', 'Encryption', 'The firewall', 'Multi-factor authentication'],
+        why: 'A backup is a separate copy of data you can restore after a failure, a deletion, or an attack.' },
+      { term: 'Cloud computing', prompt: 'Your company needs extra server power for a two-week project, without buying hardware that will sit unused afterward. What\u2019s the best fit?',
+        options: ['Cloud computing', 'A bigger on-site server room', 'A new VPN', 'More DHCP addresses'],
+        why: 'Cloud computing lets you rent capacity for exactly as long as you need it, then shut it off.' },
+      { term: 'SaaS', prompt: 'Your company stops installing an accounting program on every PC and switches to a monthly subscription that runs in the browser and updates itself. What kind of software is this?',
+        options: ['SaaS', 'Malware', 'An on-site server', 'A cron job'],
+        why: 'Software as a Service runs on the vendor\u2019s systems. You pay a subscription instead of installing and maintaining it.' },
+      { term: 'Server', prompt: 'The shared drive and the internal website went down at the same moment. Both run on the same machine in the back closet. What most likely failed?',
+        options: ['The server hosting them', 'Each user\u2019s laptop', 'Everyone\u2019s passwords', 'The SLA'],
+        why: 'When several services fail at once and share one machine, the server they run on is the first suspect.' },
+      { term: 'Bandwidth', prompt: 'Video calls get choppy every afternoon while the whole office uploads large design files. What\u2019s being maxed out?',
+        options: ['Bandwidth', 'DNS', 'Active Directory', 'Encryption'],
+        why: 'Bandwidth is how much data the connection can carry at once. Lots of big uploads fill it up and squeeze out video calls.' },
+      { term: 'Latency', prompt: 'A remote worker has a fast connection, but every click in her remote desktop session to a server overseas has a noticeable pause. What\u2019s the likely issue?',
+        options: ['High latency', 'Low bandwidth', 'An IP address conflict', 'An expired password'],
+        why: 'Her speed (bandwidth) is fine, but the distance adds delay to every round trip. That delay is latency.' },
+      { term: 'Least privilege', prompt: 'A new marketing intern asks for admin rights to the finance server \u201cjust in case.\u201d What principle says you should decline?',
+        options: ['Least privilege', 'Patch management', 'Latency', 'Uptime'],
+        why: 'Least privilege means people only get the access their job needs. Extra access is extra risk if an account is hacked.' },
+      { term: 'Root cause analysis', prompt: 'The same printer jams every Monday. You\u2019ve cleared it five times. Your manager asks you to figure out why it keeps happening instead. What is she asking for?',
+        options: ['Root cause analysis', 'An escalation', 'A backup', 'A new SLA'],
+        why: 'Clearing the jam fixes the symptom. Root cause analysis finds the underlying reason, like a paper type that only gets loaded on Mondays.' },
+      { term: 'Escalation', prompt: 'You\u2019ve spent an hour on a ticket, followed every step in the knowledge base, and the fix needs server access you don\u2019t have. What should you do?',
+        options: ['Escalate it to the next support tier', 'Close the ticket as resolved', 'Keep trying until the end of the day', 'Ask the user to restart again'],
+        why: 'When a problem is beyond your skills or access, escalating it with good notes gets it fixed faster.' },
+      { term: 'Incident', prompt: 'At 9 AM, fifty tickets arrive saying email is down. How should IT treat this?',
+        options: ['As one major incident with a single owner and regular updates', 'As fifty separate low-priority tickets', 'As a scheduled maintenance window', 'As fifty password reset requests'],
+        why: 'Many reports of the same outage are one incident. One owner and regular updates keep everyone informed while it\u2019s fixed.' },
+      { term: 'Script', prompt: 'You need to create accounts for 40 summer interns from a spreadsheet. Doing it by hand would take all day. What should you use?',
+        options: ['A script', 'An escalation', 'A firewall', 'Remote desktop'],
+        why: 'A script can read the spreadsheet and create every account in minutes, with fewer typos.' },
+      { term: 'Endpoint', prompt: 'Security wants antivirus and disk encryption on every laptop, phone, and tablet that connects to company systems. What are these devices called?',
+        options: ['Endpoints', 'Servers', 'Firewalls', 'Scripts'],
+        why: 'Endpoints are the devices at the edge of the network, and each one is a possible way in for attackers.' },
+      { term: 'Remote desktop', prompt: 'A user in another office can\u2019t explain what\u2019s wrong with her settings. The fastest way to help is to see her screen and take control. What do you use?',
+        options: ['Remote desktop', 'DHCP', 'A backup', 'A firewall'],
+        why: 'Remote desktop lets IT see and control the user\u2019s computer from anywhere.' },
+      { term: 'Knowledge base', prompt: 'The help desk answers \u201cHow do I connect to the office printer?\u201d twenty times a week. What would cut down those tickets?',
+        options: ['A knowledge base article', 'An escalation', 'More bandwidth', 'A new firewall rule'],
+        why: 'A clear self-help article in the knowledge base lets users solve common problems themselves.' },
+      { term: 'Uptime', prompt: 'A vendor promises its system will be available 99.9% of the time. Over a 30-day month, about how much downtime does that allow?',
+        options: ['About 43 minutes', 'About 3 days', 'About 7 hours', 'Zero minutes'],
+        why: '0.1% of 30 days (43,200 minutes) is about 43 minutes. That promised availability is the uptime.' }
     ],
     finance: [
       { term: 'P/E ratio', prompt: 'Two companies each earned $10M last year. Company A is worth $150M in the market and Company B is worth $250M. Which is true?',
@@ -697,7 +1272,73 @@ function overdueTickets(tickets, now) {
         why: 'Due diligence is the deep investigation of a business before a deal closes.' },
       { term: 'Liquidity', prompt: 'You need to turn $5,000 of investments into cash by tomorrow without losing value. Which is the most liquid?',
         options: ['Shares of a large public company', 'A rental property', 'A stake in a private startup', 'A rare painting'],
-        why: 'Large public stocks trade every second at a clear price. The others can take weeks or months to sell at full value.' }
+        why: 'Large public stocks trade every second at a clear price. The others can take weeks or months to sell at full value.' },
+      { term: 'Revenue', prompt: 'A coffee shop sells 10,000 drinks at $5 each this quarter and spends $30,000 on rent and supplies. What is its revenue?',
+        options: ['$50,000', '$20,000', '$80,000', '$30,000'],
+        why: 'Revenue is total sales before costs: 10,000 × $5 = $50,000.' },
+      { term: 'Gross margin', prompt: 'A company sells a product for $100 that costs $60 to make. What is its gross margin?',
+        options: ['40%', '60%', '$60', '160%'],
+        why: 'Gross margin is (revenue − cost to make) ÷ revenue: ($100 − $60) ÷ $100 = 40%.' },
+      { term: 'Net income', prompt: 'Revenue is $1M, operating costs are $700K, interest is $50K, and taxes are $60K. What is net income?',
+        options: ['$190,000', '$300,000', '$250,000', '$1,000,000'],
+        why: 'Net income subtracts everything: $1M − $700K − $50K − $60K = $190K.' },
+      { term: 'Free cash flow', prompt: 'A company brings in $500K of cash from operations and spends $200K on new equipment. How much free cash flow does it have?',
+        options: ['$300,000', '$700,000', '$500,000', '$200,000'],
+        why: 'Free cash flow is operating cash flow minus capital expenditures: $500K − $200K = $300K.' },
+      { term: 'Balance sheet', prompt: 'Your manager asks how much cash and debt a company had on December 31. Which financial statement do you open?',
+        options: ['The balance sheet', 'The income statement', 'The cash flow statement', 'The stock chart'],
+        why: 'The balance sheet shows assets, liabilities, and equity at a single point in time, like year-end.' },
+      { term: 'Income statement', prompt: 'You want to know whether a company made a profit last quarter. Which statement shows that?',
+        options: ['The income statement', 'The balance sheet', 'A bond prospectus', 'The stock chart'],
+        why: 'The income statement walks from revenue through expenses to profit for a period of time.' },
+      { term: 'Cash flow statement', prompt: 'A company reports a profit, but its bank balance keeps shrinking. Which statement will show where the money actually went?',
+        options: ['The cash flow statement', 'The income statement', 'The balance sheet alone', 'The P/E ratio'],
+        why: 'Profit isn\u2019t the same as cash. The cash flow statement shows actual money in and out, like customers paying late or big equipment purchases.' },
+      { term: 'Market capitalization', prompt: 'A company\u2019s stock trades at $40 and it has 50 million shares outstanding. What is its market capitalization?',
+        options: ['$2 billion', '$40 million', '$90 million', '$1.25 billion'],
+        why: 'Market cap is price × shares: $40 × 50 million = $2 billion.' },
+      { term: 'Enterprise value', prompt: 'A company has a market cap of $800M, $300M of debt, and $100M of cash. What is its enterprise value?',
+        options: ['$1 billion', '$1.2 billion', '$800 million', '$600 million'],
+        why: 'Enterprise value = market cap + debt − cash: $800M + $300M − $100M = $1B.' },
+      { term: 'Dividend', prompt: 'You own 200 shares of a company that announces a $0.50-per-share quarterly payout. How much will you receive this quarter?',
+        options: ['$100', '$50', '$400', '$0.50'],
+        why: 'A dividend is paid per share: 200 × $0.50 = $100.' },
+      { term: 'Bond', prompt: 'A city needs $50M for a new bridge and wants to borrow it from investors, paying 4% interest a year for 10 years. What will it issue?',
+        options: ['Bonds', 'Shares of stock', 'Dividends', 'Options'],
+        why: 'Bonds are how governments and companies borrow from investors in exchange for interest payments.' },
+      { term: 'Yield', prompt: 'A bond costs $1,000 and pays $50 of interest a year. What is its yield?',
+        options: ['5%', '50%', '0.5%', '20%'],
+        why: 'Yield is annual income ÷ price: $50 ÷ $1,000 = 5%.' },
+      { term: 'Equity', prompt: 'A company has $10M in assets and $6M in liabilities. How much belongs to the shareholders?',
+        options: ['$4M', '$16M', '$6M', '$10M'],
+        why: 'Shareholders\u2019 equity is assets minus liabilities: $10M − $6M = $4M.' },
+      { term: 'Leverage', prompt: 'Two companies earn the same profit, but one funded most of its growth with loans. If sales drop sharply, which is in more danger?',
+        options: ['The one with more leverage', 'The one with less debt', 'Both are equally at risk', 'Neither, since their profits are equal'],
+        why: 'Loan payments are due no matter what. When sales fall, companies with high leverage feel it most.' },
+      { term: 'Diversification', prompt: 'A new employee puts her entire retirement account into her own company\u2019s stock. What would a financial advisor say is missing?',
+        options: ['Diversification', 'Leverage', 'Liquidity', 'A higher P/E ratio'],
+        why: 'If the company struggles, she could lose her job and her savings at the same time. Spreading money across many investments reduces that risk.' },
+      { term: 'Compound interest', prompt: 'You invest $1,000 at 10% a year and reinvest the earnings. How much do you have after two years?',
+        options: ['$1,210', '$1,200', '$1,100', '$2,000'],
+        why: 'Year 1: $1,000 × 1.10 = $1,100. Year 2: $1,100 × 1.10 = $1,210. The extra $10 is interest earned on interest.' },
+      { term: 'Present value', prompt: 'Would you rather have $1,000 today or $1,000 in five years, if you could invest money at 5% a year?',
+        options: ['Today, because $1,000 in five years has a lower present value', 'In five years, because it will be worth more', 'It doesn\u2019t matter, since it\u2019s the same $1,000', 'In five years, because of inflation'],
+        why: 'Money today can be invested and grow, so $1,000 received later is worth less in today\u2019s terms.' },
+      { term: 'IRR', prompt: 'Project A has an expected IRR of 14% and Project B has 9%. The company\u2019s cost of capital is 10%. Which should it pursue?',
+        options: ['Project A, because its return beats the cost of capital', 'Project B, because lower returns are safer', 'Both, because both returns are positive', 'Neither, because IRR doesn\u2019t matter'],
+        why: 'A project is worth doing when its IRR is higher than what the money costs. 14% clears the 10% hurdle; 9% doesn\u2019t.' },
+      { term: 'NPV', prompt: 'A project costs $100K today. The future cash it generates is worth $85K in today\u2019s dollars. What should you recommend?',
+        options: ['Reject it: its NPV is −$15K', 'Accept it: it generates cash', 'Accept it: its NPV is $85K', 'Accept it: its NPV is $185K'],
+        why: 'NPV = $85K − $100K = −$15K. A negative NPV means the project destroys value.' },
+      { term: 'CapEx', prompt: 'Which of these is a capital expenditure?',
+        options: ['Buying a $2M machine for the factory', 'Paying this month\u2019s electric bill', 'Paying employees\u2019 salaries', 'Buying snacks for the office'],
+        why: 'CapEx is spending on long-term assets that will be used for years, like machinery.' },
+      { term: 'Variance analysis', prompt: 'Marketing spent $120K last quarter against a $100K budget. Your manager asks you to explain the $20K gap. What is this work called?',
+        options: ['Variance analysis', 'Due diligence', 'A DCF', 'Diversification'],
+        why: 'Variance analysis compares actuals to the budget and explains the differences, like an unplanned trade show.' },
+      { term: 'Forecast', prompt: 'Sales grew about 5% a year for the last three years. Your manager asks what you expect sales to be next year. What are you building?',
+        options: ['A forecast', 'A balance sheet', 'A variance analysis', 'A dividend'],
+        why: 'A forecast projects future results using history and assumptions, like continued 5% growth.' }
     ],
     marketing: [
       { term: 'CTR', prompt: 'An ad was shown 50,000 times and clicked 1,000 times. What is its CTR?',
@@ -720,7 +1361,76 @@ function overdueTickets(tickets, now) {
         why: 'SEO is what helps your pages rank in unpaid search results.' },
       { term: 'Buyer persona', prompt: 'Your team writes: \u201cMaya, 34, runs a small bakery, shops on her phone, and cares most about saving time.\u201d What is this?',
         options: ['A buyer persona', 'A KPI', 'An A/B test', 'A conversion goal'],
-        why: 'A buyer persona is a profile of your ideal customer that guides messaging and targeting.' }
+        why: 'A buyer persona is a profile of your ideal customer that guides messaging and targeting.' },
+      { term: 'KPI', prompt: 'Your manager says the goal this quarter is to grow newsletter sign-ups. Which is the best KPI to track?',
+        options: ['New newsletter sign-ups per week', 'How many ads the team designed', 'How many team meetings were held', 'The office Wi-Fi speed'],
+        why: 'A good KPI measures progress toward the actual goal, which here is sign-ups.' },
+      { term: 'Impressions', prompt: 'One person scrolls past your ad three times in a day. How does that count?',
+        options: ['3 impressions and a reach of 1', '1 impression and a reach of 3', '3 clicks', '3 conversions'],
+        why: 'Impressions count every display. Reach counts unique people, so it\u2019s still 1.' },
+      { term: 'Reach', prompt: 'Your post was displayed 12,000 times to 4,000 different people. What is its reach?',
+        options: ['4,000', '12,000', '3', '16,000'],
+        why: 'Reach counts unique people. The 12,000 is impressions, since some people saw it more than once.' },
+      { term: 'Engagement rate', prompt: 'A post reached 10,000 people and got 300 likes, comments, and shares. What is its engagement rate?',
+        options: ['3%', '30%', '0.3%', '300%'],
+        why: 'Engagement rate = interactions ÷ reach: 300 ÷ 10,000 = 3%.' },
+      { term: 'CPC', prompt: 'You spent $500 on a search campaign that got 250 clicks. What was your CPC?',
+        options: ['$2.00', '$0.50', '$250', '$5.00'],
+        why: 'CPC = spend ÷ clicks: $500 ÷ 250 = $2.00.' },
+      { term: 'CPM', prompt: 'A display campaign cost $1,200 and delivered 400,000 impressions. What was the CPM?',
+        options: ['$3.00', '$0.003', '$300', '$30'],
+        why: 'CPM = spend ÷ impressions × 1,000: $1,200 ÷ 400,000 × 1,000 = $3.00.' },
+      { term: 'Funnel', prompt: '10,000 people visit your site, 2,000 add something to their cart, and 100 buy. Where is the weakest step?',
+        options: ['Between adding to cart and buying', 'Between visiting and adding to cart', 'Before people reach the site', 'There\u2019s no drop-off'],
+        why: 'Visit to cart keeps 20% of people (10,000 → 2,000), but cart to purchase keeps only 5% (2,000 → 100). That\u2019s the weakest step in the funnel.' },
+      { term: 'Call to action', prompt: 'An email gets lots of opens, but almost nobody clicks. Reading it, you notice it never tells readers what to do and has no obvious link or button. What\u2019s missing?',
+        options: ['A clear call to action', 'More impressions', 'A lower CPM', 'A buyer persona'],
+        why: 'Without a clear call to action like a \u201cShop the sale\u201d button, readers don\u2019t know what to do next.' },
+      { term: 'Landing page', prompt: 'Your ad for a free budgeting guide sends people to your homepage, and they can\u2019t find the guide. What should you build?',
+        options: ['A dedicated landing page for the guide', 'A new buyer persona', 'A longer email', 'More ad impressions'],
+        why: 'A landing page matches the ad\u2019s promise and has one goal, which improves conversion.' },
+      { term: 'Brand awareness', prompt: 'A new sneaker company isn\u2019t pushing sales yet. It just wants people to recognize its name and logo. What\u2019s the campaign goal?',
+        options: ['Brand awareness', 'Retargeting', 'Lower CAC', 'Higher conversion rate'],
+        why: 'Building recognition before pushing sales is a brand awareness goal, measured with reach, impressions, and surveys.' },
+      { term: 'Target audience', prompt: 'A company selling college dorm supplies is running most of its ads to retirees. What\u2019s gone wrong?',
+        options: ['The ads aren\u2019t reaching the target audience', 'The CPM is too low', 'The ads need more impressions', 'The landing page is too short'],
+        why: 'The target audience is incoming college students and their parents. Ads shown to retirees waste budget.' },
+      { term: 'Retargeting', prompt: 'A shopper puts shoes in her cart, leaves without buying, and then sees ads for those exact shoes on social media. What is this?',
+        options: ['Retargeting', 'Organic traffic', 'Brand awareness', 'SEO'],
+        why: 'Retargeting follows up with people who already showed interest, which often converts better than reaching new people.' },
+      { term: 'Organic traffic', prompt: 'Your blog posts started ranking on Google\u2019s first page and visits went up, without any ad spend. What grew?',
+        options: ['Organic traffic', 'Paid media', 'Retargeting', 'CPC'],
+        why: 'Visitors from unpaid search results are organic traffic, usually the payoff from good SEO.' },
+      { term: 'Paid media', prompt: 'Your manager wants a list of every channel where you buy placements: Google Ads, Instagram ads, and a podcast sponsorship. What category are these?',
+        options: ['Paid media', 'Organic traffic', 'Earned media', 'Owned media'],
+        why: 'Anything you pay to place is paid media. Your own website is owned media, and press coverage is earned media.' },
+      { term: 'Churn rate', prompt: 'A streaming service starts the month with 20,000 subscribers, and 1,000 cancel. What\u2019s the monthly churn rate?',
+        options: ['5%', '20%', '1%', '50%'],
+        why: 'Churn = customers lost ÷ customers at the start: 1,000 ÷ 20,000 = 5%.' },
+      { term: 'Customer lifetime value', prompt: 'A customer spends $50 a month and stays 2 years on average. It costs $300 to win each customer. What\u2019s true?',
+        options: ['Lifetime value ($1,200) is well above CAC ($300), which is healthy', 'CAC is higher than lifetime value', 'Lifetime value is $50', 'You can\u2019t compare them'],
+        why: 'Lifetime value is $50 × 24 months = $1,200. Earning $4 for every $1 spent to win a customer is healthy.' },
+      { term: 'Content calendar', prompt: 'Your team keeps scrambling for social posts at the last minute, and it missed a holiday sale entirely. What tool would help?',
+        options: ['A content calendar', 'A lower CPM', 'A retargeting list', 'A buyer persona'],
+        why: 'A content calendar plans posts ahead, so key dates like holiday sales don\u2019t sneak up on you.' },
+      { term: 'Influencer marketing', prompt: 'A skincare brand sends free products and pays a fee to a TikTok creator with 500,000 followers to review them. What strategy is this?',
+        options: ['Influencer marketing', 'SEO', 'Organic traffic', 'Retargeting'],
+        why: 'Partnering with creators to reach their audience is influencer marketing. Sponsored posts must be clearly disclosed.' },
+      { term: 'Segmentation', prompt: 'Instead of sending one email to all 50,000 subscribers, you send one version to first-time buyers and another to loyal repeat customers. What are you doing?',
+        options: ['Segmentation', 'Retargeting', 'Churn analysis', 'Paid media'],
+        why: 'Segmentation splits your audience into groups so each one gets a more relevant message.' },
+      { term: 'Bounce rate', prompt: '80% of visitors from a new ad leave the landing page within seconds without clicking anything. Which metric is high?',
+        options: ['Bounce rate', 'CTR', 'Reach', 'Customer lifetime value'],
+        why: 'Leaving after one page without interacting is a bounce. A high bounce rate often means the page doesn\u2019t match what the ad promised.' },
+      { term: 'Open rate', prompt: 'You sent a newsletter to 8,000 subscribers, and 2,000 opened it. What was the open rate?',
+        options: ['25%', '4%', '2,000', '75%'],
+        why: 'Open rate = opens ÷ emails delivered: 2,000 ÷ 8,000 = 25%.' },
+      { term: 'Value proposition', prompt: 'Which is the strongest headline for a meal-kit company\u2019s homepage?',
+        options: ['\u201cDinner in 20 minutes, no grocery trip needed.\u201d', '\u201cWe are a leading, innovative food company.\u201d', '\u201cFounded in 2019.\u201d', '\u201cClick here.\u201d'],
+        why: 'A strong value proposition names a specific benefit customers care about, like saving time on dinner.' },
+      { term: 'Market share', prompt: 'Total U.S. sales of sports drinks are $10B, and your brand sells $1.5B. What\u2019s your market share?',
+        options: ['15%', '1.5%', '85%', '6.7%'],
+        why: 'Market share = your sales ÷ total market: $1.5B ÷ $10B = 15%.' }
     ],
     accounting: [
       { term: 'Accrual accounting', prompt: 'A customer buys $2,000 of product on credit in March and pays in April. Under accrual accounting, when is the revenue recorded?',
@@ -743,7 +1453,76 @@ function overdueTickets(tickets, now) {
         why: 'Matching your books to the bank statement and explaining the differences is a reconciliation.' },
       { term: 'Month-end close', prompt: 'It\u2019s the 3rd of the month, and the controller wants everyone\u2019s reconciliations and accruals for last month done by Friday. What\u2019s happening?',
         options: ['Month-end close', 'An external audit', 'Depreciation', 'A general ledger reset'],
-        why: 'Finalizing and reviewing last month\u2019s books in the first days of the new month is the month-end close.' }
+        why: 'Finalizing and reviewing last month\u2019s books in the first days of the new month is the month-end close.' },
+      { term: 'General ledger', prompt: 'Your manager asks for every transaction posted to the Office Supplies account this year. Where do you find the complete list?',
+        options: ['The general ledger', 'A single invoice', 'The bank statement', 'A purchase order'],
+        why: 'The general ledger is the master record of every transaction, organized by account.' },
+      { term: 'Debit', prompt: 'Your company buys $800 of office supplies with cash. How is the Supplies account recorded?',
+        options: ['Debit Supplies, because the asset increased', 'Credit Supplies', 'Supplies isn\u2019t touched, only Cash', 'Debit Supplies and debit Cash'],
+        why: 'Supplies is an asset that went up, and assets increase with a debit. Cash goes down with a credit.' },
+      { term: 'Credit', prompt: 'A customer pays $1,000 in cash for a service you just finished. Which account is credited?',
+        options: ['Service revenue', 'Cash', 'Accounts payable', 'Supplies expense'],
+        why: 'Revenue increases with a credit. Cash, the asset that went up, is debited.' },
+      { term: 'Assets', prompt: 'Which of these is an asset?',
+        options: ['A delivery truck the company owns', 'A bank loan the company must repay', 'Wages owed to employees', 'Next month\u2019s rent bill'],
+        why: 'Assets are things the company owns that have value. The others are amounts the company owes, which are liabilities.' },
+      { term: 'Liabilities', prompt: 'A company has $500K in assets and $200K in equity. How much does it owe to others?',
+        options: ['$300K', '$700K', '$200K', '$500K'],
+        why: 'Assets = liabilities + equity, so liabilities = $500K − $200K = $300K.' },
+      { term: 'Chart of accounts', prompt: 'You need to record a new kind of expense and aren\u2019t sure which account number to use. Where do you look?',
+        options: ['The chart of accounts', 'The trial balance', 'The aging report', 'The fiscal year calendar'],
+        why: 'The chart of accounts lists every account and its number, so everyone records things the same way.' },
+      { term: 'Trial balance', prompt: 'Before preparing financial statements, you run a report showing total debits of $482,300 and total credits of $481,800. What does it tell you?',
+        options: ['There\u2019s a $500 error to find before moving on', 'The books are ready to close', 'Revenue was $500 higher than expected', 'Nothing, since small differences are normal'],
+        why: 'A trial balance should show equal debits and credits. A $500 difference means something was posted wrong.' },
+      { term: 'Accrued expense', prompt: 'Employees worked the last week of June, but payday isn\u2019t until July 5. How should June\u2019s books handle those wages?',
+        options: ['Record an accrued expense in June', 'Record nothing until July 5', 'Record the wages as revenue', 'Record the wages as a prepaid expense'],
+        why: 'The work happened in June, so the cost belongs in June, even though the cash goes out in July.' },
+      { term: 'Prepaid expense', prompt: 'On January 1, your company pays $12,000 for a full year of insurance. How much should be expensed in January?',
+        options: ['$1,000', '$12,000', '$0', '$6,000'],
+        why: 'This is a prepaid expense. Spread the $12,000 over 12 months: $1,000 a month.' },
+      { term: 'Deferred revenue', prompt: 'A software company collects $2,400 in January for a 12-month subscription. How much can it count as revenue in January?',
+        options: ['$200, with the rest held as deferred revenue', '$2,400', '$0', '$1,200'],
+        why: 'Revenue is earned as the service is delivered: $2,400 ÷ 12 = $200 a month. The remaining $2,200 is deferred revenue.' },
+      { term: 'Invoice', prompt: 'You finished a $3,000 project for a client with 30-day payment terms. What do you send them?',
+        options: ['An invoice', 'A purchase order', 'A trial balance', 'A reconciliation'],
+        why: 'An invoice tells the customer what they owe and when. Sending it creates an account receivable.' },
+      { term: 'Purchase order', prompt: 'Your company wants to order 500 laptops from a supplier at $900 each. What document formally places the order?',
+        options: ['A purchase order', 'An invoice', 'A journal entry', 'An aging report'],
+        why: 'The buyer issues a purchase order. The supplier sends an invoice later, after delivering.' },
+      { term: 'Three-way match', prompt: 'The purchase order says 100 chairs, the warehouse received 90, and the invoice bills for 100. What should accounts payable do?',
+        options: ['Hold payment and resolve the 10-chair gap', 'Pay the full invoice', 'Pay for 100 and ask for 10 more chairs', 'Delete the purchase order'],
+        why: 'The three-way match failed. You only pay for what was ordered and actually received.' },
+      { term: 'Cost of goods sold', prompt: 'A bike shop sells 40 bikes it bought for $300 each. It also paid $2,000 in rent. What is its cost of goods sold?',
+        options: ['$12,000', '$14,000', '$2,000', '$300'],
+        why: 'COGS is the direct cost of the items sold: 40 × $300 = $12,000. Rent is an operating expense, not COGS.' },
+      { term: 'Inventory', prompt: 'At year-end, a store counts $45,000 of unsold products on its shelves and in the back room. Where does that appear?',
+        options: ['On the balance sheet as an asset', 'On the income statement as an expense', 'As deferred revenue', 'As accounts payable'],
+        why: 'Unsold goods are inventory, which is an asset. They become cost of goods sold only when they\u2019re sold.' },
+      { term: 'Audit', prompt: 'Your company\u2019s lender requires an outside CPA firm to review the financial statements every year and give an opinion. What is this?',
+        options: ['An audit', 'A reconciliation', 'Month-end close', 'A three-way match'],
+        why: 'An audit is an independent check that the financial statements are fairly presented.' },
+      { term: 'GAAP', prompt: 'To hit a target, a manager wants to record a big sale this year even though the product won\u2019t ship until next year. Why can\u2019t the accountant do that?',
+        options: ['GAAP requires revenue to be recorded when it\u2019s earned', 'The trial balance won\u2019t allow it', 'The chart of accounts is full', 'Only auditors can record revenue'],
+        why: 'Under GAAP, revenue is recorded when it\u2019s earned, generally when the product is delivered, not when it\u2019s convenient.' },
+      { term: 'Internal controls', prompt: 'The same employee creates new vendors, approves invoices, and sends payments. Why does the controller want to split those jobs up?',
+        options: ['It\u2019s a weak internal control that makes fraud easier', 'It\u2019s too slow', 'It breaks the chart of accounts', 'It raises cost of goods sold'],
+        why: 'Separating duties is a key internal control. One person doing everything could pay a fake vendor without anyone noticing.' },
+      { term: 'Petty cash', prompt: 'The office needs $15 of stamps today, and nobody wants to file a full purchase order. What\u2019s the usual way to pay?',
+        options: ['Petty cash, with a receipt', 'A purchase order', 'A wire transfer', 'Deferred revenue'],
+        why: 'Petty cash covers small, everyday purchases. Keeping the receipt lets you reconcile the fund later.' },
+      { term: 'Payroll', prompt: 'An employee earns $2,000 per paycheck, but her bank deposit is $1,550. What explains the difference?',
+        options: ['Payroll withheld taxes and deductions', 'The bank charged a fee', 'It\u2019s deferred revenue', 'It\u2019s an accrued expense'],
+        why: 'Payroll subtracts taxes, retirement contributions, and benefit costs before paying the net amount.' },
+      { term: 'Write-off', prompt: 'A customer who owed $4,000 went out of business, and there\u2019s no chance you\u2019ll be paid. What should you do?',
+        options: ['Write off the $4,000 receivable', 'Keep it in accounts receivable forever', 'Record it as revenue again', 'Move it to accounts payable'],
+        why: 'When a receivable can\u2019t be collected, it\u2019s written off so the books don\u2019t overstate what you\u2019ll receive.' },
+      { term: 'Aging report', prompt: 'Your manager wants to know which customers are more than 90 days late on paying. Which report do you pull?',
+        options: ['The accounts receivable aging report', 'The trial balance', 'The chart of accounts', 'The payroll register'],
+        why: 'An aging report groups unpaid invoices by how old they are, so collections can focus on the oldest.' },
+      { term: 'Fiscal year', prompt: 'A retailer\u2019s books run from February 1 to January 31 so the whole holiday season lands in one reporting year. What is that 12-month period called?',
+        options: ['Its fiscal year', 'Its month-end close', 'Its aging period', 'Its audit cycle'],
+        why: 'A fiscal year is the company\u2019s own 12-month accounting year, which doesn\u2019t have to be January to December.' }
     ],
     consulting: [
       { term: 'Scope creep', prompt: 'Halfway through a 6-week project, the client asks you to \u201calso take a quick look\u201d at their European market, which isn\u2019t in the contract. What is this?',
@@ -766,7 +1545,76 @@ function overdueTickets(tickets, now) {
         why: 'Anyone affected by the outcome is a stakeholder, and she should be consulted early.' },
       { term: 'Deliverable', prompt: 'The contract lists a pricing model, a market-sizing report, and a final presentation. What are these?',
         options: ['Deliverables', 'Stakeholders', 'Hypotheses', 'Engagements'],
-        why: 'Deliverables are the specific outputs you promised the client.' }
+        why: 'Deliverables are the specific outputs you promised the client.' },
+      { term: 'Engagement', prompt: 'Your firm signs a 10-week project with a retail client, from kickoff through the final presentation. What do consultants call the whole project?',
+        options: ['An engagement', 'A workstream', 'A stakeholder', 'A quick win'],
+        why: 'An engagement is one full client project, from kickoff to final delivery.' },
+      { term: 'Issue tree', prompt: 'Your manager writes \u201cHow can we grow profits?\u201d at the top of a whiteboard, splits it into \u201craise revenue\u201d and \u201ccut costs,\u201d then splits each of those further. What is she building?',
+        options: ['An issue tree', 'A SWOT analysis', 'A statement of work', 'A steering committee'],
+        why: 'An issue tree breaks a problem into branches so the team can divide it up and analyze each piece.' },
+      { term: 'Statement of work', prompt: 'A client says, \u201cI thought you were also redesigning our website.\u201d Where do you check what was actually agreed?',
+        options: ['The statement of work', 'The issue tree', 'The kickoff meeting notes', 'The SWOT analysis'],
+        why: 'The statement of work defines exactly what\u2019s in scope. It\u2019s your best defense against scope creep.' },
+      { term: 'Kickoff meeting', prompt: 'It\u2019s day one of a new project. You\u2019re meeting the client team to confirm goals, introduce everyone, and walk through the timeline. What meeting is this?',
+        options: ['The kickoff meeting', 'The steering committee', 'The final readout', 'An expert interview'],
+        why: 'The kickoff meeting gets everyone aligned before the work begins.' },
+      { term: 'Workstream', prompt: 'A project is split into three parts — pricing, supply chain, and customer research — each with its own lead. What is each part called?',
+        options: ['A workstream', 'A deliverable', 'A stakeholder', 'An engagement'],
+        why: 'Large projects are divided into workstreams so small teams can own and move each part forward.' },
+      { term: 'Benchmarking', prompt: 'The client takes 5 days to deliver orders. You gather data showing its top three competitors average 2 days. What analysis did you do?',
+        options: ['Benchmarking', 'Market sizing', 'Change management', 'A SWOT analysis'],
+        why: 'Benchmarking compares the client against its peers to show where it lags or leads.' },
+      { term: 'Market sizing', prompt: 'A client asks how many pizzas are sold in the U.S. each year, and there\u2019s no report available. What do you do?',
+        options: ['Build an estimate from population and eating habits', 'Tell them it can\u2019t be known', 'Guess a round number', 'Email pizza shops and wait'],
+        why: 'Market sizing estimates a number step by step, like people × pizzas per person per year.' },
+      { term: '80/20 rule', prompt: 'You find that 20 of a client\u2019s 100 products bring in most of its profit. What should the client focus on first?',
+        options: ['Those top 20 products', 'All 100 products equally', 'The 80 weakest products', 'Adding more products'],
+        why: 'The 80/20 rule says a small share of inputs drives most of the results, so focus effort there.' },
+      { term: 'Pyramid principle', prompt: 'You send a partner a six-paragraph update that walks through your analysis and ends with the recommendation. She says to flip it. What is she asking for?',
+        options: ['Lead with the answer, then the reasons', 'Add more data', 'Use more bullet points', 'Send it straight to the client'],
+        why: 'The pyramid principle puts the answer first, then the reasons, so busy readers get the point immediately.' },
+      { term: 'SWOT analysis', prompt: 'In a planning session, the team lists the client\u2019s loyal customers, its outdated website, a growing overseas market, and a new low-price competitor. What framework is this?',
+        options: ['A SWOT analysis', 'An issue tree', 'Market sizing', 'Benchmarking'],
+        why: 'Loyal customers (strength), an outdated site (weakness), an overseas market (opportunity), and a new competitor (threat) fill the four SWOT boxes.' },
+      { term: 'Steering committee', prompt: 'Every month, the client\u2019s CEO, CFO, and COO meet with your partner to review progress and approve major decisions. What is this group?',
+        options: ['The steering committee', 'A workstream', 'The kickoff team', 'The interview panel'],
+        why: 'A steering committee is the senior group that guides the project and signs off on key decisions.' },
+      { term: 'Change management', prompt: 'A client installed a new sales system, but six months later most reps still track deals in their old spreadsheets. What was underinvested?',
+        options: ['Change management', 'Market sizing', 'Benchmarking', 'The statement of work'],
+        why: 'A new system only works if people use it. Change management covers the training, communication, and support that make it stick.' },
+      { term: 'Billable hours', prompt: 'You spent 3 hours on client research, 1 hour at an internal training, and 2 hours building the client\u2019s model. How many hours can you bill?',
+        options: ['5', '6', '3', '1'],
+        why: 'Only client work counts: 3 hours of research + 2 hours on the model = 5 billable hours.' },
+      { term: 'So what', prompt: 'Your slide says, \u201cCustomer complaints rose 30% last quarter.\u201d Your manager writes \u201cSo what?\u201d in the margin. What should you add?',
+        options: ['What it means and what the client should do about it', 'More decimal places', 'A second chart of the same data', 'A different font'],
+        why: 'Every finding needs a \u201cso what\u201d: the implication and the action it points to.' },
+      { term: 'Implementation roadmap', prompt: 'The client agrees with your recommendation to open 10 new stores but asks, \u201cWhat do we do first, and by when?\u201d What do you deliver next?',
+        options: ['An implementation roadmap', 'A new SWOT analysis', 'More benchmarking', 'An issue tree'],
+        why: 'An implementation roadmap turns a recommendation into ordered steps with owners and dates.' },
+      { term: 'Pain point', prompt: 'In customer interviews, 7 out of 10 people complain that checkout takes too long. What have you found?',
+        options: ['A key pain point', 'A quick win', 'A steering committee', 'A deliverable'],
+        why: 'A pain point is a real, repeated frustration, and it\u2019s often where the biggest opportunity is.' },
+      { term: 'Quick win', prompt: 'In week one, you spot a broken coupon button in the client\u2019s online checkout that\u2019s costing sales. It takes a day to fix. What is this?',
+        options: ['A quick win', 'Scope creep', 'Change management', 'An implementation roadmap'],
+        why: 'Quick wins are fast, cheap fixes that show value early and build trust for the harder work.' },
+      { term: 'Best practice', prompt: 'You recommend the client adopt the same inventory approach used by the top three retailers in its industry. What are you recommending?',
+        options: ['A best practice', 'A pain point', 'A hypothesis', 'A SWOT analysis'],
+        why: 'Best practices are proven methods that leading organizations already use successfully.' },
+      { term: 'Synthesis', prompt: 'You\u2019ve done 20 interviews and built 40 charts. Your manager asks you to boil it all down to three key insights. What skill is she asking for?',
+        options: ['Synthesis', 'Market sizing', 'Benchmarking', 'Billable hours'],
+        why: 'Synthesis turns a pile of data into a few clear insights. It\u2019s one of the most valued consulting skills.' },
+      { term: 'Buy-in', prompt: 'Your recommendation is solid, but the client\u2019s head of operations wasn\u2019t consulted and is now blocking it. What did the team fail to get?',
+        options: ['Her buy-in', 'A quick win', 'A bigger market size', 'More billable hours'],
+        why: 'Without buy-in from key people, even a strong recommendation can stall. Involve them early.' },
+      { term: 'Value chain', prompt: 'To find where costs are too high, you map every step the client takes: buying materials, manufacturing, shipping, selling, and customer service. What are you mapping?',
+        options: ['The value chain', 'The issue tree', 'The steering committee', 'The statement of work'],
+        why: 'The value chain covers every activity that creates and delivers the product, which helps show where costs or value are lost.' },
+      { term: "Porter's Five Forces", prompt: 'A client wants to know whether the airline industry is an attractive one to enter. Which framework fits best?',
+        options: ['Porter\u2019s Five Forces', 'The 80/20 rule', 'The pyramid principle', 'A kickoff meeting'],
+        why: 'Porter\u2019s Five Forces assesses how competitive, and so how profitable, an industry is likely to be.' },
+      { term: 'Interview guide', prompt: 'Tomorrow you\u2019re interviewing five client managers about their biggest challenges. What should you prepare so each conversation covers the same topics?',
+        options: ['An interview guide', 'A statement of work', 'A SWOT analysis', 'An implementation roadmap'],
+        why: 'An interview guide keeps interviews consistent, so answers can be compared across people.' }
     ],
     hr: [
       { term: 'Exempt employee', prompt: 'A salaried marketing manager worked 50 hours last week. She\u2019s classified as exempt. How much overtime pay is she owed?',
@@ -789,7 +1637,76 @@ function overdueTickets(tickets, now) {
         why: 'An applicant tracking system collects applications and moves candidates through hiring stages.' },
       { term: 'Headcount', prompt: 'Finance tells HR, \u201cWe can add three positions next year.\u201d What are they approving?',
         options: ['More headcount', 'Better retention', 'An onboarding plan', 'Higher total compensation'],
-        why: 'Headcount is the number of people employed. Adding positions increases it.' }
+        why: 'Headcount is the number of people employed. Adding positions increases it.' },
+      { term: 'Performance review', prompt: 'It\u2019s December, and every manager is filling out ratings and written feedback on each person\u2019s work this year. What\u2019s happening?',
+        options: ['Performance reviews', 'Open enrollment', 'Onboarding', 'Exit interviews'],
+        why: 'A performance review is a formal, scheduled evaluation of someone\u2019s work.' },
+      { term: 'Offboarding', prompt: 'An employee\u2019s last day is Friday. What should HR make sure happens?',
+        options: ['Collect equipment, remove system access, and process final pay', 'Nothing, since IT will handle it later', 'Start her onboarding again', 'Add her to open enrollment'],
+        why: 'Offboarding closes out an employee\u2019s time cleanly and protects company systems.' },
+      { term: 'Turnover rate', prompt: 'A company averaged 200 employees this year, and 30 left. What\u2019s its annual turnover rate?',
+        options: ['15%', '30%', '6.7%', '85%'],
+        why: 'Turnover = people who left ÷ average headcount: 30 ÷ 200 = 15%.' },
+      { term: 'Job description', prompt: 'A hiring manager says, \u201cJust post something saying we need help in finance.\u201d What should HR write first?',
+        options: ['A clear job description', 'An exit interview', 'Form I-9', 'A benefits guide'],
+        why: 'A job description sets expectations for candidates and gives recruiters and interviewers something to evaluate against.' },
+      { term: 'Requisition', prompt: 'A manager wants to hire a new analyst. Before HR can post the job, what usually needs to be approved?',
+        options: ['A job requisition', 'An exit interview', 'A background check', 'Open enrollment'],
+        why: 'A requisition is the approved request to fill a role. It confirms there\u2019s budget and headcount for it.' },
+      { term: 'Background check', prompt: 'A candidate accepted a conditional offer for a job handling customer finances. What step usually comes next, with her written consent?',
+        options: ['A background check', 'An exit interview', 'Open enrollment', 'A performance review'],
+        why: 'Background checks are usually run after a conditional offer, and U.S. law requires the candidate\u2019s written consent first.' },
+      { term: 'Form I-9', prompt: 'A new hire starts Monday. Which form must be finished by her third day to verify she\u2019s authorized to work in the U.S.?',
+        options: ['Form I-9', 'Form W-4', 'A job requisition', 'A 401(k) enrollment form'],
+        why: 'The employee completes her section of the I-9 by day one, and the employer reviews her documents by day three.' },
+      { term: 'Form W-4', prompt: 'An employee says too much tax is being taken out of every paycheck. Which form should she update?',
+        options: ['Form W-4', 'Form I-9', 'Her job description', 'Her exit interview'],
+        why: 'The W-4 tells payroll how much federal income tax to withhold.' },
+      { term: 'FMLA', prompt: 'An eligible employee needs 10 weeks off to care for her father after surgery. Which law protects her job during that unpaid leave?',
+        options: ['FMLA', 'Open enrollment', 'Form W-4', 'Exempt status'],
+        why: 'FMLA gives eligible employees up to 12 weeks of unpaid, job-protected leave for family and medical reasons.' },
+      { term: 'PTO', prompt: 'An employee earns 1.5 paid days off per month. How many days will she earn in a full year?',
+        options: ['18', '12', '15', '24'],
+        why: '1.5 days × 12 months = 18 days of PTO.' },
+      { term: '401(k) match', prompt: 'Your company matches 100% of retirement contributions up to 4% of salary. An employee earning $50,000 contributes 4%. How much does the company add?',
+        options: ['$2,000', '$4,000', '$1,000', '$0'],
+        why: '4% of $50,000 is $2,000, and the company matches it dollar for dollar.' },
+      { term: 'Employee handbook', prompt: 'A new hire asks how many sick days she gets and what the dress code is. Where should HR point her?',
+        options: ['The employee handbook', 'Her job requisition', 'Her W-4', 'The ATS'],
+        why: 'The employee handbook collects company policies in one place.' },
+      { term: 'Non-exempt employee', prompt: 'An hourly warehouse associate who earns $20 an hour works 44 hours this week. What is she owed for the extra 4 hours?',
+        options: ['$30 an hour, since she\u2019s non-exempt', '$20 an hour', 'Nothing extra', 'A day of PTO instead'],
+        why: 'Non-exempt employees must get 1.5 times their regular rate for hours over 40: $20 × 1.5 = $30.' },
+      { term: 'Pay band', prompt: 'The analyst role pays $60K–$75K. A strong candidate asks for $90K. What\u2019s the HR problem?',
+        options: ['The request is well above the role\u2019s pay band', 'The requisition isn\u2019t approved', 'She isn\u2019t eligible for FMLA', 'The ATS will reject her'],
+        why: 'Pay bands keep pay fair and consistent. Going far outside one needs special approval or a different job level.' },
+      { term: 'Employee engagement', prompt: 'A survey shows employees feel their work doesn\u2019t matter and they\u2019re rarely recognized. Which HR measure is low?',
+        options: ['Employee engagement', 'Headcount', 'Pay band', 'Open enrollment'],
+        why: 'Engagement is about motivation and connection. Low engagement often shows up later as low retention.' },
+      { term: 'Exit interview', prompt: 'Three people from the same team resigned this quarter. How can HR find out why?',
+        options: ['Hold exit interviews', 'Run open enrollment', 'Update their W-4s', 'Increase headcount'],
+        why: 'Exit interviews uncover why people leave, like a problem with a manager, so HR can fix it.' },
+      { term: 'Structured interview', prompt: 'Two managers interviewing for the same role each ask whatever comes to mind, and their ratings can\u2019t be compared. What should HR introduce?',
+        options: ['Structured interviews', 'Longer interviews', 'More background checks', 'A new employee handbook'],
+        why: 'Structured interviews make comparisons fairer and reduce bias, because everyone gets the same questions and scoring.' },
+      { term: 'DEI', prompt: 'HR notices that every job posting goes to just one university, and nearly all new hires come from the same background. What kind of effort would address this?',
+        options: ['A DEI effort to widen recruiting', 'A payroll change', 'A new W-4 policy', 'Offboarding'],
+        why: 'Recruiting from a wider range of schools and communities brings in more diverse candidates and perspectives.' },
+      { term: 'Employer brand', prompt: 'Online reviews call the company \u201ca burnout factory,\u201d and strong candidates keep turning down offers. What does HR need to work on?',
+        options: ['Its employer brand', 'Its pay band paperwork', 'Its I-9 process', 'Its PTO accrual'],
+        why: 'Employer brand is your reputation as a workplace. A bad one makes hiring much harder.' },
+      { term: 'HRIS', prompt: 'HR tracks employee addresses in one spreadsheet, PTO in another, and benefits on paper. What system would bring it all together?',
+        options: ['An HRIS', 'An ATS', 'A requisition', 'An exit interview'],
+        why: 'An HRIS stores current employee data in one place. An ATS handles candidates before they\u2019re hired.' },
+      { term: 'Probationary period', prompt: 'A new hire\u2019s offer letter says her first 90 days include check-ins every two weeks to review her progress. What is this period called?',
+        options: ['A probationary period', 'Open enrollment', 'FMLA leave', 'Offboarding'],
+        why: 'A probationary period is an early review window for new hires.' },
+      { term: 'Succession planning', prompt: 'The company\u2019s CFO plans to retire in two years, and no one is ready to replace her. What should HR have been doing?',
+        options: ['Succession planning', 'Offboarding', 'Open enrollment', 'Background checks'],
+        why: 'Succession planning builds a pipeline of people ready to step into key roles.' },
+      { term: "Workers' compensation", prompt: 'A warehouse employee hurts her back lifting boxes at work and misses two weeks. What covers her medical bills and part of her lost pay?',
+        options: ['Workers\u2019 compensation', 'FMLA', 'Her 401(k) match', 'PTO'],
+        why: 'Workers\u2019 compensation insurance covers on-the-job injuries, including medical costs and lost wages.' }
     ]
   };
 
@@ -814,16 +1731,33 @@ function overdueTickets(tickets, now) {
     track: d && TRACKS[d.track] ? d.track : null,
     mastered: d && d.mastered && typeof d.mastered === 'object' ? d.mastered : {},
     quizBest: d && d.quizBest && typeof d.quizBest === 'object' ? d.quizBest : {},
-    tasks: d && d.tasks && typeof d.tasks === 'object' ? d.tasks : {}
+    tasks: d && d.tasks && typeof d.tasks === 'object' ? d.tasks : {},
+    interviews: d && d.interviews && typeof d.interviews === 'object' ? d.interviews : {},
+    pro: !!(d && d.pro),
+    proCode: d && typeof d.proCode === 'string' ? d.proCode : null,
+    openTracks: d && Array.isArray(d.openTracks) ? d.openTracks.filter(t => TRACKS[t]) : [],
+    email: d && typeof d.email === 'string' ? d.email : '',
+    avatarUrl: d && typeof d.avatarUrl === 'string' ? d.avatarUrl : '',
+    tosAcceptedAt: d && typeof d.tosAcceptedAt === 'string' ? d.tosAcceptedAt : null
   });
 
   /* ---------------- App state ---------------- */
-  let state = null;          // { name, track, mastered, quizBest, tasks }
+  // True only while a real Supabase session exists (Google or email/password).
+  // Signing out clears this, so getting back in always requires re-authenticating —
+  // leftover localStorage data alone is never enough to reach the dashboard.
+  let authed = false;
+  let state = null;          // { name, track, mastered, quizBest, tasks, interviews }
   let currentView = 'dashboard';
   {
     const local = loadLocal();
     if (local && TRACKS[local.track]) state = normalize(local);
   }
+  // Tracks kept open. Free: just the current one. Pro: any number.
+  const openTracks = () => {
+    if (!state.pro) state.openTracks = [state.track];
+    else if (!state.openTracks.includes(state.track)) state.openTracks.unshift(state.track);
+    return state.openTracks;
+  };
 
   const trackTerms = () => TERMS[state.track];
   const masteredList = () => {
@@ -876,10 +1810,35 @@ function overdueTickets(tickets, now) {
   let modalMode = null;
   let modalLocked = false;
   let draftTrack = null;
+  let upgradeWant = null;    // track id someone tried to add (paid)
+
+  /* ---------------- Pricing + checkout ---------------- */
+  const PRO_PRICE = 4.99;    // per month, USD
+  // Paste a Stripe Payment Link here (stripe.com → Payment Links) to take real card payments.
+  // Until then, the pay button stays off and only discount codes can unlock Pro.
+  const PAYMENT_LINK = '';
+  // Anyone can read this file in their browser, so treat codes as public.
+  const DISCOUNTS = { ADMIN26: { pct: 100, label: 'Admin access' } };
+  let checkoutCode = null;   // applied discount code
+  let pendingCheckout = false; // clicked "Get Pro" before signing up
+  const money = n => '$' + n.toFixed(2);
+  const checkoutTotal = () => {
+    const off = checkoutCode ? DISCOUNTS[checkoutCode].pct : 0;
+    return Math.round(PRO_PRICE * (100 - off)) / 100;
+  };
+
+  const HELP = [
+    ['How do assignments get graded?', 'Each assignment is checked in your browser against the same rules a manager would use: the right numbers, formulas instead of typed values, and complete answers. You get a grade and specific feedback right away, and you can resubmit as many times as you like.'],
+    ['I’m stuck on an assignment.', boss => `Click "Need a hint?" on the assignment for a nudge from ${boss.name}. Each click reveals a little more. "Start over" clears your work, but your best grade stays.`],
+    ['Where is my progress saved?', 'In this browser on this device. If you switch browsers, use a private window, or clear your browsing data, you’ll start fresh.'],
+    ['How do I change my track?', 'Open Settings from the menu under your initials. Switching tracks is free, and progress on each track is saved separately, so you can switch back anytime.'],
+    ['Can I have more than one track?', `The free plan includes one track at a time. FirstDay Pro (${money(PRO_PRICE)}/month) lets you keep every track open and jump between them from the menu under your initials.`],
+    ['How do I update my resume or cover letter?', 'Go to "Resume & cover letter." You can build one step by step, paste your text, or upload a PDF or Word file, then download the polished version.']
+  ];
 
   function openModal(mode) {
     modalMode = mode;
-    modalLocked = mode === 'track-first';
+    modalLocked = mode === 'track-first' || mode === 'terms';
     if (mode === 'track' || mode === 'track-first') draftTrack = state ? state.track : null;
     renderModal();
     modal.hidden = false;
@@ -901,16 +1860,137 @@ function overdueTickets(tickets, now) {
     const mode = modalMode;
 
     if (mode === 'signup' || mode === 'login') {
-      modalBody.innerHTML = `
+      const isSignup = mode === 'signup';
+      const googleBtn = `
+        <button type="button" class="btn btn-ghost btn-block google-btn" id="google-signin-btn">
+          <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.92c1.7-1.57 2.68-3.88 2.68-6.64z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.27c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.34C2.44 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.71a5.4 5.4 0 0 1 0-3.42V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.59-2.59C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.95l3.01 2.34C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+          <span>Continue with Google</span>
+        </button>
+        <div class="auth-divider"><span>or</span></div>`;
+      modalBody.innerHTML = isSignup ? `
         <p class="eyebrow">Get started</p>
         <h2 id="modal-title">Let's set up your first day.</h2>
-        <p class="page-sub">Your progress is saved in this browser.</p>
-        <form class="auth-form" data-form="local" novalidate>
-          <label class="field-label" for="f-name">First name</label>
-          <input class="input" id="f-name" name="name" maxlength="40" autocomplete="given-name" required>
+        <p class="page-sub">Your progress is saved in this browser. Only your name and email are used for login.</p>
+        ${googleBtn}
+        <form class="auth-form" data-form="register" novalidate>
+          <label class="field-label" for="r-username">Username</label>
+          <input class="input" id="r-username" name="username" maxlength="24" autocomplete="username" required>
+          <div class="field-row">
+            <div>
+              <label class="field-label" for="r-first">First name</label>
+              <input class="input" id="r-first" name="first" maxlength="40" autocomplete="given-name" required>
+            </div>
+            <div>
+              <label class="field-label" for="r-last">Last name</label>
+              <input class="input" id="r-last" name="last" maxlength="40" autocomplete="family-name" required>
+            </div>
+          </div>
+          <label class="field-label" for="r-email">Email</label>
+          <input class="input" id="r-email" type="email" name="email" autocomplete="email" required>
+          <label class="field-label" for="r-password">Password</label>
+          <input class="input" id="r-password" type="password" name="password" autocomplete="new-password" required minlength="8">
+          <label class="field-label" for="r-confirm">Confirm password</label>
+          <input class="input" id="r-confirm" type="password" name="confirm" autocomplete="new-password" required minlength="8">
           <p class="form-error" role="alert"></p>
-          <button class="btn btn-primary btn-block" type="submit"><span>Continue</span></button>
-        </form>`;
+          <button class="btn btn-primary btn-block" type="submit"><span>Create account</span></button>
+        </form>
+        <p class="form-switch">Already have an account? <button type="button" class="text-btn" data-action="switch-login">Log in</button></p>` : `
+        <p class="eyebrow">Welcome back</p>
+        <h2 id="modal-title">Log in to FirstDay.</h2>
+        <p class="page-sub">Pick up right where you left off.</p>
+        ${googleBtn}
+        <form class="auth-form" data-form="emailLogin" novalidate>
+          <label class="field-label" for="l-email">Email</label>
+          <input class="input" id="l-email" type="email" name="email" autocomplete="email" required>
+          <label class="field-label" for="l-password">Password</label>
+          <input class="input" id="l-password" type="password" name="password" autocomplete="current-password" required>
+          <p class="form-error" role="alert"></p>
+          <button class="btn btn-primary btn-block" type="submit"><span>Log in</span></button>
+        </form>
+        <p class="form-switch">New here? <button type="button" class="text-btn" data-action="switch-signup">Create an account</button></p>`;
+      return;
+    }
+
+    if (mode === 'terms') {
+      modalBody.innerHTML = `
+        <p class="eyebrow">One more thing</p>
+        <h2 id="modal-title">Terms of Service</h2>
+        <p class="page-sub">Read it — it's short — then accept to continue.</p>
+        <div class="terms-box" tabindex="0">
+          ${TERMS_CONTENT.map(([h, b]) => `<h4>${esc(h)}</h4><p>${esc(b)}</p>`).join('')}
+          <p class="terms-updated">Last updated ${esc(TERMS_UPDATED)}.</p>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="terms-check">
+          <span>I've read and agree to the Terms of Service.</span>
+        </label>
+        <div class="modal-foot">
+          <span></span>
+          <button class="btn btn-primary" data-action="accept-terms" id="terms-continue" disabled>Continue</button>
+        </div>`;
+      return;
+    }
+
+    if (mode === 'help') {
+      const boss = BOSSES[state.track];
+      modalBody.innerHTML = `
+        <p class="eyebrow">Help</p>
+        <h2 id="modal-title">How FirstDay works</h2>
+        <div class="help-list">
+          ${HELP.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(typeof a === 'function' ? a(boss) : a)}</p></details>`).join('')}
+        </div>
+        <div class="modal-foot">
+          <span></span>
+          <button class="btn btn-primary btn-small" data-action="close-modal">Got it</button>
+        </div>`;
+      return;
+    }
+
+    if (mode === 'upgrade') {
+      const want = TRACKS[upgradeWant];
+      modalBody.innerHTML = `
+        <p class="eyebrow">FirstDay Pro</p>
+        <h2 id="modal-title">${want ? `Add the ${esc(want.name)} track` : 'Add more tracks'}</h2>
+        <p class="page-sub">Your free plan includes one track at a time. You can switch it whenever you want. Pro lets you keep several tracks open side by side.</p>
+        <ul class="pro-perks">
+          <li>Every track's assignments, key terms, and quizzes</li>
+          <li>Switch between tracks from the menu without losing your place</li>
+          <li>Your ${esc(TRACKS[state.track].name)} progress stays exactly where it is</li>
+        </ul>
+        <div class="modal-foot">
+          <span class="hint">${money(PRO_PRICE)} / month</span>
+          <button class="btn btn-primary" data-action="checkout">Continue to checkout</button>
+        </div>`;
+      return;
+    }
+
+    if (mode === 'checkout') {
+      const total = checkoutTotal();
+      const disc = checkoutCode && DISCOUNTS[checkoutCode];
+      const canPay = total === 0 || PAYMENT_LINK;
+      modalBody.innerHTML = `
+        <p class="eyebrow">Checkout</p>
+        <h2 id="modal-title">Upgrade to FirstDay Pro</h2>
+        <p class="page-sub">Keep every track open at once and jump between them from the account menu.</p>
+        <div class="checkout-summary">
+          <div class="co-line"><span>FirstDay Pro, monthly</span><span>${money(PRO_PRICE)}</span></div>
+          ${disc ? `<div class="co-line is-discount"><span>${esc(checkoutCode)} (${disc.pct}% off)</span><span>&minus;${money(PRO_PRICE - total)}</span></div>` : ''}
+          <div class="co-line is-total"><span>Due today</span><span>${money(total)}</span></div>
+        </div>
+        <form data-form="code" novalidate>
+          <label class="field-label" for="co-code">Discount code</label>
+          ${disc ? `
+            <p class="code-applied">${esc(disc.label)}: code ${esc(checkoutCode)} applied. <button type="button" class="text-btn text-btn-muted" data-action="remove-code">Remove</button></p>` : `
+            <div class="code-row">
+              <input class="input" id="co-code" name="code" maxlength="24" autocomplete="off" spellcheck="false" placeholder="Enter code">
+              <button class="btn btn-ghost" type="submit"><span>Apply</span></button>
+            </div>`}
+          <p class="form-error" role="alert"></p>
+        </form>
+        <div class="modal-foot">
+          <span class="hint">${total === 0 ? 'No payment needed.' : PAYMENT_LINK ? 'You\u2019ll pay securely on Stripe.' : 'Card payments aren\u2019t live yet.'}</span>
+          <button class="btn btn-primary" data-action="checkout-pay" ${canPay ? '' : 'disabled'}>${total === 0 ? 'Activate Pro' : `Pay ${money(total)}`}</button>
+        </div>`;
       return;
     }
 
@@ -919,7 +1999,7 @@ function overdueTickets(tickets, now) {
       modalBody.innerHTML = `
         <p class="eyebrow">${first ? 'One last step' : 'Change track'}</p>
         <h2 id="modal-title">${first ? `Welcome, ${esc(state.name)}. Pick your track.` : 'Pick your track.'}</h2>
-        <p class="page-sub">Your key terms, tasks, and interviews are built around this. Progress on each track is saved separately.</p>
+        <p class="page-sub">Your key terms, tasks, and interviews are built around this. Progress on each track is saved separately.${first ? '' : ' Switching is free. <button type="button" class="text-btn" data-action="upgrade">Want more than one track at once?</button>'}</p>
         <div class="track-grid">
           ${Object.entries(TRACKS).map(([id, t]) => `
             <button type="button" class="track-opt ${draftTrack === id ? 'is-selected' : ''}" data-track="${id}" aria-pressed="${draftTrack === id}">
@@ -949,18 +2029,52 @@ function overdueTickets(tickets, now) {
   }
 
   /* ---------------- Forms ---------------- */
-  document.addEventListener('submit', e => {
+  document.addEventListener('submit', async e => {
     const form = e.target.closest('[data-form]');
     if (!form) return;
     e.preventDefault();
     clearFormError();
-    const name = (new FormData(form).get('name') || '').toString().trim();
+    const fd = new FormData(form);
+    const name = (fd.get('name') || '').toString().trim();
+    const btn = $('button[type="submit"]', form);
     try {
-      if (form.dataset.form === 'local') {
-        if (!name) throw uiErr('Add your first name.');
-        state = normalize({ name, track: null });
-        closeModal(true);
-        openModal('track-first');
+      if (form.dataset.form === 'register') {
+        const username = (fd.get('username') || '').toString().trim();
+        const first = (fd.get('first') || '').toString().trim();
+        const last = (fd.get('last') || '').toString().trim();
+        const email = (fd.get('email') || '').toString().trim();
+        const password = (fd.get('password') || '').toString();
+        const confirm = (fd.get('confirm') || '').toString();
+        if (!username) throw uiErr('Choose a username.');
+        if (!first || !last) throw uiErr('Add your first and last name.');
+        if (!/^\S+@\S+\.\S+$/.test(email)) throw uiErr('Enter a valid email.');
+        if (password.length < 8) throw uiErr('Password needs to be at least 8 characters.');
+        if (password !== confirm) throw uiErr('Passwords don\u2019t match.');
+        if (!window.FirstDayAuth) throw uiErr('Sign-in isn\u2019t set up on this copy of the site yet.');
+        setBusy(btn, true);
+        const res = await window.FirstDayAuth.signUp({ email, password, username, first, last });
+        setBusy(btn, false);
+        if (!res.ok) throw uiErr(res.message);
+        if (res.needsConfirmation) { showFormError('Check your email to confirm your account, then log in.'); return; }
+        // Success continues via the firstday:auth event fired by auth.js.
+      } else if (form.dataset.form === 'emailLogin') {
+        const email = (fd.get('email') || '').toString().trim();
+        const password = (fd.get('password') || '').toString();
+        if (!email || !password) throw uiErr('Enter your email and password.');
+        if (!window.FirstDayAuth) throw uiErr('Sign-in isn\u2019t set up on this copy of the site yet.');
+        setBusy(btn, true);
+        const res = await window.FirstDayAuth.signInWithPassword({ email, password });
+        setBusy(btn, false);
+        if (!res.ok) throw uiErr(res.message);
+        // Success continues via the firstday:auth event fired by auth.js.
+      } else if (form.dataset.form === 'code') {
+        const code = (fd.get('code') || '').toString().trim().toUpperCase();
+        if (!code) throw uiErr('Enter a discount code.');
+        if (!DISCOUNTS[code]) throw uiErr('That code isn\u2019t valid.');
+        checkoutCode = code;
+        renderModal();
+        const pay = $('[data-action="checkout-pay"]', modalBody);
+        if (pay) pay.focus();
       } else if (form.dataset.form === 'profile') {
         if (!name) throw uiErr('Your name can\u2019t be empty.');
         state.name = name.slice(0, 40);
@@ -969,17 +2083,83 @@ function overdueTickets(tickets, now) {
         toast('Name updated.');
       }
     } catch (err) {
+      setBusy(btn, false);
       showFormError(friendly(err));
     }
   });
 
+  /* ---------------- Sign-in (via auth.js / Supabase) ----------------
+     auth.js owns the Supabase client, the Google redirect, and the email/
+     password calls; it never touches app state directly. It just dispatches
+     these two events on window — for Google, email/password login, AND a
+     silent session restore on page load (which one it is doesn't matter
+     here; the checks below are the same either way). */
+  window.addEventListener('firstday:auth', e => {
+    const p = e.detail || {};
+    authed = true;
+    const oauthIntent = sessionStorage.getItem('firstday:oauth-pending') === '1';
+    sessionStorage.removeItem('firstday:oauth-pending');
+    const prev = state;
+    state = normalize(Object.assign({}, prev, {
+      name: p.name || (prev && prev.name),
+      email: p.email || (prev && prev.email),
+      avatarUrl: p.avatarUrl || (prev && prev.avatarUrl),
+      track: prev ? prev.track : null,
+      tosAcceptedAt: prev ? prev.tosAcceptedAt : null
+    }));
+    persist();
+    updateNavStart();
+    const modalWasOpen = !modal.hidden && (modalMode === 'signup' || modalMode === 'login');
+    if (!oauthIntent && !modalWasOpen) return; // silent session restore on load — don't interrupt the landing page
+    if (!state.tosAcceptedAt) { openModal('terms'); return; }
+    if (!state.track) { openModal('track-first'); return; }
+    closeModal(true);
+    openApp('dashboard');
+  });
+  window.addEventListener('firstday:signed-out', () => {
+    authed = false;
+    updateNavStart();
+  });
+
   /* ---------------- App navigation ---------------- */
+  const initials = name => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
+
   function refreshHeader() {
     if (!state || !state.track) return;
-    $('#app-name').textContent = state.name;
+    const ini = initials(state.name);
     $('#app-track').textContent = TRACKS[state.track].name;
+    $('#app-initials').textContent = ini;
+    $('#menu-initials').textContent = ini;
+    $('#menu-name').textContent = state.name;
+    $('#menu-track').textContent = `${TRACKS[state.track].name} track${state.pro ? ' \u00b7 Pro' : ''}`;
+    const list = openTracks();
+    $('#menu-tracks').innerHTML = state.pro && list.length > 1 ? `
+      <div class="menu-label">Your tracks</div>
+      ${list.map(id => `<button type="button" class="menu-item ${id === state.track ? 'is-current' : ''}" role="menuitem" data-action="switch-track" data-to="${id}">${esc(TRACKS[id].name)}</button>`).join('')}
+      <div class="menu-sep" role="separator"></div>` : '';
     updateNavStart();
   }
+
+  /* ---------------- Account menu (avatar dropdown) ---------------- */
+  const userMenu = () => $('#user-menu');
+  function toggleUserMenu(force) {
+    const menu = userMenu();
+    const open = typeof force === 'boolean' ? force : menu.hidden;
+    if (open === !menu.hidden) return;
+    menu.hidden = !open;
+    $('#avatar-btn').setAttribute('aria-expanded', open);
+    if (open) $('.menu-item', menu).focus();
+  }
+  document.addEventListener('keydown', e => {
+    const menu = userMenu();
+    if (!menu || menu.hidden) return;
+    const items = $$('.menu-item', menu);
+    const i = items.indexOf(document.activeElement);
+    if (e.key === 'Escape') { toggleUserMenu(false); $('#avatar-btn').focus(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === 'Tab') toggleUserMenu(false);
+  });
 
   function openApp(view) {
     landing.hidden = true;
@@ -991,11 +2171,14 @@ function overdueTickets(tickets, now) {
 
   function go(view) {
     if (view === 'task' && !findTask(currentTaskId)) view = 'job';
+    if (view === 'interview-q' && !findInterview(currentInterviewId)) view = 'interview';
     currentView = view;
-    const navView = view === 'task' ? 'job' : view;
+    const navView = view === 'task' ? 'job' : view === 'interview-q' ? 'interview' : view;
     $$('.side-item[data-view]').forEach(b => b.classList.toggle('is-active', b.dataset.view === navView));
     if (view === 'job') renderJobList();
     else if (view === 'task') renderTask();
+    else if (view === 'interview') renderInterviewList();
+    else if (view === 'interview-q') renderInterviewQuestion();
     else if (view === 'terms') renderTerms();
     else if (view === 'docs') renderDocs();
     else if (view === 'account') renderAccount();
@@ -1012,9 +2195,18 @@ function overdueTickets(tickets, now) {
   }
 
   function updateNavStart() {
-    const signedIn = Boolean(state && state.track);
+    const signedIn = Boolean(authed && state && state.track);
     $('#nav-start').textContent = signedIn ? 'Open FirstDay' : 'Get started';
     $$('[data-action="login"]').forEach(a => { a.textContent = signedIn ? 'My account' : 'Log in'; });
+  }
+
+  // Shared entry point for "Get started" / "Open FirstDay" — walks through
+  // whichever step is still missing: signed in -> terms accepted -> track picked.
+  function enterApp() {
+    if (!authed) { openModal('signup'); return; }
+    if (!state.tosAcceptedAt) { openModal('terms'); return; }
+    if (!state.track) { openModal('track-first'); return; }
+    openApp('dashboard');
   }
 
   /* ---------------- Dashboard ---------------- */
@@ -1025,6 +2217,7 @@ function overdueTickets(tickets, now) {
     const pct = Math.round((done / total) * 100);
     const best = bestQuiz();
     const js = jobStats();
+    const iv = interviewStats();
 
     main.innerHTML = `
       <div class="page-head">
@@ -1076,6 +2269,12 @@ function overdueTickets(tickets, now) {
           <p>Flashcards, a searchable glossary, and a quiz for the ${esc(track.name)} track.</p>
           <button class="btn btn-primary btn-small" data-view="terms">Open key terms</button>
         </div>
+        <div class="card module">
+          <span class="status status-open">Available</span>
+          <h3>Mock interviews</h3>
+          <p>Answer real interview questions for the ${esc(track.name)} track from ${esc(BOSSES[state.track].name)}, and get scored like a real interviewer would.</p>
+          <button class="btn btn-primary btn-small" data-view="interview">${iv.done ? 'Keep practicing' : 'Practice your first question'}</button>
+        </div>
         ${COMING_NEXT.map(m => `
           <div class="card module is-soon">
             <span class="status status-soon">Coming next</span>
@@ -1089,8 +2288,8 @@ function overdueTickets(tickets, now) {
   function renderAccount() {
     main.innerHTML = `
       <div class="page-head">
-        <p class="eyebrow">Settings</p>
-        <h1>Account</h1>
+        <p class="eyebrow">Account</p>
+        <h1>Settings</h1>
         <p class="page-sub">Your profile and progress are saved in this browser.</p>
       </div>
 
@@ -1107,10 +2306,46 @@ function overdueTickets(tickets, now) {
       </div>
 
       <div class="card settings">
-        <h3 class="settings-title">Track</h3>
-        <p class="page-sub">You’re on the <strong>${esc(TRACKS[state.track].name)}</strong> track. Progress on each track is saved separately.</p>
-        <button class="btn btn-ghost btn-small" data-action="change-track">Change track</button>
+        <h3 class="settings-title">Plan</h3>
+        <div class="track-row ${state.pro ? 'is-current' : ''}">
+          <div>
+            <strong>${state.pro ? 'FirstDay Pro' : 'Free'} <span class="plan-badge ${state.pro ? 'is-pro' : ''}">${state.pro ? (state.proCode ? `Code ${esc(state.proCode)}` : `${money(PRO_PRICE)}/mo`) : '$0'}</span></strong>
+            <span>${state.pro ? 'Every track can stay open at once.' : 'One track at a time. Switching is free.'}</span>
+          </div>
+          ${state.pro
+            ? '<button class="btn btn-ghost btn-small" data-action="downgrade">Switch to Free</button>'
+            : `<button class="btn btn-primary btn-small" data-action="checkout">Upgrade to Pro</button>`}
+        </div>
       </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">${state.pro ? 'Your tracks' : 'Track'}</h3>
+        <p class="page-sub">${state.pro ? 'Jump between your open tracks here or from the menu under your initials. Progress on each track is saved separately.' : 'Your free plan includes one track at a time. Switching is free, and progress on each track is saved separately.'}</p>
+        <div class="track-list">
+          ${openTracks().map(id => id === state.track ? `
+            <div class="track-row is-current">
+              <div><strong>${esc(TRACKS[id].name)}</strong><span>Your current track</span></div>
+              ${state.pro ? '' : '<button class="btn btn-ghost btn-small" data-action="change-track">Switch track</button>'}
+            </div>` : `
+            <div class="track-row">
+              <div><strong>${esc(TRACKS[id].name)}</strong><span>${esc(TRACKS[id].blurb)}</span></div>
+              <button class="btn btn-ghost btn-small" data-action="switch-track" data-to="${id}">Go to track</button>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      ${Object.keys(TRACKS).some(id => !openTracks().includes(id)) ? `
+      <div class="card settings">
+        <h3 class="settings-title">Add more tracks ${state.pro ? '' : '<span class="pro-tag">Pro</span>'}</h3>
+        <p class="page-sub">Keep several tracks open at once and move between them without switching.</p>
+        <div class="track-list">
+          ${Object.entries(TRACKS).filter(([id]) => !openTracks().includes(id)).map(([id, t]) => `
+            <div class="track-row">
+              <div><strong>${esc(t.name)}</strong><span>${esc(t.blurb)}</span></div>
+              <button class="btn btn-ghost btn-small" data-action="upgrade" data-want="${id}" aria-label="Add the ${esc(t.name)} track">Add track</button>
+            </div>`).join('')}
+        </div>
+      </div>` : ''}
 
       <div class="card settings">
         <h3 class="settings-title">Home page</h3>
@@ -1243,16 +2478,19 @@ function overdueTickets(tickets, now) {
     btn.textContent = on ? 'Mastered' : 'Mark mastered';
   }
 
+  // Each round draws a fresh random set, so retakes cover different terms
+  const QUIZ_LENGTH = { vocab: 15, context: 10 };
+
   function newQuiz(kind) {
     const pool = trackTerms();
     let qs;
     if (kind === 'context') {
-      qs = shuffle(CONTEXT[state.track] || []).map(c => ({
+      qs = shuffle(CONTEXT[state.track] || []).slice(0, QUIZ_LENGTH.context).map(c => ({
         prompt: c.prompt, answer: c.options[0], opts: shuffle(c.options), why: c.why, term: c.term
       }));
     } else {
       // Alternate directions so knowing one form isn't enough, and never show a giveaway definition
-      qs = shuffle(pool).map((card, k) => {
+      qs = shuffle(pool).slice(0, QUIZ_LENGTH.vocab).map((card, k) => {
         const others = shuffle(pool.filter(x => x.t !== card.t)).slice(0, 3);
         const clue = CLUES[card.t] || card.d;
         const full = `${card.t}: ${card.d}`;
@@ -2368,6 +3606,214 @@ function overdueTickets(tickets, now) {
     saveDrafts();
     renderTask();
     toast(`Filled ${filled} cell${filled === 1 ? '' : 's'} down from ${lastSheetCell}.`);
+  }
+
+  /* =========================================================
+     MOCK INTERVIEWS — track-specific questions, graded in the
+     browser against rubric checks. Same pattern as On the Job.
+     ========================================================= */
+  let currentInterviewId = null;
+  const interviewQuestions = () => INTERVIEWS[state.track] || [];
+  const findInterview = id => interviewQuestions().find(q => q.id === id);
+  const interviewRecord = id => (state.interviews && state.interviews[id]) || null;
+
+  function interviewStats() {
+    const qs = interviewQuestions();
+    const done = qs.filter(q => { const r = interviewRecord(q.id); return r && r.best >= PASS; });
+    const graded = qs.map(q => interviewRecord(q.id)).filter(Boolean);
+    const avg = graded.length ? Math.round(graded.reduce((a, r) => a + r.best, 0) / graded.length) : null;
+    return { total: qs.length, done: done.length, avg };
+  }
+
+  const interviewStatusFor = q => {
+    const r = interviewRecord(q.id);
+    if (r) return { text: `Best: ${letter(r.best)}`, cls: 'st-' + gradeTone(r.best) };
+    if (drafts[q.id] && drafts[q.id].answer) return { text: 'In progress', cls: 'st-progress' };
+    return { text: 'New', cls: 'st-new' };
+  };
+
+  function gradeInterview(q, answer) {
+    const items = q.checks.map(c => {
+      let ok = false;
+      try { ok = Boolean(c.test(answer)); } catch (e) { ok = false; }
+      return { label: c.label, ok, points: ok ? c.weight : 0, max: c.weight, tip: ok ? '' : tipText(c.tip, answer) };
+    });
+    return finalize(q, items);
+  }
+
+  function interviewReply(result) {
+    const miss = result.items.find(it => !it.ok);
+    const s = result.score;
+    if (s >= 90) return "That's a strong, specific answer — exactly the kind of detail I'd want to hear in a real interview." + (miss ? ' One small thing: ' + miss.tip : '');
+    if (s >= 80) return 'Good answer — just a bit more and this is interview-ready. ' + (miss ? miss.tip : '');
+    if (s >= PASS) return "That's a reasonable start, but I'd want more before I was convinced. " + (miss ? miss.tip : '');
+    return "Let's build this out more before you use it in a real interview. " + (miss ? miss.tip : '') + ' Grab a tip if you’re stuck.';
+  }
+
+  function renderInterviewList() {
+    const boss = BOSSES[state.track];
+    const qs = interviewQuestions();
+    const st = interviewStats();
+    main.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">${esc(TRACKS[state.track].name)} track</p>
+        <h1>Mock interviews</h1>
+        <p class="page-sub">Practice out loud, then write down your answer and submit it for feedback — same as a real interview, minus the stakes.</p>
+      </div>
+
+      <div class="msg msg-intro">
+        ${bossHeader(boss, 'Before you start')}
+        <p class="msg-body">I ask new hires questions like these before they join the team. Answer in your own words — I'm looking for specifics, not a perfect script.</p>
+      </div>
+
+      <div class="job-progress">
+        <span><strong>${st.done} of ${st.total}</strong> answered to a strong score</span>
+        ${st.avg != null ? `<span>Average grade: <strong>${letter(st.avg)}</strong></span>` : ''}
+        <div class="bar" aria-hidden="true"><span style="width:${Math.round(st.done / st.total * 100)}%"></span></div>
+      </div>
+
+      <div class="job-list">
+        ${qs.map(q => {
+          const s = interviewStatusFor(q);
+          const r = interviewRecord(q.id);
+          const chip = q.category === 'technical' ? 'tool-sort' : 'tool-writing';
+          const chipLabel = q.category === 'technical' ? 'Situational' : 'Behavioral';
+          return `
+            <button class="job-card" data-open-interview="${q.id}">
+              <span class="job-card-top">
+                <span class="tool-chip ${chip}">${chipLabel}</span>
+                <span class="job-status ${s.cls}">${s.text}</span>
+              </span>
+              <span class="job-card-title">${esc(q.tag)}</span>
+              <span class="job-card-sum">${esc(q.prompt)}</span>
+              <span class="job-card-foot">
+                <span>${esc(TRACKS[state.track].name)} interview</span>
+                <span class="job-card-cta">${r ? (r.best >= 90 ? 'Review' : 'Improve your answer') : (drafts[q.id] && drafts[q.id].answer) ? 'Continue' : 'Start'}</span>
+              </span>
+            </button>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function renderInterviewResult(boss, q, res, nextQ) {
+    const tone = gradeTone(res.score);
+    return `
+      <div class="result-card tone-${tone}" tabindex="-1" id="result-card">
+        <div class="result-top">
+          <span class="grade-big">${res.grade}</span>
+          <div>
+            <p class="result-score">${res.score}% &middot; ${res.score >= PASS ? 'Strong answer' : 'Keep refining'}</p>
+            <p class="hint">${res.score >= PASS ? 'Your best grade is saved. You can keep improving it.' : `You need ${PASS}% for a strong score. Your answer is saved — revise it and resubmit.`}</p>
+          </div>
+        </div>
+        <div class="msg msg-reply">
+          ${bossHeader(boss, 'Just now')}
+          <p class="msg-body">${esc(interviewReply(res))}</p>
+        </div>
+        <ul class="rubric">
+          ${res.items.map(it => `
+            <li class="${it.ok ? 'ok' : it.points > 0 ? 'part' : 'miss'}">
+              <span class="rb-mark" aria-hidden="true">${it.ok ? '&#10003;' : it.points > 0 ? '&frac12;' : '&#10007;'}</span>
+              <span class="rb-text">
+                <span class="rb-label">${esc(it.label)}</span>
+                ${!it.ok && it.tip ? `<span class="rb-tip">${esc(it.tip)}</span>` : ''}
+              </span>
+              <span class="rb-pts">${Math.round(it.points)}/${Math.round(it.max)}</span>
+            </li>`).join('')}
+        </ul>
+        <details class="example">
+          <summary class="deliver-title">See a strong sample answer</summary>
+          <p>${esc(q.sample)}</p>
+        </details>
+        ${res.score >= PASS && nextQ ? `<button class="btn btn-primary btn-small" data-open-interview="${nextQ.id}">Next question: ${esc(nextQ.tag)}</button>` : ''}
+        ${res.score >= PASS && !nextQ ? '<button class="btn btn-ghost btn-small" data-view="interview">Back to all interview questions</button>' : ''}
+      </div>`;
+  }
+
+  function renderInterviewQuestion() {
+    const q = findInterview(currentInterviewId);
+    if (!q) { go('interview'); return; }
+    const boss = BOSSES[state.track];
+    const d = getDraft(q.id);
+    d.answer = d.answer || '';
+    const rec = interviewRecord(q.id);
+    const shown = hintsShown[q.id] || 0;
+    const idx = interviewQuestions().indexOf(q);
+    const nextQ = interviewQuestions()[idx + 1];
+    const res = lastResults[q.id];
+    const chip = q.category === 'technical' ? 'tool-sort' : 'tool-writing';
+    const chipLabel = q.category === 'technical' ? 'Situational' : 'Behavioral';
+
+    main.innerHTML = `
+      <button class="back-link" data-view="interview">&larr; All interview questions</button>
+      <div class="page-head task-head">
+        <h1>${esc(q.tag)}</h1>
+        <p class="task-meta">
+          <span class="tool-chip ${chip}">${chipLabel}</span>
+          ${rec ? `<span>Best grade: <strong>${letter(rec.best)}</strong> (${rec.best}%) after ${rec.attempts} ${rec.attempts === 1 ? 'try' : 'tries'}</span>` : ''}
+        </p>
+      </div>
+
+      <div class="msg">
+        ${bossHeader(boss, 'Interview question')}
+        <p class="msg-body">${esc(q.prompt)}</p>
+      </div>
+
+      <section class="workspace" aria-label="Your answer">
+        <div class="tool-head"><span>Your answer</span><span class="hint">Saves as you type</span></div>
+        <div class="writing">
+          <div class="w-field">
+            <div class="w-label-row">
+              <label class="field-label" for="iv-answer">Answer like you're speaking to the interviewer</label>
+              <span class="w-count" id="iv-count"></span>
+            </div>
+            <textarea class="input w-input" id="iv-answer" rows="9" placeholder="Start with the situation, then what you did, then what happened.">${esc(d.answer)}</textarea>
+          </div>
+        </div>
+      </section>
+
+      <div class="hints">
+        ${q.hints.slice(0, shown).map((h, k) => `<p class="hint-line"><strong>Tip ${k + 1}.</strong> ${esc(h)}</p>`).join('')}
+        ${shown < q.hints.length ? `<button class="text-btn" data-action="interview-hint">${shown ? 'Show another tip' : 'Need a tip?'} (${shown} of ${q.hints.length})</button>` : ''}
+      </div>
+
+      <div class="submit-bar">
+        <button class="text-btn text-btn-muted" data-action="interview-reset">Start over</button>
+        <div class="btn-row">
+          <button class="btn btn-primary" data-action="submit-interview"><span>Submit answer</span></button>
+        </div>
+      </div>
+
+      <div id="result-slot">${res ? renderInterviewResult(boss, q, res, nextQ) : ''}</div>`;
+
+    wireInterview();
+  }
+
+  function wireInterview() {
+    const ta = $('#iv-answer');
+    if (!ta) return;
+    const d = getDraft(currentInterviewId);
+    const count = () => { $('#iv-count').textContent = `${words(ta.value)} words`; };
+    count();
+    ta.addEventListener('input', () => { d.answer = ta.value; saveDrafts(); count(); });
+  }
+
+  function openInterview(id) { currentInterviewId = id; go('interview-q'); }
+
+  async function submitInterview(btn) {
+    const q = findInterview(currentInterviewId);
+    const d = getDraft(q.id);
+    setBusy(btn, true);
+    const res = gradeInterview(q, d.answer || '');
+    setBusy(btn, false);
+    lastResults[q.id] = res;
+    state.interviews = state.interviews || {};
+    const prev = state.interviews[q.id] || { best: 0, attempts: 0 };
+    state.interviews[q.id] = { best: Math.max(prev.best, res.score), attempts: prev.attempts + 1, last: res.score };
+    persist();
+    renderInterviewQuestion();
+    const card = $('#result-card');
+    if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); card.focus({ preventScroll: true }); }
   }
 
   /* =========================================================
@@ -3924,6 +5370,11 @@ function overdueTickets(tickets, now) {
 
   document.addEventListener('change', e => {
     const el = e.target;
+    if (el.id === 'terms-check') {
+      const btn = $('#terms-continue');
+      if (btn) btn.disabled = !el.checked;
+      return;
+    }
     if (el.dataset && el.dataset.doc === 'cut') {
       docs.prefs.remove[el.dataset.id] = el.checked;
       saveDocs(); keepScroll(renderDocs);
@@ -3952,12 +5403,144 @@ function overdueTickets(tickets, now) {
     if (head && /\.(title|school|heading)$/.test(el.dataset.bind)) head.textContent = el.value || head.textContent;
   });
 
+  /* ---------------- Pro: plan + open tracks ---------------- */
+  function activatePro(code) {
+    state.pro = true;
+    state.proCode = code || null;
+    if (upgradeWant && !openTracks().includes(upgradeWant)) state.openTracks.push(upgradeWant);
+    openTracks();
+    persist();
+    closeModal(true);
+    checkoutCode = null;
+    const added = upgradeWant;
+    upgradeWant = null;
+    refreshHeader();
+    toast(added ? `Welcome to Pro. ${TRACKS[added].name} is added to your tracks.` : 'Welcome to FirstDay Pro. Add tracks from Settings.');
+    go(currentView);
+  }
+  function addTrack(id) {
+    if (!openTracks().includes(id)) state.openTracks.push(id);
+    persist();
+    refreshHeader();
+    toast(`${TRACKS[id].name} added. Switch to it anytime from the menu under your initials.`);
+    go(currentView);
+  }
+  function switchTrack(id) {
+    if (!TRACKS[id] || id === state.track) return;
+    state.track = id;
+    persist();
+    refreshHeader();
+    toast(`Switched to ${TRACKS[id].name}.`);
+    go(currentView === 'task' || currentView === 'interview-q' ? 'dashboard' : currentView);
+  }
+
   /* ---------------- Landing extras ---------------- */
-  function demoSubmit(btn) {
-    $('#demo-status').textContent = 'Graded';
-    $('#demo-grade').classList.add('show');
+  function demoRun(btn) {
+    if (!btn || btn.disabled) return;
     btn.disabled = true;
-    btn.textContent = 'Submitted';
+    btn.textContent = 'Running…';
+    const raw = {
+      A2: 'AAPL', B2: 120, C2: 228.5, D2: '=B2*C2', E2: '=VLOOKUP(A2,$G$2:$H$4,2,FALSE)',
+      A3: 'JPM',  B3: 85,  C3: 212.4, D3: '=B3*C3', E3: '=VLOOKUP(A3,$G$2:$H$4,2,FALSE)',
+      A4: 'XOM',  B4: 150, C4: 118.3, D4: '=B4*C4', E4: '=VLOOKUP(A4,$G$2:$H$4,2,FALSE)',
+      D5: '=SUM(D2:D4)',
+      G2: 'AAPL', H2: 'Technology', G3: 'JPM', H3: 'Financials', G4: 'XOM', H4: 'Energy'
+    };
+    const get = computeSheet(raw);
+    const order = ['D2', 'E2', 'D3', 'E3', 'D4', 'E4', 'D5'];
+    const fref = $('#demo-fbar-ref'), finput = $('#demo-fbar-input');
+    order.forEach((ref, i) => {
+      setTimeout(() => {
+        const el = document.getElementById('demo-' + ref);
+        if (el) {
+          el.textContent = ref[0] === 'D' ? fmtCell(get(ref), 'money') : String(get(ref));
+          el.classList.remove('cell-fill');
+          void el.offsetWidth;
+          el.classList.add('cell-fill');
+        }
+        if (fref) fref.textContent = ref;
+        if (finput) finput.value = raw[ref];
+      }, i * 260);
+    });
+    setTimeout(() => {
+      const hint = $('#demo-hint');
+      if (hint) hint.textContent = 'Submitted to Priya — graded instantly.';
+      const grade = $('#demo-grade');
+      if (grade) grade.classList.add('show');
+      btn.textContent = 'Submitted';
+    }, order.length * 260 + 350);
+  }
+
+  let previewTrack = 'it';
+  function renderPreview() {
+    const tabs = $('#preview-tabs');
+    const panel = $('#preview-panel');
+    if (!tabs || !panel) return;
+    tabs.innerHTML = Object.entries(TRACKS).map(([id, t]) => `
+      <button type="button" class="preview-tab ${id === previewTrack ? 'is-on' : ''}" data-preview-track="${id}" role="tab" aria-selected="${id === previewTrack}">${esc(t.name)}</button>`).join('');
+    const t = TRACKS[previewTrack];
+    const term = TERMS[previewTrack][0];
+    const task = JOBS[previewTrack][0];
+    const boss = BOSSES[previewTrack];
+    panel.innerHTML = `
+      <p class="preview-track-name">${esc(t.name)} &middot; ${esc(t.blurb)}</p>
+      <div class="preview-term">
+        <span class="preview-label">A term you'd be expected to know</span>
+        <p class="preview-term-t">${esc(term.t)}</p>
+        <p class="preview-term-d">${esc(term.d)}</p>
+      </div>
+      <div class="preview-task">
+        <span class="preview-label">Your first assignment, from ${esc(boss.name)} (${esc(boss.role)})</span>
+        <p class="preview-task-t">${esc(task.title)}</p>
+        <p class="preview-task-d">${esc(task.summary)}</p>
+      </div>`;
+  }
+
+  function renderLandingFaq() {
+    const el = $('#faq-list');
+    if (!el) return;
+    el.innerHTML = LANDING_FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
+  }
+
+  function initReveal() {
+    const els = $$('.reveal');
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(el => el.classList.add('is-in'));
+      return;
+    }
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  }
+
+  function initScrollFx() {
+    const stage = $('.mascot-stage');
+    const bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let ticking = false;
+    function update() {
+      ticking = false;
+      nav.classList.toggle('is-scrolled', window.scrollY > 8);
+      if (landing.hidden) { bar.style.width = '0%'; return; }
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      bar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%';
+      if (stage && !reduceMotion) {
+        const rect = stage.getBoundingClientRect();
+        const offset = Math.max(-1, Math.min(1, (rect.top - window.innerHeight / 2) / window.innerHeight));
+        stage.style.transform = `translateY(${offset * -26}px)`;
+      }
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    update();
   }
 
   function toggleNav(force) {
@@ -3968,7 +5551,9 @@ function overdueTickets(tickets, now) {
 
   /* ---------------- Click handling ---------------- */
   document.addEventListener('click', async e => {
-    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-open-task], [data-answer], [data-sort]');
+    // Close the account menu on any click outside it, or after picking an item
+    if (!e.target.closest('.user-menu') || e.target.closest('.menu-item')) toggleUserMenu(false);
+    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-preview-track], [data-open-task], [data-open-interview], [data-answer], [data-sort]');
     if (!el) {
       if (e.target.closest('.nav-links a')) toggleNav(false);
       return;
@@ -3982,8 +5567,10 @@ function overdueTickets(tickets, now) {
       if (again) again.focus();
       return;
     }
+    if (el.dataset.previewTrack) { previewTrack = el.dataset.previewTrack; renderPreview(); return; }
     if (el.dataset.view) { go(el.dataset.view); return; }
     if (el.dataset.openTask) { openTask(el.dataset.openTask); return; }
+    if (el.dataset.openInterview) { openInterview(el.dataset.openInterview); return; }
     if (el.dataset.answer || el.dataset.sort) {
       const d = getDraft(currentTaskId);
       if (el.dataset.answer) { d.answers = d.answers || {}; d.answers[el.dataset.answer] = el.dataset.value; }
@@ -4006,31 +5593,87 @@ function overdueTickets(tickets, now) {
     switch (el.dataset.action) {
       case 'start':
         toggleNav(false);
-        state && state.track ? openApp('dashboard') : openModal('signup');
+        enterApp();
         break;
       case 'login':
         toggleNav(false);
-        if (state && state.track) openApp(el.textContent.trim() === 'My account' ? 'account' : 'dashboard');
-        else openModal('login');
+        if (!authed) { openModal('login'); break; }
+        if (!state.tosAcceptedAt) { openModal('terms'); break; }
+        if (!state.track) { openModal('track-first'); break; }
+        openApp(el.textContent.trim() === 'My account' ? 'account' : 'dashboard');
         break;
+      case 'switch-login': openModal('login'); break;
+      case 'switch-signup': openModal('signup'); break;
+      case 'accept-terms': {
+        state.tosAcceptedAt = new Date().toISOString();
+        persist();
+        if (window.FirstDayAuth) window.FirstDayAuth.acceptTerms();
+        closeModal(true);
+        if (!state.track) { openModal('track-first'); break; }
+        openApp('dashboard');
+        if (pendingCheckout) { pendingCheckout = false; openModal('checkout'); }
+        break;
+      }
       case 'close-modal': closeModal(); break;
       case 'track-finish': {
         if (!draftTrack) return;
         const first = modalMode === 'track-first';
         state.track = draftTrack;
+        openTracks();
         persist();
         closeModal(true);
         if (first) toast(`You're all set on the ${TRACKS[state.track].name} track.`);
         openApp(first ? 'dashboard' : currentView);
+        if (first && pendingCheckout) { pendingCheckout = false; openModal('checkout'); }
         break;
       }
       case 'change-track': openModal('track'); break;
-      case 'signout': closeModal(true); showLanding(); break;
+      case 'user-menu': toggleUserMenu(); break;
+      case 'help': openModal('help'); break;
+      case 'upgrade':
+        upgradeWant = el.dataset.want || null;
+        if (state.pro && upgradeWant) addTrack(upgradeWant);
+        else openModal('upgrade');
+        break;
+      case 'go-pro':
+        toggleNav(false);
+        if (!authed) { pendingCheckout = true; openModal('signup'); }
+        else if (!state.tosAcceptedAt) { pendingCheckout = true; openModal('terms'); }
+        else if (!state.track) { pendingCheckout = true; openModal('track-first'); }
+        else if (state.pro) { openApp('account'); toast('You already have FirstDay Pro.'); }
+        else { openApp('account'); openModal('checkout'); }
+        break;
+      case 'checkout': openModal('checkout'); break;
+      case 'remove-code': checkoutCode = null; renderModal(); break;
+      case 'checkout-pay':
+        if (checkoutTotal() === 0) activatePro(checkoutCode);
+        else if (PAYMENT_LINK) window.open(PAYMENT_LINK, '_blank', 'noopener');
+        break;
+      case 'switch-track': switchTrack(el.dataset.to); break;
+      case 'downgrade':
+        if (confirm('Switch back to the Free plan? You\u2019ll keep your progress on every track, but only your current track stays open.')) {
+          state.pro = false;
+          state.proCode = null;
+          openTracks();
+          persist();
+          refreshHeader();
+          toast('You\u2019re on the Free plan now.');
+          go(currentView);
+        }
+        break;
+      case 'signout':
+        authed = false;
+        if (window.FirstDayAuth) window.FirstDayAuth.signOut();
+        closeModal(true);
+        showLanding();
+        toast('Signed out.');
+        break;
       case 'reset-progress':
         if (confirm('Reset all progress on every track? This can’t be undone.')) {
           state.mastered = {};
           state.quizBest = {};
           state.tasks = {};
+          state.interviews = {};
           drafts = {};
           saveDrafts();
           Object.keys(lastResults).forEach(k => delete lastResults[k]);
@@ -4049,7 +5692,7 @@ function overdueTickets(tickets, now) {
       case 'quiz-pick': quizPick(el.dataset.kind, +el.dataset.idx); break;
       case 'quiz-next': quizNext(el.dataset.kind); break;
       case 'quiz-restart': newQuiz(el.dataset.kind); renderTermsBody(); break;
-      case 'demo-submit': demoSubmit(el); break;
+      case 'demo-submit': demoRun(el); break;
       case 'hint': hintsShown[currentTaskId] = (hintsShown[currentTaskId] || 0) + 1; { const y = window.scrollY; renderTask(); window.scrollTo({ top: y, behavior: 'instant' }); } break;
       case 'run-tests': runTests(el); break;
       case 'submit-task': submitTask(el); break;
@@ -4069,6 +5712,15 @@ function overdueTickets(tickets, now) {
           renderTask();
         }
         break;
+      case 'interview-hint': hintsShown[currentInterviewId] = (hintsShown[currentInterviewId] || 0) + 1; { const y = window.scrollY; renderInterviewQuestion(); window.scrollTo({ top: y, behavior: 'instant' }); } break;
+      case 'submit-interview': submitInterview(el); break;
+      case 'interview-reset':
+        if (confirm('Start this question over? Your current answer will be cleared. Your best grade stays.')) {
+          clearDraft(currentInterviewId);
+          delete lastResults[currentInterviewId];
+          renderInterviewQuestion();
+        }
+        break;
       case 'nav-toggle': toggleNav(); break;
     }
   });
@@ -4076,5 +5728,10 @@ function overdueTickets(tickets, now) {
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
 
+  $$('[data-price]').forEach(el => { el.textContent = money(PRO_PRICE); });
+  renderPreview();
+  renderLandingFaq();
+  initReveal();
+  initScrollFx();
   updateNavStart();
 })();

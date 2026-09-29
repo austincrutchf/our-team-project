@@ -47,6 +47,7 @@
 <section class="hero" id="top" aria-label="Introduction">
   <div class="wrap hero-grid">
     <div>
+      <span class="hero-badge">Built for the 2026 Congressional App Challenge</span>
       <div class="eyebrow">For interns and new hires</div>
       <h1>Practice the job. Before you start it.</h1>
       <p class="hero-sub">Submit your resume and cover letter for feedback, run a mock interview, and study the key terms for your field. Then take on real tasks from your (simulated) boss — and get graded like it's the real job.</p>
@@ -58,48 +59,49 @@
     </div>
 
     <div class="mascot-stage" aria-hidden="true">
+      <div class="mascot-ring"></div>
       <div class="mascot-circle"></div>
       <svg class="mascot-hero" viewBox="0 0 126 320"><use href="#platypus"/></svg>
     </div>
   </div>
 </section>
 
-<section class="trust">
-  <div class="wrap trust-row">
-    <span class="trust-label">Used to prep for offers at</span>
-    <div class="trust-names">
-      <!-- Placeholder company names — swap in real logos/names once you have them -->
-      <span>Northline Capital</span>
-      <span>Arbor &amp; Vine</span>
-      <span>Meridian Group</span>
-      <span>Castor Partners</span>
+<section class="preview" id="preview">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Six fields. Pick one and look inside.</h2>
+      <p>This is real content pulled straight from the app — not a mockup. Tap a track.</p>
+    </div>
+    <div class="preview-body reveal">
+      <div class="preview-tabs" id="preview-tabs" role="tablist" aria-label="Choose a track to preview"></div>
+      <div class="preview-panel" id="preview-panel"></div>
     </div>
   </div>
 </section>
 
 <section class="sequence" id="how-it-works">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <h2>How FirstDay works</h2>
-      <p>One flow, built around the job you're actually trying to land.</p>
+      <p>Four steps. Built around the job you're actually trying to land, not generic advice.</p>
     </div>
     <div class="timeline">
-      <div class="tl-item">
+      <div class="tl-item reveal">
         <div class="tl-step">Step 1</div>
         <h3>Choose your track</h3>
         <p>Pick your field — IT, finance, marketing, and more — so everything after this is specific to you.</p>
       </div>
-      <div class="tl-item">
+      <div class="tl-item reveal">
         <div class="tl-step">Step 2</div>
         <h3>Build your materials</h3>
         <p>Submit your resume and cover letter and get direct, specific feedback before they ever reach a recruiter.</p>
       </div>
-      <div class="tl-item">
+      <div class="tl-item reveal">
         <div class="tl-step">Step 3</div>
         <h3>Practice the interview</h3>
         <p>Run a mock interview and study the key terms you're expected to already know on day one.</p>
       </div>
-      <div class="tl-item">
+      <div class="tl-item reveal">
         <div class="tl-step">Step 4</div>
         <h3>Take on the job</h3>
         <p>Get a real task from your boss, complete it in FirstDay, submit it, and get graded.</p>
@@ -110,65 +112,80 @@
 
 <section class="features" id="features">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <h2>What FirstDay covers</h2>
-      <p>Not generic advice — the actual work of the job you picked.</p>
+      <p>The parts of a job nobody hands you a manual for.</p>
     </div>
     <div class="feat-grid">
-      <div class="feat-lead">
+      <div class="feat-lead reveal">
         <div class="feat-lead-tag">On the Job</div>
         <h3>Real tasks, graded like the real thing</h3>
         <div class="task-demo">
           <div class="task-msg">
-            <div class="task-avatar">JR</div>
+            <div class="task-avatar">PS</div>
             <div>
-              <span class="task-msg-name">Jordan &middot; IT Manager</span>
-              <p>Can you set up an automation for our weekly report export? Should run every Monday at 9am.</p>
+              <span class="task-msg-name">Priya &middot; Finance Manager</span>
+              <p>Client meeting at 2 — I need the portfolio summary: market value for each holding, and the sector pulled from the lookup table. Formulas, not typed numbers.</p>
             </div>
           </div>
-          <div class="task-card">
-            <div>
-              <span class="task-card-title">Automate weekly report export</span>
-              <span class="task-status" id="demo-status">In progress</span>
+          <div class="sheet-demo-body">
+            <div class="tool-head"><span>Workbook</span><span class="hint">VLOOKUP pulls the sector from a reference table</span></div>
+            <div class="fbar">
+              <span class="fbar-ref" id="demo-fbar-ref"></span>
+              <span class="fbar-fx" aria-hidden="true">fx</span>
+              <input class="fbar-input" id="demo-fbar-input" readonly tabindex="-1" aria-hidden="true" value="">
             </div>
-            <div class="task-card-actions">
-              <span class="task-hint">Build it, then submit.</span>
-              <button class="btn btn-primary btn-small" type="button" data-action="demo-submit">Submit task</button>
+            <div class="sheet-wrap">
+              <table class="sheet" aria-label="Portfolio summary demo">
+                <colgroup><col style="width:26px"><col style="width:56px"><col style="width:56px"><col style="width:64px"><col style="width:98px"><col style="width:106px"></colgroup>
+                <thead><tr><th></th><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th><th scope="col">E</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">1</th><td class="lk hdr">Ticker</td><td class="lk hdr">Shares</td><td class="lk hdr">Price</td><td class="lk hdr">Market value</td><td class="lk hdr">Sector</td></tr>
+                  <tr><th scope="row">2</th><td class="lk">AAPL</td><td class="lk num">120</td><td class="lk num">$228.50</td><td class="lk num" id="demo-D2">&nbsp;</td><td class="lk" id="demo-E2">&nbsp;</td></tr>
+                  <tr><th scope="row">3</th><td class="lk">JPM</td><td class="lk num">85</td><td class="lk num">$212.40</td><td class="lk num" id="demo-D3">&nbsp;</td><td class="lk" id="demo-E3">&nbsp;</td></tr>
+                  <tr><th scope="row">4</th><td class="lk">XOM</td><td class="lk num">150</td><td class="lk num">$118.30</td><td class="lk num" id="demo-D4">&nbsp;</td><td class="lk" id="demo-E4">&nbsp;</td></tr>
+                  <tr><th scope="row">5</th><td class="lk b">Total</td><td class="lk"></td><td class="lk"></td><td class="lk num b" id="demo-D5">&nbsp;</td><td class="lk"></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="sheet-demo-foot">
+              <span class="task-hint" id="demo-hint">Click to watch the formulas fill in.</span>
+              <button class="btn btn-primary btn-small" type="button" data-action="demo-submit" id="demo-submit-btn">Run the formulas</button>
             </div>
           </div>
           <div class="task-grade" id="demo-grade">
-            <span class="grade-badge">B+</span>
-            <p>"Solid automation — next time, add error handling for when the export source is unavailable."</p>
+            <span class="grade-badge is-great">A</span>
+            <p>"Clean — the sectors pulled correctly and the total ties out. This is exactly what I needed for the meeting."</p>
           </div>
         </div>
         <p>Every track has its own set of tasks, built around what that job actually asks you to do.</p>
       </div>
       <div class="feat-list">
-        <div class="feat-row">
+        <div class="feat-row reveal">
           <span class="feat-num">01</span>
           <div>
             <h4>Resume &amp; cover letter review</h4>
-            <p>Submit both and get specific, line-by-line feedback.</p>
+            <p>Submit both and get specific, line-by-line feedback — not "looks good!"</p>
           </div>
         </div>
-        <div class="feat-row">
+        <div class="feat-row reveal">
           <span class="feat-num">02</span>
           <div>
             <h4>Mock interviews</h4>
-            <p>Practice out loud before it counts, for your specific track.</p>
+            <p>Answer real questions for your track, graded on specifics, with a strong sample answer to compare against.</p>
           </div>
         </div>
-        <div class="feat-row">
+        <div class="feat-row reveal">
           <span class="feat-num">03</span>
           <div>
             <h4>Key terms library</h4>
-            <p>Study the vocabulary your team will assume you already know.</p>
+            <p>Flashcards and a quiz for the vocabulary your team will assume you already know.</p>
           </div>
         </div>
-        <div class="feat-row">
+        <div class="feat-row reveal">
           <span class="feat-num">04</span>
           <div>
-            <h4>Chat with your boss</h4>
+            <h4>Chat with your boss <span class="status status-soon">Coming soon</span></h4>
             <p>Ask questions and get feedback from your simulated manager between tasks.</p>
           </div>
         </div>
@@ -177,26 +194,54 @@
   </div>
 </section>
 
-<section class="stats">
-  <div class="wrap stats-row">
-    <!-- Placeholder stats — replace with real numbers once you have them -->
-    <div>
-      <div class="stat-num">3,000+</div>
-      <div class="stat-label">tasks graded across every track</div>
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Pricing</h2>
+      <p>Start free with one track. Upgrade when you want more than one.</p>
     </div>
-    <div>
-      <div class="stat-num">92%</div>
-      <div class="stat-label">said they felt ready by their first real assignment</div>
-    </div>
-    <div>
-      <div class="stat-num">15 min</div>
-      <div class="stat-label">average time to complete your first task</div>
+    <div class="price-grid">
+      <div class="price-card reveal">
+        <h3>Free</h3>
+        <div class="price-amt"><span class="price-num">$0</span></div>
+        <p class="price-sub">Everything you need to prep for one job.</p>
+        <ul class="price-list">
+          <li>One track at a time (switch anytime)</li>
+          <li>On the Job assignments, graded instantly</li>
+          <li>Resume &amp; cover letter builder and review</li>
+          <li>Mock interviews and key terms</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#" data-action="start">Start free</a>
+      </div>
+      <div class="price-card is-featured reveal">
+        <span class="price-flag">Most flexible</span>
+        <h3>Pro</h3>
+        <div class="price-amt"><span class="price-num" data-price>$4.99</span><span class="price-per">/ month</span></div>
+        <p class="price-sub">For anyone deciding between fields, or prepping for more than one role.</p>
+        <ul class="price-list">
+          <li>Everything in Free</li>
+          <li>Keep every track open at once</li>
+          <li>Jump between tracks from the account menu</li>
+          <li>Progress on each track saved separately</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="#" data-action="go-pro">Get Pro</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="cta-band" id="get-started">
+<section class="faq" id="faq">
   <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Questions before you start</h2>
+      <p>The honest answers, not the marketing ones.</p>
+    </div>
+    <div class="help-list faq-list reveal" id="faq-list"></div>
+  </div>
+</section>
+
+<section class="cta-band" id="get-started">
+  <div class="wrap reveal">
     <h2>Show up already knowing the job.</h2>
     <div class="cta-band-row">
       <a class="btn btn-primary" href="#" data-action="start">Start free</a>
@@ -205,7 +250,7 @@
   </div>
 </section>
 
-<footer id="pricing">
+<footer>
   <div class="wrap foot-row">
     <span>&copy; 2026 FirstDay</span>
     <div class="foot-links">
@@ -230,8 +275,25 @@
       <div class="app-user">
         <span class="sync" id="sync-status" role="status" aria-live="polite"></span>
         <span class="track-pill" id="app-track"></span>
-        <span class="app-name" id="app-name"></span>
-        <button type="button" class="app-link" data-action="signout">Sign out</button>
+        <div class="user-menu">
+          <button type="button" class="avatar-btn" id="avatar-btn" data-action="user-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Account menu">
+            <span class="avatar" id="app-initials" aria-hidden="true"></span>
+          </button>
+          <div class="menu" id="user-menu" role="menu" hidden>
+            <div class="menu-who">
+              <span class="avatar avatar-lg" id="menu-initials" aria-hidden="true"></span>
+              <div>
+                <strong id="menu-name"></strong>
+                <span id="menu-track"></span>
+              </div>
+            </div>
+            <div id="menu-tracks"></div>
+            <button type="button" class="menu-item" role="menuitem" data-view="account">Settings</button>
+            <button type="button" class="menu-item" role="menuitem" data-action="help">Help</button>
+            <div class="menu-sep" role="separator"></div>
+            <button type="button" class="menu-item" role="menuitem" data-action="signout">Sign out</button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -242,11 +304,11 @@
       <button type="button" class="side-item" data-view="job">On the Job</button>
       <button type="button" class="side-item" data-view="terms">Key terms</button>
       <button type="button" class="side-item" data-view="docs">Resume &amp; cover letter</button>
+      <button type="button" class="side-item" data-view="interview">Mock interviews</button>
       <div class="side-label">Next build</div>
-      <span class="side-item is-locked">Mock interviews <em>Soon</em></span>
       <span class="side-item is-locked">Chat with your boss <em>Soon</em></span>
       <div class="side-label">You</div>
-      <button type="button" class="side-item" data-view="account">Account</button>
+      <button type="button" class="side-item" data-view="account">Settings</button>
     </aside>
     <main class="app-main" id="app-main"></main>
   </div>
@@ -262,6 +324,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="app.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>
