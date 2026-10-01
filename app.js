@@ -1738,7 +1738,7 @@ function overdueTickets(tickets, now) {
   /* ---------------- Saved progress (this browser) ---------------- */
   const LOCAL_KEY = 'firstday:v1';
   const loadLocal = () => { try { const r = localStorage.getItem(LOCAL_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } };
-  const saveLocal = d => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(d)); } catch (e) { /* ignore */ } };
+  const saveLocal = d => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(d)); return true; } catch (e) { return false; } };
 
   const normalize = d => ({
     name: d && typeof d.name === 'string' && d.name.trim() ? d.name.trim().slice(0, 40) : 'Intern',
@@ -1752,6 +1752,7 @@ function overdueTickets(tickets, now) {
     openTracks: d && Array.isArray(d.openTracks) ? d.openTracks.filter(t => TRACKS[t]) : [],
     email: d && typeof d.email === 'string' ? d.email : '',
     avatarUrl: d && typeof d.avatarUrl === 'string' ? d.avatarUrl : '',
+    profilePhoto: d && typeof d.profilePhoto === 'string' ? d.profilePhoto : '',
     tosAcceptedAt: d && typeof d.tosAcceptedAt === 'string' ? d.tosAcceptedAt : null
   });
 
@@ -1793,8 +1794,9 @@ function overdueTickets(tickets, now) {
   /* ---------------- Saving ---------------- */
   function persist() {
     if (!state) return;
-    saveLocal(state);
+    const saved = saveLocal(state);
     setSync();
+    return saved;
   }
   function setSync() {
     const el = $('#sync-status');
@@ -1932,6 +1934,8 @@ function overdueTickets(tickets, now) {
   function closeModal(force) {
     if (modalLocked && !force) return;
     modal.hidden = true;
+    modal.classList.remove('is-photo-editor');
+    if (modalMode === 'photo-editor') photoEditor = null;
     modalMode = null;
     modalLocked = false;
     if (loginLockoutTimer) clearInterval(loginLockoutTimer);
@@ -1942,6 +1946,12 @@ function overdueTickets(tickets, now) {
   function renderModal() {
     $('.modal-close', modal).hidden = modalLocked;
     const mode = modalMode;
+    modal.classList.toggle('is-photo-editor', mode === 'photo-editor');
+
+    if (mode === 'photo-editor') {
+      renderPhotoEditor();
+      return;
+    }
 
     if (mode === 'signup' || mode === 'login') {
       const isSignup = mode === 'signup';
@@ -2227,12 +2237,152 @@ function overdueTickets(tickets, now) {
   /* ---------------- App navigation ---------------- */
   const initials = name => name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
 
+  function updateAvatar(el, fallback) {
+    const photo = state.profilePhoto || state.avatarUrl;
+    el.textContent = '';
+    if (!photo) { el.textContent = fallback; return; }
+    const image = document.createElement('img');
+    image.src = photo;
+    image.alt = '';
+    el.append(image);
+  }
+
+  const PHOTO_FILTERS = {
+    original: { label: 'Original', css: 'none' },
+    warm: { label: 'Warm', css: 'sepia(0.3) saturate(1.2)' },
+    mono: { label: 'Mono', css: 'grayscale(1)' },
+    vivid: { label: 'Vivid', css: 'saturate(1.5) contrast(1.08)' }
+  };
+  const PHOTO_CROP_SIZE = 280;
+  let photoEditor = null;
+
+  function processProfilePhoto(file) {
+    return new Promise((resolve, reject) => {
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+        reject(new Error('Choose a JPEG, PNG, or WebP image.'));
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        reject(new Error('Choose an image smaller than 8 MB.'));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('The image could not be read.'));
+      reader.onload = () => {
+        const image = new Image();
+        image.onerror = () => reject(new Error('That image could not be opened.'));
+        image.onload = () => resolve(image);
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function photoCropBounds(size) {
+    const image = photoEditor.image;
+    const scale = Math.max(size / image.naturalWidth, size / image.naturalHeight) * photoEditor.zoom;
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    const factor = size / PHOTO_CROP_SIZE;
+    return {
+      x: (size - width) / 2 + photoEditor.offsetX * factor,
+      y: (size - height) / 2 + photoEditor.offsetY * factor,
+      width,
+      height
+    };
+  }
+
+  function limitPhotoOffset() {
+    const image = photoEditor.image;
+    const scale = Math.max(PHOTO_CROP_SIZE / image.naturalWidth, PHOTO_CROP_SIZE / image.naturalHeight) * photoEditor.zoom;
+    const maxX = Math.max(0, (image.naturalWidth * scale - PHOTO_CROP_SIZE) / 2);
+    const maxY = Math.max(0, (image.naturalHeight * scale - PHOTO_CROP_SIZE) / 2);
+    photoEditor.offsetX = Math.max(-maxX, Math.min(maxX, photoEditor.offsetX));
+    photoEditor.offsetY = Math.max(-maxY, Math.min(maxY, photoEditor.offsetY));
+    return photoCropBounds(PHOTO_CROP_SIZE);
+  }
+
+  function drawPhotoEditorPreview() {
+    const canvas = $('#photo-editor-canvas');
+    if (!canvas || !photoEditor) return;
+    const context = canvas.getContext('2d');
+    const bounds = limitPhotoOffset();
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.filter = PHOTO_FILTERS[photoEditor.filter].css;
+    context.drawImage(photoEditor.image, bounds.x, bounds.y, bounds.width, bounds.height);
+    context.filter = 'none';
+    const zoom = $('#photo-zoom-value');
+    if (zoom) zoom.textContent = `${photoEditor.zoom.toFixed(1)}×`;
+  }
+
+  function renderPhotoEditor() {
+    modalBody.innerHTML = `
+      <p class="eyebrow">Profile picture</p>
+      <h2 id="modal-title">Adjust your photo</h2>
+      <div class="photo-editor">
+        <div class="photo-editor-stage">
+          <canvas id="photo-editor-canvas" width="${PHOTO_CROP_SIZE}" height="${PHOTO_CROP_SIZE}" tabindex="0" aria-label="Photo crop preview. Drag to reposition, or use the arrow keys."></canvas>
+          <p class="hint">Drag to reframe. The circle shows how your avatar will appear.</p>
+        </div>
+        <div class="photo-editor-tools">
+          <div class="photo-editor-zoom">
+            <label class="field-label" for="photo-zoom">Zoom <output id="photo-zoom-value">1.0×</output></label>
+            <input id="photo-zoom" type="range" min="1" max="3" step="0.05" value="${photoEditor.zoom}" aria-label="Zoom photo">
+          </div>
+          <div class="photo-filter-group" role="group" aria-label="Photo filters">
+            <span class="field-label">Filter</span>
+            <div class="photo-filter-options">
+              ${Object.entries(PHOTO_FILTERS).map(([id, filter]) => `
+                <button class="photo-filter ${photoEditor.filter === id ? 'is-active' : ''}" type="button" data-action="photo-filter" data-filter="${id}" aria-pressed="${photoEditor.filter === id}">${filter.label}</button>`).join('')}
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-small photo-center" type="button" data-action="photo-center">Center image</button>
+        </div>
+      </div>
+      <div class="modal-foot photo-editor-foot">
+        <button class="btn btn-ghost" type="button" data-action="cancel-photo-edit">Cancel</button>
+        <button class="btn btn-primary" type="button" data-action="save-profile-photo">Save picture</button>
+      </div>`;
+
+    const canvas = $('#photo-editor-canvas');
+    let drag = null;
+    canvas.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      canvas.setPointerCapture(event.pointerId);
+      drag = { x: event.clientX, y: event.clientY };
+      canvas.classList.add('is-dragging');
+    });
+    canvas.addEventListener('pointermove', event => {
+      if (!drag) return;
+      const rect = canvas.getBoundingClientRect();
+      const factor = PHOTO_CROP_SIZE / rect.width;
+      photoEditor.offsetX += (event.clientX - drag.x) * factor;
+      photoEditor.offsetY += (event.clientY - drag.y) * factor;
+      drag = { x: event.clientX, y: event.clientY };
+      drawPhotoEditorPreview();
+    });
+    const stopDragging = () => { drag = null; canvas.classList.remove('is-dragging'); };
+    canvas.addEventListener('pointerup', stopDragging);
+    canvas.addEventListener('pointercancel', stopDragging);
+    canvas.addEventListener('keydown', event => {
+      const step = event.shiftKey ? 20 : 6;
+      if (event.key === 'ArrowLeft') photoEditor.offsetX -= step;
+      else if (event.key === 'ArrowRight') photoEditor.offsetX += step;
+      else if (event.key === 'ArrowUp') photoEditor.offsetY -= step;
+      else if (event.key === 'ArrowDown') photoEditor.offsetY += step;
+      else return;
+      event.preventDefault();
+      drawPhotoEditorPreview();
+    });
+    drawPhotoEditorPreview();
+  }
+
   function refreshHeader() {
     if (!state || !state.track) return;
     const ini = initials(state.name);
     $('#app-track').textContent = TRACKS[state.track].name;
-    $('#app-initials').textContent = ini;
-    $('#menu-initials').textContent = ini;
+    updateAvatar($('#app-initials'), ini);
+    updateAvatar($('#menu-initials'), ini);
     $('#menu-name').textContent = state.name;
     $('#menu-track').textContent = `${TRACKS[state.track].name} track${state.pro ? ' \u00b7 Pro' : ''}`;
     const list = openTracks();
@@ -2398,6 +2548,18 @@ function overdueTickets(tickets, now) {
 
       <div class="card settings">
         <h3 class="settings-title">Profile</h3>
+        <div class="profile-photo-row">
+          <span class="avatar profile-avatar" id="profile-avatar" aria-hidden="true"></span>
+          <div class="profile-photo-controls">
+            <strong>Profile picture</strong>
+            <div class="profile-photo-actions">
+              <label class="btn btn-ghost btn-small" for="profile-photo">Upload photo</label>
+              <input id="profile-photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp">
+              ${state.profilePhoto ? '<button class="btn btn-ghost btn-small" type="button" data-action="remove-profile-photo">Remove photo</button>' : ''}
+            </div>
+            <p class="hint">JPEG, PNG, or WebP. The image is saved on this device.</p>
+          </div>
+        </div>
         <form data-form="profile" novalidate>
           <label class="field-label" for="p-name">First name</label>
           <div class="inline-row">
@@ -2472,6 +2634,7 @@ function overdueTickets(tickets, now) {
           <button class="btn btn-danger-ghost btn-small" data-action="reset-progress">Reset progress</button>
         </div>
       </div>`;
+    updateAvatar($('#profile-avatar'), initials(state.name));
   }
 
   /* ---------------- Key terms ---------------- */
@@ -5480,8 +5643,26 @@ function overdueTickets(tickets, now) {
     }
   });
 
-  document.addEventListener('change', e => {
+  document.addEventListener('change', async e => {
     const el = e.target;
+    if (el.id === 'profile-photo') {
+      const file = el.files && el.files[0];
+      el.value = '';
+      if (!file) return;
+      try {
+        photoEditor = {
+          image: await processProfilePhoto(file),
+          zoom: 1,
+          offsetX: 0,
+          offsetY: 0,
+          filter: 'original'
+        };
+        openModal('photo-editor');
+      } catch (err) {
+        toast(err.message || 'That image could not be used.');
+      }
+      return;
+    }
     if (el.id === 'terms-check') {
       const btn = $('#terms-continue');
       if (btn) btn.disabled = !el.checked;
@@ -5505,6 +5686,11 @@ function overdueTickets(tickets, now) {
   });
   document.addEventListener('input', e => {
     const el = e.target;
+    if (el.id === 'photo-zoom' && photoEditor) {
+      photoEditor.zoom = Number(el.value);
+      drawPhotoEditorPreview();
+      return;
+    }
     if (!el.dataset || !el.dataset.bind || el.type === 'checkbox') return;
     if (el.tagName === 'SELECT') return;
     setPath(docs, el.dataset.bind, el.value);
@@ -5717,6 +5903,67 @@ function overdueTickets(tickets, now) {
       case 'switch-login': openModal('login'); break;
       case 'switch-signup': openModal('signup'); break;
       case 'set-theme': setColorTheme(el.dataset.themeChoice); break;
+      case 'remove-profile-photo': {
+        const previous = state.profilePhoto;
+        state.profilePhoto = '';
+        if (!persist()) {
+          state.profilePhoto = previous;
+          toast('The profile picture could not be removed. Try again.');
+          break;
+        }
+        refreshHeader();
+        go(currentView);
+        toast('Profile picture removed.');
+        break;
+      }
+      case 'photo-filter':
+        if (photoEditor && PHOTO_FILTERS[el.dataset.filter]) {
+          photoEditor.filter = el.dataset.filter;
+          $$('.photo-filter', modalBody).forEach(button => {
+            const selected = button.dataset.filter === photoEditor.filter;
+            button.classList.toggle('is-active', selected);
+            button.setAttribute('aria-pressed', String(selected));
+          });
+          drawPhotoEditorPreview();
+        }
+        break;
+      case 'photo-center':
+        if (photoEditor) {
+          photoEditor.zoom = 1;
+          photoEditor.offsetX = 0;
+          photoEditor.offsetY = 0;
+          $('#photo-zoom').value = '1';
+          drawPhotoEditorPreview();
+        }
+        break;
+      case 'cancel-photo-edit': closeModal(); break;
+      case 'save-profile-photo': {
+        if (!photoEditor) break;
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const context = canvas.getContext('2d');
+        const bounds = photoCropBounds(canvas.width);
+        context.filter = PHOTO_FILTERS[photoEditor.filter].css;
+        context.drawImage(photoEditor.image, bounds.x, bounds.y, bounds.width, bounds.height);
+        const previous = state.profilePhoto;
+        const photo = canvas.toDataURL('image/jpeg', 0.82);
+        if (photo.length > 400000) {
+          toast('That image is too detailed to save. Try a different photo.');
+          break;
+        }
+        state.profilePhoto = photo;
+        if (!persist()) {
+          state.profilePhoto = previous;
+          toast('There is not enough browser storage to save this photo.');
+          break;
+        }
+        closeModal(true);
+        refreshHeader();
+        go(currentView);
+        toast('Profile picture updated.');
+        break;
+      }
       case 'accept-terms': {
         state.tosAcceptedAt = new Date().toISOString();
         persist();

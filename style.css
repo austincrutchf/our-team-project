@@ -530,6 +530,7 @@ footer{ padding:48px 0 56px; }
   font-family:var(--font-display); font-weight:600; font-size:0.9rem; letter-spacing:.02em;
   transition:box-shadow .15s ease;
 }
+.avatar img{ width:100%; height:100%; border-radius:inherit; object-fit:cover; }
 .avatar-lg{ width:42px; height:42px; font-size:1rem; }
 .menu{
   position:absolute; top:calc(100% + 10px); right:0; z-index:60;
@@ -698,6 +699,7 @@ footer{ padding:48px 0 56px; }
   background:#fff; border-radius:8px; padding:36px;
 }
 .modal-card h2{ font-size:1.6rem; }
+.is-photo-editor .modal-card{ max-width:760px; }
 .modal-close{
   position:absolute; top:12px; right:14px;
   background:none; border:none; font-size:1.6rem; line-height:1; color:var(--ink-soft); padding:4px 8px;
@@ -711,6 +713,35 @@ footer{ padding:48px 0 56px; }
 .track-opt:hover{ border-color:var(--blue); }
 .track-opt.is-selected{ border-color:var(--blue); box-shadow:inset 0 0 0 1px var(--blue); background:var(--paper-tint); }
 .modal-foot{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:28px; }
+.photo-editor{ display:grid; grid-template-columns:minmax(0, 280px) minmax(0, 1fr); gap:28px; align-items:center; margin-top:22px; }
+.photo-editor-stage{ min-width:0; }
+.photo-editor-stage canvas{
+  display:block; width:min(100%, 280px); height:auto; aspect-ratio:1; margin:0 auto 12px;
+  border-radius:50%; background:var(--paper-tint); touch-action:none; cursor:grab;
+}
+.photo-editor-stage canvas.is-dragging{ cursor:grabbing; }
+.photo-editor-stage canvas:focus-visible{ outline:3px solid var(--blue); outline-offset:4px; }
+.photo-editor-stage .hint{ text-align:center; }
+.photo-editor-tools{ min-width:0; }
+.photo-editor .field-label{ margin:0 0 8px; color:var(--ink); font-weight:600; }
+.photo-editor-zoom input{ width:100%; accent-color:var(--blue); }
+.photo-editor-zoom output{ float:right; font-variant-numeric:tabular-nums; }
+.photo-filter-group{ margin-top:20px; }
+.photo-filter-options{ display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:7px; }
+.photo-filter{
+  min-height:40px; padding:8px 10px; border:1px solid var(--line); border-radius:4px;
+  background:var(--surface); color:var(--ink-soft); font:inherit; font-size:0.88rem;
+}
+.photo-filter:hover{ border-color:var(--blue); color:var(--ink); }
+.photo-filter.is-active{ border-color:var(--blue); background:var(--blue-pale); color:var(--ink); font-weight:600; }
+.photo-center{ margin-top:18px; }
+.photo-editor-foot{ justify-content:flex-end; }
+
+@media (max-width:600px){
+  .photo-editor{ grid-template-columns:1fr; gap:20px; }
+  .photo-editor-stage{ width:100%; }
+  .photo-editor-stage canvas{ width:min(100%, 260px); }
+}
 
 @media (max-width:880px){
   .app-shell{ grid-template-columns:1fr; }
@@ -789,6 +820,18 @@ footer{ padding:48px 0 56px; }
 .settings{ margin-bottom:16px; }
 .settings-title{ font-size:1.05rem; margin-bottom:6px; color:var(--ink); }
 .settings .page-sub{ margin:4px 0 14px; }
+.profile-photo-row{ display:flex; align-items:center; gap:16px; margin:8px 0 18px; }
+.profile-avatar{ width:64px; height:64px; font-size:1.1rem; }
+.profile-photo-controls{ min-width:0; }
+.profile-photo-controls > strong{ display:block; font-size:0.92rem; }
+.profile-photo-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.profile-photo-actions:focus-within .btn{ outline:2px solid var(--blue); outline-offset:3px; }
+.profile-photo-actions label{ margin:0; cursor:pointer; }
+.profile-photo-controls .hint{ margin-top:7px; }
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
 .theme-switch{ display:inline-flex; gap:3px; padding:3px; border:1px solid var(--line); border-radius:4px; background:var(--paper-tint); }
 .theme-option{ min-width:88px; padding:8px 14px; border:0; border-radius:3px; background:transparent; color:var(--ink-soft); font:inherit; font-weight:500; }
 .theme-option[aria-pressed="true"]{ background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.14); }
