@@ -638,6 +638,25 @@ footer{ padding:48px 0 56px; }
 .bar span{ display:block; height:100%; background:var(--blue); transition:width .3s ease; }
 .hint{ font-size:0.82rem; color:var(--ink-soft); }
 
+.goal-card{ margin-bottom:28px; }
+.goal-header{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px;
+}
+.goal-header h3{ font-size:1.2rem; color:var(--ink); }
+.goal-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:72px; padding:6px 12px; border-radius:999px;
+  background:var(--blue-pale); color:var(--blue); font-weight:700; font-size:0.85rem;
+}
+.goal-row{ display:flex; gap:10px; align-items:flex-end; margin-top:8px; }
+.goal-row .input{ flex:1; }
+.goal-input{ max-width:180px; }
+.goal-slider{ flex:1; width:100%; min-width:0; accent-color:var(--blue); cursor:pointer; }
+.goal-range-labels{ display:flex; justify-content:space-between; margin:4px 0 12px; color:var(--ink-soft); font-size:0.78rem; }
+.goal-card .bar{ margin-top:16px; }
+.goal-settings{ margin-top:8px; }
+.goal-settings .goal-row{ margin-top:8px; }
+
 .stat-cards{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:44px; }
 .block-title{ font-size:1.15rem; margin-bottom:16px; }
 .module-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }

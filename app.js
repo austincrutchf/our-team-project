@@ -1745,6 +1745,7 @@ function overdueTickets(tickets, now) {
     track: d && TRACKS[d.track] ? d.track : null,
     mastered: d && d.mastered && typeof d.mastered === 'object' ? d.mastered : {},
     quizBest: d && d.quizBest && typeof d.quizBest === 'object' ? d.quizBest : {},
+    goals: d && d.goals && typeof d.goals === 'object' ? d.goals : {},
     tasks: d && d.tasks && typeof d.tasks === 'object' ? d.tasks : {},
     interviews: d && d.interviews && typeof d.interviews === 'object' ? d.interviews : {},
     pro: !!(d && d.pro),
@@ -1790,6 +1791,21 @@ function overdueTickets(tickets, now) {
   const masteredCount = () => trackTerms().filter(x => isMastered(x.t)).length;
   const quizKey = kind => kind === 'context' ? state.track + ':context' : state.track;
   const bestQuiz = (kind = 'vocab') => state.quizBest[quizKey(kind)] != null ? state.quizBest[quizKey(kind)] : null;
+  const getTrackGoal = (trackId = state.track) => {
+    const total = TERMS[trackId].length;
+    const saved = Number(state.goals && state.goals[trackId]);
+    const fallback = Math.max(0, Math.min(total, Math.round(total * 0.5)));
+    if (!Number.isFinite(saved) || saved < 0) return fallback;
+    return Math.min(total, Math.max(0, Math.round(saved)));
+  };
+  const setTrackGoal = (value, trackId = state.track) => {
+    const total = TERMS[trackId].length;
+    const next = Math.min(total, Math.max(0, Math.round(Number(value) || 0)));
+    state.goals = state.goals || {};
+    state.goals[trackId] = next;
+    persist();
+    return next;
+  };
 
   /* ---------------- Saving ---------------- */
   function persist() {
@@ -2434,6 +2450,7 @@ function overdueTickets(tickets, now) {
     else if (view === 'interview-q') renderInterviewQuestion();
     else if (view === 'terms') renderTerms();
     else if (view === 'docs') renderDocs();
+    else if (view === 'goals') renderGoals();
     else if (view === 'account') renderAccount();
     else renderDashboard();
     window.scrollTo(0, 0);
@@ -2467,6 +2484,9 @@ function overdueTickets(tickets, now) {
     const track = TRACKS[state.track];
     const total = trackTerms().length;
     const done = masteredCount();
+    const goalTarget = getTrackGoal();
+    const goalDone = goalTarget ? Math.min(done, goalTarget) : done;
+    const goalPct = goalTarget ? Math.round((goalDone / goalTarget) * 100) : 0;
     const pct = Math.round((done / total) * 100);
     const best = bestQuiz();
     const js = jobStats();
@@ -2487,8 +2507,9 @@ function overdueTickets(tickets, now) {
         </div>
         <div class="card">
           <p class="card-label">Key terms mastered</p>
-          <div class="card-value">${done}/${total}</div>
-          <div class="bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+          <div class="card-value">${goalTarget ? `${goalDone}/${goalTarget}` : `${done}/${total}`}</div>
+          <div class="bar" aria-hidden="true"><span style="width:${goalTarget ? goalPct : pct}%"></span></div>
+          <p class="hint">${goalTarget ? (goalDone >= goalTarget ? 'Goal reached.' : `${goalTarget - goalDone} left to hit your target.`) : 'Set a goal in Goals to track your target.'}</p>
         </div>
         <div class="card">
           <p class="card-label">Best quiz scores</p>
@@ -2575,7 +2596,7 @@ function overdueTickets(tickets, now) {
         <p class="page-sub">Choose the color theme for FirstDay.</p>
         <div class="theme-switch" role="group" aria-label="Color theme">
           <button class="theme-option" type="button" data-action="set-theme" data-theme-choice="light" aria-pressed="${currentTheme === 'light'}">Light</button>
-          <button class="theme-option" type="button" data-action="set-theme" data-theme-choice="dark" aria-pressed="${currentTheme === 'dark'}">Dark</button>
+          <button class="theme-option" type="button" data-theme-choice="dark" data-action="set-theme" aria-pressed="${currentTheme === 'dark'}">Dark</button>
         </div>
       </div>
 
@@ -2635,6 +2656,55 @@ function overdueTickets(tickets, now) {
         </div>
       </div>`;
     updateAvatar($('#profile-avatar'), initials(state.name));
+  }
+
+  /* ---------------- Goals ---------------- */
+  function renderGoals() {
+    const track = TRACKS[state.track];
+    const total = trackTerms().length;
+    const done = masteredCount();
+    const goalTarget = getTrackGoal();
+    const goalDone = goalTarget ? Math.min(done, goalTarget) : done;
+    const remaining = Math.max(goalTarget - done, 0);
+    const pct = goalTarget ? Math.round((goalDone / goalTarget) * 100) : 0;
+
+    main.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">${esc(track.name)} track</p>
+        <h1>Goals</h1>
+        <p class="page-sub">Pick the number of key terms you want to master for this profession.</p>
+      </div>
+
+      <div class="card settings">
+        <div class="goal-header">
+          <div>
+            <p class="card-label">Current target</p>
+            <h3>Key terms to master</h3>
+          </div>
+          <span class="goal-pill"><output id="goals-target-value">${goalTarget}</output>/${total}</span>
+        </div>
+        <div class="goal-row">
+          <input class="goal-slider" id="goals-target-input" type="range" min="0" max="${total}" step="1" value="${goalTarget}" data-goal-input="true" aria-label="Key terms to master">
+          <button class="btn btn-ghost btn-small" type="button" data-action="save-goal">Save goal</button>
+        </div>
+        <div class="goal-range-labels" aria-hidden="true"><span>0 terms</span><span>${total} terms</span></div>
+        <p class="hint">${goalTarget === 0 ? 'Choose how many key terms you want to master in this profession.' : `${remaining > 0 ? `${remaining} left to go.` : 'You’ve reached your goal.'} ${done}/${total} terms are mastered.`}</p>
+        <div class="bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+      </div>
+
+      <div class="card settings">
+        <h3 class="settings-title">Mastered terms</h3>
+        <p class="page-sub">Track what you’ve learned in the ${esc(track.name)} field.</p>
+        <div class="goal-term-list">
+          ${trackTerms().map(term => `
+            <div class="term-row goal-term-row">
+              <div><h4>${esc(term.t)}</h4><p>${esc(term.d)}</p></div>
+              <button class="chip-btn ${isMastered(term.t) ? 'is-on' : ''}" data-action="toggle-master" data-term="${esc(term.t)}" aria-pressed="${isMastered(term.t)}">
+                ${isMastered(term.t) ? 'Mastered' : 'Mark mastered'}
+              </button>
+            </div>`).join('')}
+        </div>
+      </div>`;
   }
 
   /* ---------------- Key terms ---------------- */
@@ -2751,6 +2821,8 @@ function overdueTickets(tickets, now) {
     btn.classList.toggle('is-on', on);
     btn.setAttribute('aria-pressed', on);
     btn.textContent = on ? 'Mastered' : 'Mark mastered';
+    if (currentView === 'goals') renderGoals();
+    else if (currentView === 'dashboard') renderDashboard();
   }
 
   // Each round draws a fresh random set, so retakes cover different terms
@@ -5691,6 +5763,11 @@ function overdueTickets(tickets, now) {
       drawPhotoEditorPreview();
       return;
     }
+    if (el.dataset && el.dataset.goalInput === 'true') {
+      const value = document.getElementById('goals-target-value');
+      if (value) value.value = el.value;
+      return;
+    }
     if (!el.dataset || !el.dataset.bind || el.type === 'checkbox') return;
     if (el.tagName === 'SELECT') return;
     setPath(docs, el.dataset.bind, el.value);
@@ -5699,6 +5776,17 @@ function overdueTickets(tickets, now) {
     if (wm && docs.resume.source === 'write') updateBulletPreview(+wm[1]);
     const head = el.closest('.entry') && $('.entry-head strong', el.closest('.entry'));
     if (head && /\.(title|school|heading)$/.test(el.dataset.bind)) head.textContent = el.value || head.textContent;
+  });
+
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el && el.dataset && el.dataset.goalInput === 'true') {
+      const total = trackTerms().length;
+      const next = Math.min(total, Math.max(0, Math.round(Number(el.value) || 0)));
+      setTrackGoal(next);
+      if (currentView === 'goals') renderGoals();
+      else renderDashboard();
+    }
   });
 
   /* ---------------- Pro: plan + open tracks ---------------- */
@@ -5903,6 +5991,17 @@ function overdueTickets(tickets, now) {
       case 'switch-login': openModal('login'); break;
       case 'switch-signup': openModal('signup'); break;
       case 'set-theme': setColorTheme(el.dataset.themeChoice); break;
+      case 'save-goal': {
+        const input = $('#goal-input') || $('#goals-target-input');
+        if (!input) break;
+        const total = trackTerms().length;
+        const next = Math.min(total, Math.max(0, Math.round(Number(input.value) || 0)));
+        setTrackGoal(next);
+        if (currentView === 'goals') renderGoals();
+        else renderDashboard();
+        toast(`Goal saved: ${next} of ${total} key terms.`);
+        break;
+      }
       case 'remove-profile-photo': {
         const previous = state.profilePhoto;
         state.profilePhoto = '';
