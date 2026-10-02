@@ -87,6 +87,7 @@
 }
 :root[data-theme="dark"] .pill.is-on{ border-color:var(--action); }
 :root[data-theme="dark"] .nav .btn-primary{ background:var(--surface); color:var(--ink); }
+:root[data-theme="dark"] .track-pill{ background:rgba(255,255,255,0.08); color:var(--ink); border:1px solid rgba(255,255,255,0.18); }
 :root[data-theme="dark"] .sheet th{ background:#26363A; color:#C0CDCE; border-color:var(--line); }
 :root[data-theme="dark"] .sheet td.lk{ background:#1A2529; }
 :root[data-theme="dark"] .sheet td.hdr{ background:#26363A; color:var(--ink); }
