@@ -88,6 +88,27 @@
 :root[data-theme="dark"] .pill.is-on{ border-color:var(--action); }
 :root[data-theme="dark"] .nav .btn-primary{ background:var(--surface); color:var(--ink); }
 :root[data-theme="dark"] .track-pill{ background:rgba(255,255,255,0.08); color:var(--ink); border:1px solid rgba(255,255,255,0.18); }
+:root[data-theme="dark"] .quiz-opt.is-right,
+:root[data-theme="dark"] .quiz-why.is-ok,
+:root[data-theme="dark"] .rubric .ok .rb-mark,
+:root[data-theme="dark"] .rubric .part .rb-mark,
+:root[data-theme="dark"] .rubric .miss .rb-mark,
+:root[data-theme="dark"] .hint-line,
+:root[data-theme="dark"] .rb-tip,
+:root[data-theme="dark"] .quiz-opt.is-wrong,
+:root[data-theme="dark"] .quiz-why.is-no{
+  color:var(--ink);
+  border-color:rgba(255,255,255,0.12);
+}
+:root[data-theme="dark"] .quiz-opt.is-right,
+:root[data-theme="dark"] .quiz-why.is-ok,
+:root[data-theme="dark"] .rubric .ok .rb-mark{ background:rgba(46, 139, 87, 0.18); }
+:root[data-theme="dark"] .rb-tip,
+:root[data-theme="dark"] .hint-line{ background:rgba(212, 160, 23, 0.14); }
+:root[data-theme="dark"] .quiz-opt.is-wrong,
+:root[data-theme="dark"] .quiz-why.is-no,
+:root[data-theme="dark"] .rubric .miss .rb-mark{ background:rgba(195, 57, 43, 0.16); }
+:root[data-theme="dark"] .rubric .part .rb-mark{ background:rgba(212, 160, 23, 0.18); }
 :root[data-theme="dark"] .sheet th{ background:#26363A; color:#C0CDCE; border-color:var(--line); }
 :root[data-theme="dark"] .sheet td.lk{ background:#1A2529; }
 :root[data-theme="dark"] .sheet td.hdr{ background:#26363A; color:var(--ink); }
