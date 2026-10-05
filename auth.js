@@ -46,7 +46,7 @@
   function profileFromUser(user) {
     const meta = user.user_metadata || {};
     return {
-      name: meta.full_name || meta.name || meta.given_name || (user.email ? user.email.split('@')[0] : 'Intern'),
+      name: meta.full_name || meta.name || meta.given_name || '',
       email: user.email || '',
       avatarUrl: meta.avatar_url || meta.picture || ''
     };

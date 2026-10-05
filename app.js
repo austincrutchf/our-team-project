@@ -1741,7 +1741,7 @@ function overdueTickets(tickets, now) {
   const saveLocal = d => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(d)); return true; } catch (e) { return false; } };
 
   const normalize = d => ({
-    name: d && typeof d.name === 'string' && d.name.trim() ? d.name.trim().slice(0, 40) : 'Intern',
+    name: d && typeof d.name === 'string' && d.name.trim() ? d.name.trim().slice(0, 40) : '',
     track: d && TRACKS[d.track] ? d.track : null,
     mastered: d && d.mastered && typeof d.mastered === 'object' ? d.mastered : {},
     quizBest: d && d.quizBest && typeof d.quizBest === 'object' ? d.quizBest : {},
@@ -5625,7 +5625,7 @@ function overdueTickets(tickets, now) {
         if (id === 'build') {
           if (tab === 'resume') {
             const m = blankResume();
-            m.name = (state && state.name && state.name !== 'Intern') ? state.name : '';
+            m.name = (state && state.name) ? state.name : '';
             m.experience.push(blankExp());
             m.education.push(blankEdu());
             docs.resume = Object.assign(docs.resume, { model: m, source: 'build', notice: false });
@@ -5636,7 +5636,7 @@ function overdueTickets(tickets, now) {
         } else if (id === 'write') {
           if (tab === 'resume') {
             const m = blankResume();
-            m.name = (state && state.name && state.name !== 'Intern') ? state.name : '';
+            m.name = (state && state.name) ? state.name : '';
             m.experience.push(blankWriteExp());
             m.education.push(blankEdu());
             docs.resume = Object.assign(docs.resume, { model: m, source: 'write', notice: false });
