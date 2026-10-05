@@ -56,6 +56,14 @@
     window.dispatchEvent(new CustomEvent('firstday:auth', { detail: profileFromUser(user) }));
   }
 
+  function validatePassword(password) {
+    if (typeof password !== 'string') return { ok: false, message: 'Password must be at least 8 characters and include at least one number and one symbol.' };
+    if (password.length < 8 || !/\d/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+      return { ok: false, message: 'Password must be at least 8 characters and include at least one number and one symbol.' };
+    }
+    return { ok: true };
+  }
+
   // Turns a Supabase error into the plain-language message app.js shows the user.
   function friendlyAuthError(error) {
     const msg = (error && error.message) || '';
@@ -82,6 +90,8 @@
 
     window.FirstDayAuth = {
       async signUp({ email, password, username, first, last }) {
+        const passwordCheck = validatePassword(password);
+        if (!passwordCheck.ok) return { ok: false, message: passwordCheck.message };
         const { data, error } = await client.auth.signUp({
           email, password,
           options: { data: { username, first_name: first, last_name: last, full_name: `${first} ${last}`.trim() } }

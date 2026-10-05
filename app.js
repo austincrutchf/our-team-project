@@ -1998,9 +1998,9 @@ function overdueTickets(tickets, now) {
           <label class="field-label" for="r-email">Email</label>
           <input class="input" id="r-email" type="email" name="email" autocomplete="email" required>
           <label class="field-label" for="r-password">Password</label>
-          <input class="input" id="r-password" type="password" name="password" autocomplete="new-password" required minlength="8">
+          <input class="input" id="r-password" type="password" name="password" autocomplete="new-password" required minlength="8" pattern="^(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$" title="Use at least 8 characters, including a number and a symbol.">
           <label class="field-label" for="r-confirm">Confirm password</label>
-          <input class="input" id="r-confirm" type="password" name="confirm" autocomplete="new-password" required minlength="8">
+          <input class="input" id="r-confirm" type="password" name="confirm" autocomplete="new-password" required minlength="8" pattern="^(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$" title="Use at least 8 characters, including a number and a symbol.">
           <p class="form-error" role="alert"></p>
           <button class="btn btn-primary btn-block" type="submit"><span>Create account</span></button>
         </form>
@@ -2165,7 +2165,9 @@ function overdueTickets(tickets, now) {
         if (!username) throw uiErr('Choose a username.');
         if (!first || !last) throw uiErr('Add your first and last name.');
         if (!/^\S+@\S+\.\S+$/.test(email)) throw uiErr('Enter a valid email.');
-        if (password.length < 8) throw uiErr('Password needs to be at least 8 characters.');
+        if (password.length < 8 || !/\d/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+          throw uiErr('Password must be at least 8 characters and include at least one number and one symbol.');
+        }
         if (password !== confirm) throw uiErr('Passwords don\u2019t match.');
         if (!window.FirstDayAuth) throw uiErr('Sign-in isn\u2019t set up on this copy of the site yet.');
         setBusy(btn, true);
