@@ -212,10 +212,6 @@
     ]
   };
 
-  const COMING_NEXT = [
-    { title: 'Chat with your boss', text: 'Ask questions and get feedback from your manager between tasks.' }
-  ];
-
   const LANDING_FAQ = [
     ['Is FirstDay actually free?', 'Yes — one track at a time, every core tool: assignments, resume and cover letter review, mock interviews, key terms. No credit card. Pro just adds the ability to keep more than one track open.'],
     ['Do I need to already know the field?', 'No — that’s the point. The vocabulary and the first assignment are written assuming you’re starting from zero.'],
@@ -1754,7 +1750,10 @@ function overdueTickets(tickets, now) {
     email: d && typeof d.email === 'string' ? d.email : '',
     avatarUrl: d && typeof d.avatarUrl === 'string' ? d.avatarUrl : '',
     profilePhoto: d && typeof d.profilePhoto === 'string' ? d.profilePhoto : '',
-    tosAcceptedAt: d && typeof d.tosAcceptedAt === 'string' ? d.tosAcceptedAt : null
+    tosAcceptedAt: d && typeof d.tosAcceptedAt === 'string' ? d.tosAcceptedAt : null,
+    chats: d && d.chats && typeof d.chats === 'object' ? d.chats : {},
+    chatCtx: d && d.chatCtx && typeof d.chatCtx === 'object' ? d.chatCtx : {},
+    chatUnread: d && d.chatUnread && typeof d.chatUnread === 'object' ? d.chatUnread : {}
   });
 
   /* ---------------- App state ---------------- */
@@ -1930,6 +1929,7 @@ function overdueTickets(tickets, now) {
   const HELP = [
     ['How do assignments get graded?', 'Each assignment is checked in your browser against the same rules a manager would use: the right numbers, formulas instead of typed values, and complete answers. You get a grade and specific feedback right away, and you can resubmit as many times as you like.'],
     ['I’m stuck on an assignment.', boss => `Click "Need a hint?" on the assignment for a nudge from ${boss.name}. Each click reveals a little more. "Start over" clears your work, but your best grade stays.`],
+    ['What can I ask my boss in chat?', boss => `Open "Chat with your boss" to message ${boss.name}. Ask for a hint, ask them to review your draft before you hand it in (you'll get an estimated grade and what to fix), ask what a key term means, ask for a pop quiz or a workplace scenario, or ask everyday questions like how to request time off. ${boss.name.split(' ')[0]} also messages you after you hand in an assignment.`],
     ['Where is my progress saved?', 'In this browser on this device. If you switch browsers, use a private window, or clear your browsing data, you’ll start fresh.'],
     ['How do I change my track?', 'Open Settings from the menu under your initials. Switching tracks is free, and progress on each track is saved separately, so you can switch back anytime.'],
     ['Can I have more than one track?', `The free plan includes one track at a time. FirstDay Pro (${money(PRO_PRICE)}/month) lets you keep every track open and jump between them from the menu under your initials.`],
@@ -2205,6 +2205,13 @@ function overdueTickets(tickets, now) {
         renderModal();
         const pay = $('[data-action="checkout-pay"]', modalBody);
         if (pay) pay.focus();
+      } else if (form.dataset.form === 'chat') {
+        const input = $('#chat-input', form);
+        const msg = input.value;
+        if (!msg.trim() || chatTyping) return;
+        input.value = '';
+        input.style.height = 'auto';
+        await sendChat(msg);
       } else if (form.dataset.form === 'profile') {
         if (!name) throw uiErr('Your name can\u2019t be empty.');
         state.name = name.slice(0, 40);
@@ -2230,7 +2237,9 @@ function overdueTickets(tickets, now) {
     authed = true;
     const oauthIntent = sessionStorage.getItem('firstday:oauth-pending') === '1';
     sessionStorage.removeItem('firstday:oauth-pending');
-    const prev = state;
+    let prev = state;
+    // A different account on this browser: set the last person's progress aside, load this one's.
+    if (prev && prev.email && p.email && prev.email.toLowerCase() !== p.email.toLowerCase()) prev = switchAccount(prev, p.email);
     state = normalize(Object.assign({}, prev, {
       name: p.name || (prev && prev.name),
       email: p.email || (prev && prev.email),
@@ -2247,6 +2256,29 @@ function overdueTickets(tickets, now) {
     closeModal(true);
     openApp('dashboard');
   });
+  // Each account's progress, drafts, and documents are kept under its email,
+  // so two people sharing a browser never see each other's work.
+  const accountKey = email => 'firstday:account:' + email.toLowerCase();
+  function switchAccount(prev, email) {
+    clearTimeout(draftTimer);
+    clearTimeout(docsTimer);
+    try { localStorage.setItem(accountKey(prev.email), JSON.stringify({ state: prev, drafts, docs })); } catch (e) { /* ignore */ }
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(accountKey(email))); } catch (e) { saved = null; }
+    drafts = (saved && saved.drafts) || {};
+    docs = loadDocs((saved && saved.docs) || {});
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+      localStorage.setItem(DOCS_KEY, JSON.stringify(docs));
+    } catch (e) { /* ignore */ }
+    Object.keys(lastResults).forEach(k => delete lastResults[k]);
+    Object.keys(hintsShown).forEach(k => delete hintsShown[k]);
+    codeOutput = {};
+    lastAnalysis = {};
+    deck = null; quizzes = {};
+    return saved && saved.state ? normalize(saved.state) : null;
+  }
+
   window.addEventListener('firstday:signed-out', () => {
     authed = false;
     updateNavStart();
@@ -2408,6 +2440,8 @@ function overdueTickets(tickets, now) {
       <div class="menu-label">Your tracks</div>
       ${list.map(id => `<button type="button" class="menu-item ${id === state.track ? 'is-current' : ''}" role="menuitem" data-action="switch-track" data-to="${id}">${esc(TRACKS[id].name)}</button>`).join('')}
       <div class="menu-sep" role="separator"></div>` : '';
+    ensureChat();
+    updateChatBadge();
     updateNavStart();
   }
 
@@ -2454,6 +2488,7 @@ function overdueTickets(tickets, now) {
     else if (view === 'docs') renderDocs();
     else if (view === 'goals') renderGoals();
     else if (view === 'account') renderAccount();
+    else if (view === 'chat') renderChat();
     else renderDashboard();
     window.scrollTo(0, 0);
   }
@@ -2551,12 +2586,12 @@ function overdueTickets(tickets, now) {
           <p>Answer real interview questions for the ${esc(track.name)} track from ${esc(BOSSES[state.track].name)}, and get scored like a real interviewer would.</p>
           <button class="btn btn-primary btn-small" data-view="interview">${iv.done ? 'Keep practicing' : 'Practice your first question'}</button>
         </div>
-        ${COMING_NEXT.map(m => `
-          <div class="card module is-soon">
-            <span class="status status-soon">Coming next</span>
-            <h3>${esc(m.title)}</h3>
-            <p>${esc(m.text)}</p>
-          </div>`).join('')}
+        <div class="card module">
+          <span class="status status-open">Available</span>
+          <h3>Chat with your boss</h3>
+          <p>Ask ${esc(BOSSES[state.track].name.split(' ')[0])} for a hint, get your draft reviewed before you hand it in, take a pop quiz, or ask anything about the job.</p>
+          <button class="btn btn-primary btn-small" data-view="chat">${unreadCount() ? `Read ${unreadCount()} new message${unreadCount() === 1 ? '' : 's'}` : `Message ${esc(BOSSES[state.track].name.split(' ')[0])}`}</button>
+        </div>
       </div>`;
   }
 
@@ -3923,6 +3958,7 @@ function overdueTickets(tickets, now) {
     const prev = state.tasks[task.id] || { best: 0, attempts: 0 };
     state.tasks[task.id] = { best: Math.max(prev.best, res.score), attempts: prev.attempts + 1, last: res.score };
     persist();
+    chatAfterTask(task, res);
     if (task.tool === 'code' && res.run && res.run.results) {
       codeOutput[task.id] = {
         logs: res.run.logs || [],
@@ -4160,9 +4196,716 @@ function overdueTickets(tickets, now) {
     const prev = state.interviews[q.id] || { best: 0, attempts: 0 };
     state.interviews[q.id] = { best: Math.max(prev.best, res.score), attempts: prev.attempts + 1, last: res.score };
     persist();
+    chatAfterInterview(q, res);
     renderInterviewQuestion();
     const card = $('#result-card');
     if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); card.focus({ preventScroll: true }); }
+  }
+
+  /* =========================================================
+     CHAT WITH YOUR BOSS — a conversation with your track's
+     manager. Rule-based and in the browser, like the rest of
+     FirstDay: it reads your real progress, drafts, and key
+     terms to give hints, review work, quiz you, and answer
+     everyday questions about the job.
+     ========================================================= */
+  const BOSS_CHAT = {
+    it: {
+      day: "Mornings start with the ticket queue. I triage anything close to breaking our SLA first. After that it's a mix of password resets, setting up laptops for new hires, a patch rollout, and whatever automation we're building so we stop doing the same fix twice. I try to keep one afternoon block for project work.",
+      tools: "A ticketing system for the queue, Active Directory for accounts and permissions, a remote-support tool, and the knowledge base. For automation we use PowerShell, plus some JavaScript and Python. Slack for everything else.",
+      first: "This week, shadow the queue, learn our ticket categories, and close a few easy tickets on your own by Friday. Nobody expects you to know our systems yet. I do expect you to ask questions.",
+      mistake: "Tell me right away. An outage I hear about in five minutes is a small problem. One I hear about from users is a big one. Then we write down what happened and how to stop it next time — no blame.",
+      busy: 'a big rollout', clients: 'the rest of the company',
+      tips: [
+        'Write every fix down in the knowledge base. Future you will thank you.',
+        "Before you touch someone's machine, tell them what you're about to do and how long it'll take.",
+        'If a change affects more than one person, test it on one person first.',
+        "Close the loop on every ticket. Confirm with the user that it's actually fixed before you close it."
+      ]
+    },
+    finance: {
+      day: "I check the markets and overnight email first. Then it's mostly models — updating numbers, building comps, and checking other people's spreadsheets for errors. Afternoons usually go to prepping for client or internal meetings.",
+      tools: 'Excel above everything else: lookups, SUMIFS, pivot tables, and keyboard shortcuts. Then PowerPoint for decks and a market-data terminal for prices and filings.',
+      first: "This week, learn how our models are laid out, rebuild one small analysis on your own, and get used to checking your own numbers twice. Accuracy matters more than speed right now.",
+      mistake: "Flag it the moment you find it. A wrong number we catch internally is a learning moment. A wrong number that reaches a client is a real problem. Tell me what's off, what it affects, and the corrected figure.",
+      busy: 'earnings season or a client deadline', clients: 'clients',
+      tips: [
+        'Never type in a number that should be a formula.',
+        'Check every total a second way before anything leaves your desk.',
+        'Color-code your models: inputs in blue, formulas in black. Reviewers will love you.',
+        'Learn the Excel shortcuts. Doing everything with the mouse is slow.'
+      ]
+    },
+    marketing: {
+      day: "I check yesterday's campaign numbers first thing. Then it's writing or editing copy, syncing with design, and at least one meeting about what's working and what isn't. Launch weeks are all of that, twice as fast.",
+      tools: 'Google Analytics, our email platform, the ad managers for search and social, a reporting spreadsheet, and Canva or Figma for quick creative.',
+      first: "This week, get familiar with our brand voice, learn where each channel's numbers live, and draft one piece of copy we actually send. Read our last three campaigns before you write anything.",
+      mistake: "Tell me fast, especially if it's live. If a link is broken or an email went to the wrong list, every minute counts. We fix it, send a correction if we need to, and add a check so it doesn't happen again.",
+      busy: 'a launch week', clients: 'leadership',
+      tips: [
+        'Every idea needs a number attached. How will we know it worked?',
+        'Write the subject line last. It is the hardest part.',
+        'Look at the data before you look at the creative.',
+        'Read your copy out loud. If it sounds weird, it is.'
+      ]
+    },
+    accounting: {
+      day: "During the month it's invoices, payments, and reconciliations. At month-end it's close: journal entries, accruals, reconciliations, and reviews until the books tie out. Close week is long, so I protect everyone's time the rest of the month.",
+      tools: 'The general ledger in our accounting system, Excel for reconciliations and schedules, the bank portal, and a close checklist I live by.',
+      first: "This week, learn our chart of accounts, walk through last month's close checklist, and prepare one reconciliation on your own. I'll review it with you line by line.",
+      mistake: "Tell me before close if you can. A wrong entry is fixed with a correcting entry. Never delete it or hide it. Write down what happened so the audit trail is clean.",
+      busy: 'month-end close', clients: 'the auditors',
+      tips: [
+        'Every entry has to balance. Debits equal credits, every time.',
+        'Document each entry so an auditor could follow it without asking you anything.',
+        "If something doesn't tie out, don't plug it. Find the difference.",
+        'Keep a close checklist and actually check things off.'
+      ]
+    },
+    consulting: {
+      day: "Morning team check-in, then client interviews or analysis. Then we turn what we learned into slides. Before the end of the day I meet with you to pressure-test the story.",
+      tools: "PowerPoint, Excel, and a whiteboard. Plus a lot of interviews with the client's people.",
+      first: "This week, read everything we have on the client, sit in on two interviews, and own one slide from start to finish. Bring me a draft early. Rough is fine.",
+      mistake: "Bring it to me before it reaches the client. Tell me what's wrong, how big it is, and what you'd do about it. Coming with a fix already in mind matters more than the mistake.",
+      busy: 'a client deliverable week', clients: 'the client',
+      tips: [
+        'Lead with the answer, then back it up.',
+        'Make it MECE: no gaps and no overlaps.',
+        "Give every slide one headline that says the 'so what'.",
+        "If you can't explain it in two sentences, you don't understand it yet."
+      ]
+    },
+    hr: {
+      day: "Screening applicants, scheduling interviews, answering benefits and policy questions, and onboarding new hires. Plus confidential conversations that stay confidential.",
+      tools: 'Our HRIS for employee records, an ATS for candidates, an interview scheduling tool, and a lot of email templates.',
+      first: "This week, learn the HRIS and the ATS, shadow two candidate screens, and help onboard one new hire. Anything about an employee's personal situation stays between us and them.",
+      mistake: "Tell me right away, especially if it involves someone's personal information. We figure out who was affected, fix it, and follow our privacy steps. Being upfront protects you and the employee.",
+      busy: 'open enrollment or a big hiring push', clients: 'employees and candidates',
+      tips: [
+        "Screen on the posted requirements and nothing else. That's what keeps hiring fair.",
+        "Anything about an employee's personal situation stays confidential.",
+        'Write every email like it could be forwarded.',
+        'When you are unsure about a policy, check the handbook before you answer.'
+      ]
+    }
+  };
+
+  const CHAT_LIMIT = 150;
+  const DEFAULT_CHIPS = [
+    { label: 'What should I work on?', say: 'What should I work on next?' },
+    { label: 'Quiz me', say: 'Quiz me on a key term' },
+    { label: 'How am I doing?', say: 'How am I doing?' },
+    { label: 'Give me a scenario', say: 'Give me a workplace scenario' }
+  ];
+  let chatTyping = false;
+
+  const pickOne = arr => arr[Math.floor(Math.random() * arr.length)];
+  const chatLog = (track = state.track) => {
+    state.chats = state.chats || {};
+    return (state.chats[track] = state.chats[track] || []);
+  };
+  const chatCtx = (track = state.track) => {
+    state.chatCtx = state.chatCtx || {};
+    return (state.chatCtx[track] = state.chatCtx[track] || { hints: {} });
+  };
+  const unreadCount = () => (state && state.chatUnread && state.chatUnread[state.track]) || 0;
+
+  function updateChatBadge() {
+    const badge = $('#chat-badge');
+    if (!badge || !state || !state.track) return;
+    const n = unreadCount();
+    badge.textContent = n > 9 ? '9+' : String(n);
+    badge.hidden = n === 0;
+  }
+
+  function pushChat(track, msg) {
+    const list = chatLog(track);
+    list.push(Object.assign({ t: Date.now() }, msg));
+    if (list.length > CHAT_LIMIT) list.splice(0, list.length - CHAT_LIMIT);
+    const seen = msg.from === 'me' || (currentView === 'chat' && !app.hidden && track === state.track);
+    if (msg.from === 'boss' && !seen) {
+      state.chatUnread = state.chatUnread || {};
+      state.chatUnread[track] = (state.chatUnread[track] || 0) + 1;
+    }
+    persist();
+    updateChatBadge();
+  }
+
+  // The first message from each boss, so the chat never opens empty.
+  function ensureChat(track = state.track) {
+    if (chatLog(track).length) return;
+    const boss = BOSSES[track];
+    const first = (state.name || '').split(/\s+/)[0];
+    pushChat(track, {
+      from: 'boss',
+      text: `Hi${first ? ' ' + first : ''}, I'm ${boss.name}, your ${boss.role.toLowerCase()}. ${boss.intro}\n\nMessage me anytime. I can give you a hint on an assignment, look over your work before you hand it in, explain a term, quiz you, or answer questions about the job.`,
+      chips: DEFAULT_CHIPS
+    });
+  }
+
+  /* ---------------- Understanding the message ---------------- */
+  const normText = s => String(s || '').toLowerCase().replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim();
+  const hasWord = (text, key) => new RegExp(`(^|[^a-z0-9])${reEsc(key)}($|[^a-z0-9])`, 'i').test(text);
+
+  // Every way someone might refer to a term: its name, its acronym, the words it stands for.
+  function termKeys(term) {
+    const keys = new Set();
+    const t = normText(term.t);
+    keys.add(t);
+    keys.add(t.replace(/[()']/g, '').replace(/\s+/g, ' ').trim());
+    const paren = /^(.*?)\s*\((.*?)\)\s*$/.exec(term.t);
+    if (paren) { keys.add(normText(paren[1])); keys.add(normText(paren[2])); }
+    if (t.includes('/')) keys.add(t.replace(/\//g, ''));
+    if (t.endsWith(' ratio')) keys.add(t.replace(/ ratio$/, ''));
+    const exp = /^([A-Z][A-Za-z\s&'-]+?)\s+—/.exec(term.d);
+    if (exp && exp[1].split(/\s+/).length > 1) keys.add(normText(exp[1]));
+    return Array.from(keys).filter(k => k.length >= 2);
+  }
+
+  function findTerm(text, trackId = state.track) {
+    let best = null;
+    (TERMS[trackId] || []).forEach(term => {
+      termKeys(term).forEach(k => {
+        if (hasWord(text, k) && (!best || k.length > best.len)) best = { term, len: k.length };
+      });
+    });
+    return best && best.term;
+  }
+
+  function findTermAnyTrack(text) {
+    for (const id of Object.keys(TERMS)) {
+      if (id === state.track) continue;
+      const term = findTerm(text, id);
+      if (term) return { term, track: id };
+    }
+    return null;
+  }
+
+  const TOOL_WORDS = {
+    code: ['code', 'function', 'script', 'program', 'javascript'],
+    sheet: ['spreadsheet', 'sheet', 'excel', 'formula', 'formulas', 'cell', 'cells'],
+    journal: ['journal', 'entry', 'debit', 'credit'],
+    writing: ['email', 'write', 'writing', 'draft', 'summary'],
+    sort: ['sort', 'sorting', 'bucket']
+  };
+  const STOP_TITLE = new Set(['the', 'a', 'an', 'and', 'for', 'with', 'new', 'your', 'our', 'write', 'build', 'into', 'from', 'that']);
+
+  function findTaskIn(text) {
+    const tasks = jobTasks();
+    let best = null, tie = false;
+    tasks.forEach((task, i) => {
+      let score = 0;
+      normText(task.title).replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).forEach(w => {
+        if (w.length > 3 && !STOP_TITLE.has(w) && hasWord(text, w)) score += 2;
+      });
+      (TOOL_WORDS[task.tool] || []).forEach(w => { if (hasWord(text, w)) score += 1; });
+      if (task.code && hasWord(text, task.code.fn.toLowerCase())) score += 3;
+      if (task.questions && /\b(question|pause|channel)\b/.test(text)) score += 1;
+      if (new RegExp(`\\b(assignment|task|number|#)\\s*${i + 1}\\b`).test(text) || new RegExp(`\\b${['first', 'second', 'third', 'fourth'][i]}\\b`).test(text)) score += 3;
+      if (!score) return;
+      if (!best || score > best.score) { best = { task, score }; tie = false; }
+      else if (score === best.score) tie = true;
+    });
+    return best && !tie ? best.task : null;
+  }
+
+  const firstOpenTask = () => jobTasks().find(t => { const r = taskRecord(t.id); return !r || r.best < PASS; });
+  // The assignment someone most likely means: the one they named, the one they're on, or the next unfinished one.
+  function resolveTask(text) {
+    const named = findTaskIn(text);
+    if (named) return { task: named };
+    if (/\b(this|current|that|the)\s+(one|assignment|task)\b|\bthis\b/.test(text) && findTask(currentTaskId)) return { task: findTask(currentTaskId) };
+    if (findTask(currentTaskId)) return { task: findTask(currentTaskId) };
+    if (jobTasks().length === 1) return { task: jobTasks()[0] };
+    return { ambiguous: true };
+  }
+
+  const taskChips = intent => jobTasks().map(t => ({ label: t.title, say: `${intent} ${t.title}` }));
+
+  /* ---------------- What the boss says ---------------- */
+  function progressSummary() {
+    const js = jobStats();
+    const iv = interviewStats();
+    const total = trackTerms().length;
+    const mastered = masteredCount();
+    const goal = getTrackGoal();
+    const vocab = bestQuiz('vocab');
+    const ctx = bestQuiz('context');
+    const lines = [
+      `Assignments: ${js.done} of ${js.total} passed${js.avg != null ? `, averaging ${letter(js.avg)} (${js.avg}%)` : ''}.`,
+      `Mock interviews: ${iv.done} of ${iv.total} passed${iv.avg != null ? `, averaging ${letter(iv.avg)}` : ''}.`,
+      `Key terms: ${mastered} of ${total} mastered${goal ? ` (your goal is ${goal})` : ''}.`,
+      `Quizzes: vocab ${vocab == null ? 'not taken yet' : vocab + '%'}, in context ${ctx == null ? 'not taken yet' : ctx + '%'}.`
+    ];
+    const started = js.avg != null || iv.avg != null || mastered > 0 || vocab != null;
+    let verdict;
+    if (!started) verdict = "You haven't handed anything in yet, which is fine on day one. Let's get your first win on the board.";
+    else if (js.done === js.total && iv.done === iv.total && mastered >= goal) verdict = "Honestly? You're ahead of where most new hires are after a month. Keep it up.";
+    else if (js.avg != null && js.avg < PASS) verdict = "You're putting in the work, but your grades aren't where I need them yet. Ask me to look at a draft before you hand it in. It's the fastest way to improve.";
+    else verdict = "You're making real progress. Here's where I'd focus next.";
+    return `Here's where you stand:\n• ${lines.join('\n• ')}\n\n${verdict}`;
+  }
+
+  function nextStep() {
+    const task = firstOpenTask();
+    if (task) {
+      const r = taskRecord(task.id);
+      return {
+        text: r ? `Finish **${task.title}**. Your best so far is ${r.best}%, and you need ${PASS}% to pass. Want me to look over what you have?` : `Start with **${task.title}**. ${task.summary} It should take about ${task.minutes} minutes.`,
+        chips: [{ label: 'Open it', task: task.id }, { label: 'Give me a hint', say: `Hint for ${task.title}` }, r ? { label: 'Review my work', say: `Review my work on ${task.title}` } : { label: 'Something else', say: 'What else can I work on?' }]
+      };
+    }
+    const iq = interviewQuestions().find(q => { const r = interviewRecord(q.id); return !r || r.best < PASS; });
+    if (iq) return {
+      text: `Every assignment is passed. Nice work. Next, practice your interview answers. Start with "${iq.prompt}"`,
+      chips: [{ label: 'Practice it', iv: iq.id }, { label: 'Interview tips', say: 'Any interview tips?' }]
+    };
+    const goal = getTrackGoal();
+    if (masteredCount() < goal) return {
+      text: `Your assignments and interviews are in great shape. Now hit your key terms goal: you're at ${masteredCount()} of ${goal}. Want a quick quiz?`,
+      chips: [{ label: 'Quiz me', say: 'Quiz me' }, { label: 'Study key terms', view: 'terms' }]
+    };
+    if (bestQuiz('context') == null || bestQuiz('context') < 90) return {
+      text: "You've covered the basics. Try the in-context quiz. It's the closest thing to the real job: situations, not definitions.",
+      chips: [{ label: 'Give me a scenario', say: 'Give me a scenario' }, { label: 'Open key terms', view: 'terms' }]
+    };
+    return {
+      text: "You've done everything I'd ask of a new hire, and done it well. Polish your resume with the posting you're targeting, then come tell me about it.",
+      chips: [{ label: 'Resume & cover letter', view: 'docs' }, { label: 'Quiz me anyway', say: 'Quiz me' }]
+    };
+  }
+
+  function explainTerm(term) {
+    const ctx = (CONTEXT[state.track] || []).find(c => c.term === term.t);
+    const mastered = isMastered(term.t);
+    return {
+      text: `**${term.t}**: ${term.d}${ctx ? `\n\nHow it comes up on the job: ${ctx.why}` : ''}`,
+      chips: [
+        mastered ? null : { label: `Mark ${term.t} as mastered`, act: 'master', term: term.t },
+        { label: 'Quiz me', say: 'Quiz me' },
+        { label: 'Open key terms', view: 'terms' }
+      ].filter(Boolean)
+    };
+  }
+
+  function startQuiz(kind) {
+    const ctx = chatCtx();
+    const letters = ['A', 'B', 'C', 'D'];
+    if (kind === 'scenario') {
+      const pool = CONTEXT[state.track] || [];
+      const recent = ctx.recent || [];
+      const c = pickOne(pool.filter(x => !recent.includes(x.prompt)).length ? pool.filter(x => !recent.includes(x.prompt)) : pool);
+      const opts = shuffle(c.options);
+      ctx.quiz = { kind, answer: c.options[0], opts, why: c.why, term: c.term };
+      ctx.recent = recent.concat(c.prompt).slice(-8);
+      persist();
+      return {
+        text: `Here's a situation from last week:\n\n${c.prompt}\n\n${opts.map((o, i) => `${letters[i]}) ${o}`).join('\n')}`,
+        chips: letters.map(l => ({ label: l, say: l })).concat({ label: 'Not sure', say: "I'm not sure" })
+      };
+    }
+    const terms = trackTerms();
+    const open = terms.filter(x => !isMastered(x.t));
+    const recent = ctx.recent || [];
+    let pool = (open.length ? open : terms).filter(x => !recent.includes(x.t));
+    if (!pool.length) pool = open.length ? open : terms;
+    const card = pickOne(pool);
+    const others = shuffle(terms.filter(x => x.t !== card.t)).slice(0, 3).map(x => x.t);
+    const opts = shuffle([card.t, ...others]);
+    ctx.quiz = { kind: 'term', answer: card.t, opts, why: `${card.t}: ${card.d}`, term: card.t };
+    ctx.recent = recent.concat(card.t).slice(-8);
+    persist();
+    return {
+      text: `Pop quiz. Which term is this?\n\n"${CLUES[card.t] || card.d}"\n\n${opts.map((o, i) => `${letters[i]}) ${o}`).join('\n')}`,
+      chips: letters.map(l => ({ label: l, say: l })).concat({ label: 'Not sure', say: "I'm not sure" })
+    };
+  }
+
+  // Returns a reply if the message answers the open quiz question, otherwise null.
+  function answerQuiz(text) {
+    const ctx = chatCtx();
+    const q = ctx.quiz;
+    if (!q) return null;
+    let idx = -1;
+    const m = /^\(?([abcd1-4])\)?[.!)]?$/i.exec(text.replace(/^(it'?s|its|i think|i'd say|answer( is)?:?|option)\s+/i, '').trim());
+    if (m) idx = /\d/.test(m[1]) ? +m[1] - 1 : 'abcd'.indexOf(m[1].toLowerCase());
+    if (idx < 0) idx = q.opts.findIndex(o => normText(o) === text || (normText(o).length > 3 && text.includes(normText(o))));
+    const giveUp = /\b(not sure|no idea|don'?t know|idk|skip|give up|pass|tell me)\b/.test(text);
+    if (idx < 0 && !giveUp) {
+      if (/\?$/.test(text) || text.split(' ').length > 6) { ctx.quiz = null; persist(); return null; } // moved on to something else
+      return { text: `Just pick A, B, C, or D. Or say "not sure" and I'll walk you through it.`, chips: ['A', 'B', 'C', 'D'].map(l => ({ label: l, say: l })) };
+    }
+    ctx.quiz = null;
+    const right = idx >= 0 && q.opts[idx] === q.answer;
+    ctx.streak = right ? (ctx.streak || 0) + 1 : 0;
+    persist();
+    const again = { label: q.kind === 'scenario' ? 'Another scenario' : 'Another one', say: q.kind === 'scenario' ? 'Give me another scenario' : 'Quiz me again' };
+    const chips = [again];
+    if (q.term && trackTerms().some(x => x.t === q.term) && !isMastered(q.term) && right) chips.push({ label: `Mark ${q.term} as mastered`, act: 'master', term: q.term });
+    chips.push({ label: 'Done for now', say: "That's enough for now, thanks" });
+    if (right) {
+      const cheer = ctx.streak >= 3 ? `That's ${ctx.streak} in a row. ` : '';
+      return { text: `${pickOne(['Correct.', 'Exactly right.', "That's it."])} ${cheer}${q.why}`, chips };
+    }
+    return { text: `${giveUp ? 'No problem. ' : 'Not quite. '}The answer is **${q.answer}**. ${q.why}`, chips };
+  }
+
+  function hintFor(task) {
+    const ctx = chatCtx();
+    const used = Math.max(ctx.hints[task.id] || 0, hintsShown[task.id] || 0);
+    if (used >= task.hints.length) {
+      return {
+        text: `That's every hint I have for **${task.title}**, and the last one is pretty much the answer:\n\n${task.hints[task.hints.length - 1]}\n\nTry it, then ask me to look over your work before you hand it in.`,
+        chips: [{ label: 'Review my work', say: `Review my work on ${task.title}` }, { label: 'Open it', task: task.id }]
+      };
+    }
+    ctx.hints[task.id] = used + 1;
+    hintsShown[task.id] = Math.max(hintsShown[task.id] || 0, used + 1);
+    persist();
+    const lead = used === 0 ? `Sure. Here's where I'd start on **${task.title}**:` : `Okay, here's another nudge on **${task.title}**:`;
+    return {
+      text: `${lead}\n\n${task.hints[used]}`,
+      chips: [
+        used + 1 < task.hints.length ? { label: 'Another hint', say: `Another hint for ${task.title}` } : null,
+        { label: 'Review my work', say: `Review my work on ${task.title}` },
+        { label: 'Open it', task: task.id }
+      ].filter(Boolean)
+    };
+  }
+
+  function draftStarted(task) {
+    const d = drafts[task.id];
+    if (!d) return false;
+    if (task.tool === 'code') return d.code != null && d.code.trim() !== task.code.starter.trim();
+    if (task.tool === 'sheet') return Object.values(d.cells || {}).some(v => String(v).trim());
+    if (task.tool === 'journal') return (d.rows || []).some(r => r.account || r.debit || r.credit) || !!(d.memo || '').trim();
+    if (task.tool === 'writing') return Object.values(d.fields || {}).some(v => String(v).trim());
+    if (task.tool === 'sort') return Object.keys(d.assign || {}).length > 0;
+    return Object.keys(d.answers || {}).length > 0;
+  }
+
+  async function reviewWork(task) {
+    if (!draftStarted(task)) {
+      return {
+        text: `I don't see anything on **${task.title}** yet. Open it up and get a first pass down. Rough is fine. Then send it my way.`,
+        chips: [{ label: 'Open it', task: task.id }, { label: 'Give me a hint', say: `Hint for ${task.title}` }]
+      };
+    }
+    const res = await gradeTask(task);
+    const misses = res.items.filter(it => !it.ok);
+    let text;
+    if (!misses.length) text = `I just looked over **${task.title}**. This is ready. Go ahead and hand it in.`;
+    else {
+      const notes = misses.slice(0, 3).map(it => `• ${it.tip || it.label}`).join('\n');
+      const lead = res.score >= 90 ? 'This is close. Just tighten this up:'
+        : res.score >= PASS ? "It would pass, but it's not my best-case version yet. Fix these first:"
+        : "I wouldn't hand this in yet. Here's what I'd fix:";
+      text = `I looked over your draft of **${task.title}**. If you handed it in right now, it would get about ${/^[AF]/.test(letter(res.score)) ? 'an' : 'a'} ${letter(res.score)} (${res.score}%).\n\n${lead}\n${notes}${misses.length > 3 ? `\n\n…and ${misses.length - 3} smaller thing${misses.length - 3 === 1 ? '' : 's'} after that.` : ''}`;
+    }
+    return { text, chips: [{ label: 'Open it', task: task.id }, misses.length ? { label: 'Give me a hint', say: `Hint for ${task.title}` } : null].filter(Boolean) };
+  }
+
+  function lastGradeNote(task) {
+    const r = taskRecord(task.id);
+    if (!r) return null;
+    return `Your best on **${task.title}** is ${letter(r.best)} (${r.best}%) after ${r.attempts} ${r.attempts === 1 ? 'try' : 'tries'}${r.best >= PASS ? '. That passes.' : `. You need ${PASS}% to pass.`}`;
+  }
+
+  async function chatReply(raw) {
+    const text = normText(raw);
+    const boss = BOSSES[state.track];
+    const info = BOSS_CHAT[state.track];
+    const ctx = chatCtx();
+    const first = (state.name || '').split(/\s+/)[0];
+    const has = re => re.test(text);
+
+    // 1. An open quiz question takes priority.
+    const quizAnswer = answerQuiz(text);
+    if (quizAnswer) return quizAnswer;
+
+    // 2. Following up on "which assignment do you mean?"
+    if (ctx.pending) {
+      const task = findTaskIn(text) || (/^\d$/.test(text) ? jobTasks()[+text - 1] : null);
+      const intent = ctx.pending;
+      ctx.pending = null;
+      persist();
+      if (task) {
+        if (intent === 'hint') return hintFor(task);
+        if (intent === 'review') return reviewWork(task);
+        if (intent === 'answer') return { text: `I won't hand you the answer to **${task.title}**. Doing it yourself is the whole point. But here's a hint:`, then: hintFor(task) };
+      }
+    }
+
+    if (!text) return { text: "Did you mean to send something? I'm here when you need me." };
+
+    // 3. Keep it professional.
+    if (has(/\b(fuck|shit|bitch|asshole|dumbass|idiot|stfu|shut up|hate you|you suck)\b/)) {
+      return { text: "Let's keep it professional. If something's frustrating you, tell me what's going on and I'll help you sort it out.", chips: [{ label: "I'm stuck", say: "I'm stuck on an assignment" }] };
+    }
+
+    // 4. Asking for the answer outright.
+    if (has(/\b(give|tell|show|send) me the (answer|answers|solution)|\bjust tell me\b|\b(the )?(answer|solution) (to|for)\b|\bcan you do it\b|\bdo it for me\b/)) {
+      const r = resolveTask(text);
+      if (r.ambiguous) { ctx.pending = 'answer'; persist(); return { text: "I won't hand you the answers. Doing the work yourself is how you learn the job. I'll give you a good hint, though. Which assignment?", chips: taskChips('Hint for') }; }
+      const h = hintFor(r.task);
+      return { text: `I won't hand you the answer to **${r.task.title}**. On the real job I wouldn't either. But I'll point you the right way:\n\n${h.text.split('\n\n').slice(1).join('\n\n')}`, chips: h.chips };
+    }
+
+    // 5. Hints / stuck on an assignment.
+    if (has(/\b(hint|hints|stuck|nudge|clue)\b|\bhelp (me )?(with|on)\b|\bhow (do|should) i (do|start|approach|solve|finish)\b|\bconfused (about|by|on)\b|\bwhere (do|should) i start\b|\bi don'?t (get|understand) (the|this|that|my) (assignment|task)\b/)) {
+      const r = resolveTask(text);
+      if (r.ambiguous) { ctx.pending = 'hint'; persist(); return { text: 'Happy to help. Which assignment are you on?', chips: taskChips('Hint for') }; }
+      return hintFor(r.task);
+    }
+
+    // 6. Review a draft before handing it in.
+    if (has(/\b(review|check|look (at|over)|go over|proofread|grade|feedback on|thoughts on)\b.*\b(my|this|the)\b.*\b(work|draft|assignment|task|answer|code|spreadsheet|sheet|email|entry|summary|formula|formulas|function)\b|\b(is|does) (this|it|my \w+) look (ok|okay|good|right)\b|\bready to (submit|hand (it )?in|turn in)\b|\bbefore i (submit|hand (it )?in|turn (it )?in)\b/)) {
+      const r = resolveTask(text);
+      if (r.ambiguous) { ctx.pending = 'review'; persist(); return { text: 'Sure, send it over. Which one should I look at?', chips: taskChips('Review my work on') }; }
+      return reviewWork(r.task);
+    }
+
+    // 7. Quizzes and scenarios.
+    if (has(/\b(scenario|situation|role ?play|real[- ]world|what would you do)\b/)) return startQuiz('scenario');
+    if (has(/\bquiz\b|\btest me\b|\bask me (a|some|another)\b|\bpractice (terms|vocab)\b|\bflash ?card/)) return startQuiz('term');
+
+    // 8. Explaining a term.
+    const asksMeaning = has(/\b(what('?s| is| are| does)|whats|define|definition|meaning|explain|tell me about|stand for|stands for|mean)\b/);
+    const term = findTerm(text);
+    if (term && (asksMeaning || text.split(' ').length <= 4)) return explainTerm(term);
+    if (asksMeaning && !term) {
+      const other = findTermAnyTrack(text);
+      if (other) return { text: `That one is more of a ${TRACKS[other.track].name} term, but here you go. **${other.term.t}**: ${other.term.d}` };
+    }
+
+    // 9. Progress and what's next.
+    if (has(/\bhow (am i|i'?m) doing\b|\bmy (progress|grades?|scores?|stats)\b|\bhow'?s my (progress|work)\b|\bam i (doing (ok|okay|well|good)|on track|behind)\b|\bperformance\b|\bwhat do you think of (me|my work)\b/)) {
+      return { text: progressSummary(), chips: nextStep().chips };
+    }
+    if (has(/\bwhat('?s| is| should i (do|work on))? next\b|\bwhat (should|can) i (do|work on)\b|\bwhat else\b|\b(any|more|got) (work|tasks?|assignments?)\b|\bgive me (work|something to do|a task)\b|\bi'?m (bored|done|finished)\b|\bwhat now\b/)) {
+      return nextStep();
+    }
+
+    // 10. A specific assignment named on its own: report where it stands.
+    if (has(/\b(assignment|task|grade)\b/)) {
+      const t = findTaskIn(text);
+      if (t) {
+        const note = lastGradeNote(t);
+        return { text: note || `**${t.title}**: ${t.brief}`, chips: [{ label: 'Open it', task: t.id }, { label: 'Give me a hint', say: `Hint for ${t.title}` }, { label: 'Review my work', say: `Review my work on ${t.title}` }] };
+      }
+    }
+
+    // 11. Everyday questions about the job.
+    const topics = [
+      [/\b(time off|day off|days off|vacation|pto|holiday|leave early|take off)\b/, () => `Just give me as much notice as you can and put it on the team calendar. If it's during ${info.busy}, tell me early so we can plan around it. As an intern, a couple of weeks' notice is plenty.`],
+      [/\b(sick|ill|doctor|not feeling well|fever|appointment)\b/, () => "Stay home and get better. Just message me before your start time so I can cover anything urgent. You don't need to explain more than that."],
+      [/\b(late|traffic|running behind|overslept|missed (the|my) (bus|train))\b/, () => "Thanks for telling me. That's exactly what I want. Message me as soon as you know, give me a rough arrival time, and tell me if anything urgent needs covering."],
+      [/\b(extension|more time|deadline|due date|won'?t finish|can'?t finish|behind on)\b/, () => "Ask early, not at the deadline. Tell me where you are, what's left, and when you can realistically finish. I'd much rather move a date on Tuesday than find out on Friday afternoon."],
+      [/\b(mistake|messed up|screwed up|broke|i broke|error i made|my fault|did something wrong)\b/, () => info.mistake],
+      [/\b(raise|salary|pay|paid|money|compensation|promotion|promoted)\b/, () => `Fair question. Raises and promotions follow results you can point to. Keep a running list of your wins, with numbers when you have them. When you're the person who makes ${info.clients} happy and needs less checking every month, that list makes your case for you.`],
+      [/\b(dress code|wear|outfit|clothes|attire)\b/, () => 'Business casual is safe for the first week. Watch what the team wears and adjust from there. When in doubt, dress one step nicer than you think you need to.'],
+      [/\b(remote|work from home|wfh|hybrid|in (the )?office|in person)\b/, () => "For the first few weeks, I want you in person. You'll learn twice as fast sitting near the team. After that, we can talk about a hybrid schedule."],
+      [/\b(hours|schedule|what time|start time|lunch|break|overtime|weekend)\b/, () => "We're roughly 9 to 5:30, with an hour for lunch. Take your lunch — seriously. If you're regularly staying late, tell me. That's a planning problem, not a dedication test."],
+      [/\b(meeting|meetings|standup|stand-up|one on one|1:1|1 on 1|check-in)\b/, () => "Bring a notebook to every meeting. Write down action items with names next to them. If one of them is yours, send a two-line recap afterward so nothing gets lost. In our 1:1s, you set the agenda: bring what you're stuck on."],
+      [/\b(contact|reach you|message you|email you|slack|text you|call you|best way)\b/, () => 'Quick question? Message me. Something that needs a decision or has a deadline? Email, with a clear subject line. Something urgent? Call. And you can always ask me here.'],
+      [/\b(first (day|week|month)|expect(ed|ations)? (of|from) me|what do you (expect|need) from me|onboarding|get started)\b/, () => info.first],
+      [/\b(typical day|day to day|day-to-day|daily|what do you (do|guys do)|what('?s| is) the job (like)?|what does .* do all day)\b/, () => info.day],
+      [/\b(tools|software|programs|apps|tech stack|what do (you|we) use)\b/, () => `${info.tools} You don't need to be an expert on day one. You'll pick most of it up by using it.`],
+      [/\b(advice|tips?|succeed|impress|stand out|do well|get better|improve)\b/, () => `${pickOne(info.tips)} And one more that applies everywhere: when you finish something, tell me. Don't make me go looking.`],
+      [/\b(career|future|long term|long-term|full[- ]time offer|return offer|grow|growth|five years)\b/, () => `Do the basics really well, ask good questions, and make the team look good in front of ${info.clients}. The interns who do that get handed bigger work fast, and they're the ones we bring back.`],
+      [/\b(interview|interviews|interviewing)\b/, () => {
+        const iv = interviewStats();
+        return `Interviewers want specific stories, not adjectives. Tell me what the situation was, what *you* did, and how it turned out. You've passed ${iv.done} of ${iv.total} practice questions so far.`;
+      }],
+      [/\b(resume|résumé|cv|cover letter)\b/, () => "Keep it to one page, start every bullet with a strong verb, and add a number wherever you can. Then tailor it to the posting. The Resume & cover letter tool will check it line by line."],
+      [/\b(nervous|anxious|scared|overwhelmed|stressed|worried|hard|difficult|struggling|lost|can'?t do this|not smart enough|imposter)\b/, () => `That's completely normal. Everyone's first weeks feel like this, me included. Nobody expects you to know everything. I expect you to ask questions and get a little better each day. Let's find you an easy win.`],
+      [/\b(who are you|about you|your (job|role|background)|how long have you)\b/, () => `I'm ${boss.name}, ${boss.role}. ${boss.intro} I've been doing this long enough to remember being exactly where you are.`],
+      [/\b(team|coworkers|co-workers|colleagues|who (else )?(do|will) i work with)\b/, () => "The team is small and busy, but everyone remembers being new. Introduce yourself, ask what they're working on, and offer to help with the boring stuff. That's how you earn the interesting stuff."]
+    ];
+    for (const [re, fn] of topics) {
+      if (re.test(text)) {
+        const reply = { text: fn() };
+        if (/nervous|anxious|scared|overwhelmed|stressed|worried|hard|difficult|struggling|lost|imposter|can'?t do this/.test(text)) reply.chips = nextStep().chips;
+        if (/interview/.test(text)) reply.chips = [{ label: 'Mock interviews', view: 'interview' }];
+        if (/resume|résumé|\bcv\b|cover letter/.test(text)) reply.chips = [{ label: 'Resume & cover letter', view: 'docs' }];
+        return reply;
+      }
+    }
+
+    // 12. Small talk.
+    if (has(/^(hi|hey|hello|yo|hiya|howdy|good (morning|afternoon|evening)|sup|what'?s up)\b/)) {
+      const h = new Date().getHours();
+      const part = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+      return { text: `${part}${first ? ', ' + first : ''}! What can I help you with?`, chips: DEFAULT_CHIPS };
+    }
+    if (has(/\b(thanks|thank you|thx|ty|appreciate it|appreciate you)\b/)) return { text: pickOne(['Anytime.', 'Happy to help.', "Of course. That's what I'm here for."]) + (has(/enough|done|that'?s all/) ? ' Good work today.' : '') };
+    if (has(/\b(bye|goodbye|see you|see ya|later|signing off|heading out|good night)\b/)) return { text: "Sounds good. Message me if anything comes up." };
+    if (has(/^(can|could|may) i ask (you )?(a|something|you)/)) return { text: "Of course. What's on your mind?" };
+    if (has(/^(ok|okay|k|cool|got it|sounds good|will do|great|nice|awesome|perfect|yes|yep|yeah|sure|no|nope)\b/)) {
+      return { text: pickOne(['Great.', 'Sounds good.', 'Perfect.']) + " Anything else you need?", chips: DEFAULT_CHIPS };
+    }
+    if (has(/\bhow are you\b|\bhow'?s it going\b|\bhow'?s your day\b/)) return { text: `Busy, but good. Thanks for asking. ${pickOne(['It is', 'Things are'])} a little hectic with ${info.busy} coming up. How's your work going?`, chips: [{ label: "I'm stuck", say: "I'm stuck on an assignment" }, { label: 'How am I doing?', say: 'How am I doing?' }] };
+
+    // 13. Didn't catch it.
+    if (term) return explainTerm(term);
+    if (asksMeaning) return { text: `I'm not sure that's on your key terms list. The ${TRACKS[state.track].name} glossary has everything I'd expect you to know. Want me to quiz you on it instead?`, chips: [{ label: 'Open key terms', view: 'terms' }, { label: 'Quiz me', say: 'Quiz me' }] };
+    return {
+      text: pickOne([
+        "I'm not sure I follow. ",
+        'Say a bit more? ',
+        "Hmm, I didn't catch that. "
+      ]) + 'I can give you a hint on an assignment, look over your work, explain a term, quiz you, or answer questions about the job, like time off, deadlines, or what a typical day looks like.',
+      chips: DEFAULT_CHIPS
+    };
+  }
+
+  /* ---------------- Proactive messages ---------------- */
+  function chatAfterTask(task, res) {
+    const track = state.track;
+    ensureChat(track);
+    const tasks = jobTasks();
+    const next = tasks.slice(tasks.indexOf(task) + 1).find(t => { const r = taskRecord(t.id); return !r || r.best < PASS; }) || firstOpenTask();
+    let text, chips;
+    if (res.score >= 90) {
+      text = `Got your **${task.title}**: ${letter(res.score)} (${res.score}%). ${task.praise}`;
+      chips = next ? [{ label: `Next: ${next.title}`, task: next.id }] : [{ label: "What's next?", say: "What's next?" }];
+    } else if (res.score >= PASS) {
+      const miss = res.items.find(it => !it.ok);
+      text = `Got your **${task.title}**: ${letter(res.score)} (${res.score}%). That passes. One thing to tighten for next time: ${miss ? miss.tip : ''}`;
+      chips = [{ label: 'Try for a higher grade', task: task.id }].concat(next ? [{ label: `Next: ${next.title}`, task: next.id }] : []);
+    } else {
+      text = `Got your **${task.title}**: ${letter(res.score)} (${res.score}%). Not there yet, and that's okay. Send me your next draft before you hand it in, and I'll tell you what to fix.`;
+      chips = [{ label: 'Give me a hint', say: `Hint for ${task.title}` }, { label: 'Review my work', say: `Review my work on ${task.title}` }];
+    }
+    pushChat(track, { from: 'boss', text, chips });
+  }
+
+  function chatAfterInterview(q, res) {
+    if (res.score < 90) return;
+    const r = interviewRecord(q.id);
+    if (r && r.attempts > 1 && r.best > res.score) return;
+    const track = state.track;
+    ensureChat(track);
+    pushChat(track, { from: 'boss', text: `I read your answer to "${q.tag}". ${letter(res.score)} (${res.score}%). That's the kind of specific, story-driven answer that gets people hired.` });
+  }
+
+  /* ---------------- Screen ---------------- */
+  function chatFormat(text) {
+    return esc(text)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,!?)]|$)/g, '$1<em>$2</em>')
+      .replace(/\n/g, '<br>');
+  }
+  const chatTime = t => new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+  function chipHTML(c) {
+    const attrs = c.say ? `data-chat-say="${esc(c.say)}"`
+      : c.task ? `data-open-task="${esc(c.task)}"`
+      : c.iv ? `data-open-interview="${esc(c.iv)}"`
+      : c.view ? `data-view="${esc(c.view)}"`
+      : c.act ? `data-chat-act="${esc(c.act)}" data-term="${esc(c.term || '')}"` : '';
+    return `<button type="button" class="chat-chip" ${attrs}>${esc(c.label)}</button>`;
+  }
+
+  function chatLogHTML() {
+    const boss = BOSSES[state.track];
+    const list = chatLog();
+    const rows = list.map(m => m.from === 'boss' ? `
+      <div class="chat-row is-boss">
+        <span class="msg-avatar" aria-hidden="true">${boss.initials}</span>
+        <div class="chat-stack">
+          <div class="chat-bubble"><span class="sr-only">${esc(boss.name)}: </span>${chatFormat(m.text)}</div>
+          <span class="chat-time">${chatTime(m.t)}</span>
+        </div>
+      </div>` : `
+      <div class="chat-row is-me">
+        <div class="chat-stack">
+          <div class="chat-bubble"><span class="sr-only">You: </span>${chatFormat(m.text)}</div>
+          <span class="chat-time">${chatTime(m.t)}</span>
+        </div>
+      </div>`).join('');
+    const typing = chatTyping ? `
+      <div class="chat-row is-boss" id="chat-typing">
+        <span class="msg-avatar" aria-hidden="true">${boss.initials}</span>
+        <div class="chat-bubble chat-typing" aria-label="${esc(boss.name)} is typing"><span></span><span></span><span></span></div>
+      </div>` : '';
+    return rows + typing;
+  }
+
+  function chatChipsHTML() {
+    if (chatTyping) return '';
+    const list = chatLog();
+    const last = list[list.length - 1];
+    const chips = last && last.from === 'boss' && last.chips && last.chips.length ? last.chips : DEFAULT_CHIPS;
+    return chips.map(chipHTML).join('');
+  }
+
+  function refreshChat() {
+    if (currentView !== 'chat') return;
+    const log = $('#chat-log');
+    if (!log) return;
+    log.innerHTML = chatLogHTML();
+    $('#chat-chips').innerHTML = chatChipsHTML();
+    const send = $('#chat-send');
+    if (send) send.disabled = chatTyping;
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function renderChat() {
+    ensureChat();
+    const boss = BOSSES[state.track];
+    if (state.chatUnread && state.chatUnread[state.track]) { state.chatUnread[state.track] = 0; persist(); }
+    updateChatBadge();
+    main.innerHTML = `
+      <div class="page-head chat-head">
+        <div>
+          <p class="eyebrow">${esc(TRACKS[state.track].name)} track</p>
+          <h1>Chat with ${esc(boss.name)}</h1>
+          <p class="page-sub">Your ${esc(boss.role.toLowerCase())}. Ask for a hint, get your draft reviewed before you hand it in, or ask anything about the job.</p>
+        </div>
+        <button type="button" class="text-btn text-btn-muted" data-action="chat-clear">Clear conversation</button>
+      </div>
+      <section class="chat" aria-label="Conversation with ${esc(boss.name)}">
+        <div class="chat-log" id="chat-log" role="log" aria-live="polite" tabindex="0"></div>
+        <div class="chat-chips" id="chat-chips" aria-label="Suggested replies"></div>
+        <form class="chat-form" data-form="chat" autocomplete="off">
+          <label class="sr-only" for="chat-input">Message ${esc(boss.name)}</label>
+          <textarea class="input chat-input" id="chat-input" name="msg" rows="1" maxlength="600" placeholder="Message ${esc(boss.name.split(' ')[0])}…"></textarea>
+          <button class="btn btn-primary" id="chat-send" type="submit"><span>Send</span></button>
+        </form>
+      </section>`;
+    refreshChat();
+    const input = $('#chat-input');
+    const fit = () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 140) + 'px'; };
+    input.addEventListener('input', fit);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); input.form.requestSubmit(); }
+    });
+  }
+
+  async function sendChat(raw) {
+    const text = String(raw || '').trim().slice(0, 600);
+    if (!text || chatTyping) return;
+    const track = state.track;
+    pushChat(track, { from: 'me', text });
+    chatTyping = true;
+    refreshChat();
+    let reply;
+    try { reply = await chatReply(text); }
+    catch (e) { reply = { text: "Sorry, I got pulled into something. Can you ask me that again?" }; }
+    const replies = [reply].concat(reply.then ? [reply.then] : []);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    for (const r of replies) {
+      const delay = reduce ? 150 : Math.min(1500, 450 + r.text.length * 6);
+      await new Promise(res => setTimeout(res, delay));
+      if (state.track !== track && !chatLog(track)) break;
+      pushChat(track, { from: 'boss', text: r.text, chips: r.chips || null });
+      refreshChat();
+    }
+    chatTyping = false;
+    refreshChat();
+    const input = $('#chat-input');
+    if (input && currentView === 'chat' && document.activeElement === document.body) input.focus();
   }
 
   /* =========================================================
@@ -4176,9 +4919,9 @@ function overdueTickets(tickets, now) {
   const blankEdu = () => ({ school: '', degree: '', location: '', date: '', gpa: '', details: '' });
   const blankExtra = () => ({ heading: '', lines: '' });
 
-  function loadDocs() {
-    let d = null;
-    try { d = JSON.parse(localStorage.getItem(DOCS_KEY)); } catch (e) { d = null; }
+  function loadDocs(src) {
+    let d = src;
+    if (d === undefined) { try { d = JSON.parse(localStorage.getItem(DOCS_KEY)); } catch (e) { d = null; } }
     d = d || {};
     d.tab = d.tab === 'cover' ? 'cover' : 'resume';
     d.job = Object.assign({ title: '', company: '', manager: '', posting: '', mode: 'posting' }, d.job || {});
@@ -5941,7 +6684,7 @@ function overdueTickets(tickets, now) {
   document.addEventListener('click', async e => {
     // Close the account menu on any click outside it, or after picking an item
     if (!e.target.closest('.user-menu') || e.target.closest('.menu-item')) toggleUserMenu(false);
-    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-preview-track], [data-open-task], [data-open-interview], [data-answer], [data-sort]');
+    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-preview-track], [data-open-task], [data-open-interview], [data-answer], [data-sort], [data-chat-say], [data-chat-act]');
     if (!el) {
       if (e.target.closest('.nav-links a')) toggleNav(false);
       return;
@@ -5956,6 +6699,17 @@ function overdueTickets(tickets, now) {
       return;
     }
     if (el.dataset.previewTrack) { previewTrack = el.dataset.previewTrack; renderPreview(); return; }
+    if (el.dataset.chatSay) { sendChat(el.dataset.chatSay); return; }
+    if (el.dataset.chatAct === 'master') {
+      const term = el.dataset.term;
+      if (trackTerms().some(x => x.t === term)) {
+        setMastered(term, true);
+        pushChat(state.track, { from: 'me', text: `Mark ${term} as mastered` });
+        pushChat(state.track, { from: 'boss', text: `Done. ${term} is marked as mastered. That's ${masteredCount()} of ${trackTerms().length}.`, chips: [{ label: 'Quiz me again', say: 'Quiz me again' }, { label: "What's next?", say: "What's next?" }] });
+        refreshChat();
+      }
+      return;
+    }
     if (el.dataset.view) { go(el.dataset.view); return; }
     if (el.dataset.openTask) { openTask(el.dataset.openTask); return; }
     if (el.dataset.openInterview) { openInterview(el.dataset.openInterview); return; }
@@ -6135,6 +6889,9 @@ function overdueTickets(tickets, now) {
           state.quizBest = {};
           state.tasks = {};
           state.interviews = {};
+          state.chats = {};
+          state.chatCtx = {};
+          state.chatUnread = {};
           drafts = {};
           saveDrafts();
           Object.keys(lastResults).forEach(k => delete lastResults[k]);
@@ -6183,6 +6940,15 @@ function overdueTickets(tickets, now) {
         }
         break;
       case 'nav-toggle': toggleNav(); break;
+      case 'chat-clear':
+        if (chatTyping) break;
+        if (confirm(`Clear your conversation with ${BOSSES[state.track].name}? Your grades and progress stay.`)) {
+          state.chats[state.track] = [];
+          state.chatCtx[state.track] = { hints: {} };
+          persist();
+          renderChat();
+        }
+        break;
     }
   });
 
