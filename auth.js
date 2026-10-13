@@ -4,7 +4,7 @@
    This file is self-contained: it never touches app state
    directly. It talks to app.js two ways:
      1. Events it dispatches on `window`:
-          firstday:auth         detail: { name, email, avatarUrl }
+          firstday:auth         detail: { name, email, avatarUrl, isAdmin }
           firstday:signed-out   (no detail)
         Fired for Google sign-in, email/password sign-in, AND a
         silent session restore on page load — app.js treats all
@@ -34,6 +34,14 @@
       plus your real domain once this is hosted somewhere.
    4. Project Settings -> API: copy the "Project URL" and the
       "anon public" key into the two constants below.
+   5. (Optional) Make yourself an admin. Sign up in the app once, then in
+      Supabase open SQL Editor and run, with your own email:
+        update auth.users
+        set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}'
+        where email = 'you@example.com';
+      Sign out of FirstDay and back in. An "Admin" item appears in the
+      sidebar. Users can't edit app_metadata themselves, so nobody can
+      make themselves an admin from the browser.
    ========================================================= */
 (() => {
   'use strict';
@@ -48,7 +56,10 @@
     return {
       name: meta.full_name || meta.name || meta.given_name || '',
       email: user.email || '',
-      avatarUrl: meta.avatar_url || meta.picture || ''
+      avatarUrl: meta.avatar_url || meta.picture || '',
+      // app_metadata can only be set from the Supabase dashboard or a server, never by the user,
+      // so it's the right place to mark admins. See step 5 of SETUP above.
+      isAdmin: Boolean(user.app_metadata && user.app_metadata.role === 'admin')
     };
   }
 
