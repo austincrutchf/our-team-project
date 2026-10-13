@@ -69,12 +69,16 @@
     const msg = (error && error.message) || '';
     if (/already registered|already exists/i.test(msg)) return 'That email already has an account — try logging in instead.';
     if (/invalid login credentials/i.test(msg)) return 'That email and password don’t match an account.';
+    if (/email not confirmed/i.test(msg)) return 'Confirm your email first — check your inbox for the link we sent.';
     if (/password.*at least/i.test(msg)) return msg;
     if (/rate limit/i.test(msg)) return 'Too many attempts — wait a bit and try again.';
     return msg || 'Something went wrong. Please try again.';
   }
 
   if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase && window.supabase.createClient) {
+    // Arriving from an email confirmation link counts as signing in on purpose,
+    // so app.js continues to the next setup step instead of staying on the landing page.
+    if (/type=(signup|magiclink|invite)/.test(window.location.hash)) sessionStorage.setItem('firstday:oauth-pending', '1');
     client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Restores a session if the browser still has one (e.g. after a refresh).
@@ -94,7 +98,10 @@
         if (!passwordCheck.ok) return { ok: false, message: passwordCheck.message };
         const { data, error } = await client.auth.signUp({
           email, password,
-          options: { data: { username, first_name: first, last_name: last, full_name: `${first} ${last}`.trim() } }
+          options: {
+            emailRedirectTo: window.location.origin + window.location.pathname,
+            data: { username, first_name: first, last_name: last, full_name: `${first} ${last}`.trim() }
+          }
         });
         if (error) return { ok: false, message: friendlyAuthError(error) };
         if (data && data.user && !data.session) return { ok: true, needsConfirmation: true };
