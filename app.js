@@ -244,7 +244,7 @@
     hr:         { name: 'Tom Alvarez',    role: 'HR Business Partner', initials: 'TA', intro: "Welcome to People Ops. You'll help us hire and onboard — fair, organized, and friendly." }
   };
 
-  const TOOL_LABELS = { code: 'Code', sheet: 'Spreadsheet', journal: 'Journal entry', writing: 'Writing', sort: 'Sorting' };
+  const TOOL_LABELS = { code: 'Code', sheet: 'Spreadsheet', journal: 'Journal entry', writing: 'Writing', sort: 'Sorting', spot: 'Proofread', order: 'Prioritize', inbox: 'Inbox' };
 
   const words = s => (s || '').trim().split(/\s+/).filter(Boolean).length;
   const sentences = s => (s || '').trim().split(/(?<=[.!?])\s+/).filter(Boolean);
@@ -741,6 +741,1361 @@ function overdueTickets(tickets, now) {
       }
     ]
   };
+
+  /* =========================================================
+     MORE ASSIGNMENTS — added after each track's first two.
+     Same rules: everything is graded in the browser.
+     ========================================================= */
+  const MORE_JOBS = {
+    /* ---------------- IT ---------------- */
+    it: [
+      {
+        id: 'it-triage',
+        title: 'Prioritize the morning ticket queue',
+        summary: 'Six tickets, one of you. Decide what gets handled first.',
+        tool: 'order', minutes: 10,
+        brief: "It's 8:05 and the queue is full. Put these tickets in the order you'd work them. Our rule: anything that's a security threat or stops a whole team comes first. Then one person who's blocked with a deadline. Then things that have a workaround. Scheduled requests and nice-to-haves go last.",
+        deliver: ['All six tickets in the order you would work them', 'Security and team-wide outages at the top', 'Requests with a workaround or a later date at the bottom'],
+        hints: [
+          'Ask two questions about each ticket: how many people does it affect, and how bad does it get if I wait an hour?',
+          'Files being renamed to .locked on a shared drive is what ransomware looks like. That spreads every minute you wait.',
+          'Order: ransomware, payroll outage, the blocked sales rep, the printer, the new hire account, the screensaver.'
+        ],
+        praise: "That's exactly how I'd run the queue. The security incident first, then the outage, then the person with a deadline. You'll do fine on the desk.",
+        order: {
+          title: 'Open tickets',
+          items: [
+            { id: 'printer', text: '3rd-floor printer is jammed', sub: 'Reported by 2 people. The 2nd- and 4th-floor printers work fine.', why: 'Annoying, but there’s a workaround: people can print on another floor.' },
+            { id: 'newhire', text: 'Create an account for a new hire', sub: 'Starts next Monday. HR ticket is approved.', why: 'Important, but it isn’t due for days. Schedule it after the urgent work.' },
+            { id: 'ransom', text: 'Files on the shared drive are being renamed to ".locked"', sub: 'Reported by an accountant. More files keep changing.', why: 'This looks like active ransomware. It spreads by the minute, so isolate the machine and escalate before anything else.' },
+            { id: 'screensaver', text: 'Install a new screensaver', sub: 'Request from a marketing coordinator.', why: 'A nice-to-have with no business impact. It goes last.' },
+            { id: 'payroll', text: 'Payroll system is down for the whole finance team', sub: 'Today is payday. 9 people affected.', why: 'A whole team is stopped, on payday. That’s the top outage once the security threat is contained.' },
+            { id: 'laptop', text: "Sales rep's laptop won't boot", sub: 'She has a client demo at 11:00 AM.', why: 'One person, but she’s fully blocked with a hard deadline. That beats issues with a workaround.' }
+          ],
+          answer: ['ransom', 'payroll', 'laptop', 'printer', 'newhire', 'screensaver']
+        }
+      },
+      {
+        id: 'it-phish',
+        title: 'Sort the phishing reports',
+        summary: 'Employees forwarded six suspicious emails. Decide what each one is.',
+        tool: 'inbox', minutes: 12,
+        brief: "Our report-phishing button got a workout this weekend. Go through what people forwarded and decide what each email is: phishing (we block the sender and warn staff), legitimate (we tell the person it's safe), or just spam (marketing junk, no threat). Our real domain is brightline.co. Look at the sender address, not just the name.",
+        deliver: ['A decision for every email', 'Phishing caught by its sender address, urgency, or odd attachments', 'Real company email released, not blocked'],
+        hints: [
+          'Check the address after the name. "IT Support" means nothing if the address is company-support.net instead of brightline.co.',
+          'Phishing almost always pushes urgency or secrecy: "expires in 2 hours," "keep this quiet," "overdue invoice."',
+          'Phishing: the password-expiry email, the CEO gift card request, and the DocuSign .zip. Legitimate: Dana’s agenda and the payroll notice. Spam: the snack box deal.'
+        ],
+        praise: "All six right, and you caught the CEO gift-card one, which fools a lot of people. I'm blocking those senders now.",
+        inbox: {
+          title: 'Reported emails',
+          actions: [
+            { id: 'phish', label: 'Phishing: block' },
+            { id: 'legit', label: 'Legitimate: release' },
+            { id: 'spam', label: 'Spam: delete' }
+          ],
+          emails: [
+            { id: 'e1', from: 'IT Support', addr: 'it-helpdesk@brightline-support.net', time: 'Sat 11:42 PM', subject: 'ACTION REQUIRED: Password expires in 2 hours',
+              body: 'Your Brightline password expires in 2 hours. To keep your access, sign in at the link below and confirm your current password.', answer: 'phish',
+              why: 'The address is brightline-support.net, not brightline.co, and it asks for your current password under time pressure. IT never asks for that.' },
+            { id: 'e2', from: 'Dana Whitfield', addr: 'dwhitfield@brightline.co', time: 'Fri 4:15 PM', subject: "Agenda for Thursday's close meeting",
+              body: "Hi all, attached is the agenda for Thursday. We'll cover the bank rec and accruals. No prep needed. Thanks, Dana", answer: 'legit',
+              why: 'It comes from our real domain, there are no links or requests, and it matches a normal meeting. Safe to release.' },
+            { id: 'e3', from: 'Mark Ellis (CEO)', addr: 'mark.ellis.ceo@gmail.com', time: 'Sun 8:03 AM', subject: 'Quick favor, keep this between us',
+              body: "Are you at your desk? I need you to buy five $100 gift cards for a client today. Don't mention it to anyone, it's a surprise. Send me the codes.", answer: 'phish',
+              why: 'A classic gift-card scam: a personal Gmail pretending to be the CEO, secrecy, and a request for untraceable money.' },
+            { id: 'e4', from: 'Brightline Payroll', addr: 'payroll@brightline.co', time: 'Mon 6:00 AM', subject: 'Your pay stub for October 15 is ready',
+              body: 'Your pay stub is ready. Open Workday from your usual bookmark to view it. This message has no links.', answer: 'legit',
+              why: 'Real domain, expected timing, and it tells you to use your own bookmark instead of clicking a link. That’s what a legitimate notice looks like.' },
+            { id: 'e5', from: 'DocuSign', addr: 'dse@docusign-secure-mail.co', time: 'Sun 2:30 PM', subject: 'Overdue invoice: please review and sign',
+              body: 'You have a document waiting: Invoice_Overdue_Final.zip. Open the attachment to review and sign before your account is suspended.', answer: 'phish',
+              why: 'DocuSign never sends .zip attachments, the domain is a lookalike, and it threatens suspension to rush you.' },
+            { id: 'e6', from: 'SnackBox Co.', addr: 'deals@snackbox.com', time: 'Sat 10:00 AM', subject: '20% off your next office snack box',
+              body: 'Restock the break room! Use code CRUNCH20 for 20% off this week. Unsubscribe anytime.', answer: 'spam',
+              why: 'Unwanted marketing from a real company, with no request for credentials or money. Delete it; no need to block or warn.' }
+          ]
+        },
+        questions: [
+          { id: 'clicked', prompt: 'An employee admits they entered their password on the "password expires" page. What do you do first?',
+            options: ['Reset their password and check their account for unusual sign-ins', 'Delete the email from their inbox', 'Remind them to be more careful next time', 'Nothing. They only typed a password'], answer: 'Reset their password and check their account for unusual sign-ins', weight: 20,
+            tip: 'Assume the password is stolen. Reset it right away, sign them out everywhere, and check for logins you don’t recognize.' }
+        ]
+      },
+      {
+        id: 'it-logins',
+        title: 'Detect brute-force login attempts',
+        summary: 'Scan the sign-in log for accounts under attack.',
+        tool: 'code', minutes: 20,
+        brief: "Security wants a daily report of accounts getting hammered with bad passwords. Write flagAccounts(logLines) that takes raw log lines and returns the usernames with 5 or more FAILED sign-ins, sorted A to Z, each name once. Each line looks like \"2026-10-12T08:01:22Z FAILED jsmith 10.0.0.5\". Lines from the real system are messy, so expect extra spaces.",
+        deliver: ['Only FAILED lines count, not SUCCESS', 'Usernames with 5 or more failures (exactly 4 is not enough)', 'Each username once, sorted alphabetically'],
+        hints: [
+          'Split each line on whitespace: line.trim().split(/\\s+/) gives [time, status, user, ip].',
+          'Count failures in an object: counts[user] = (counts[user] || 0) + 1, only when status is "FAILED".',
+          'Then Object.keys(counts).filter(u => counts[u] >= 5).sort().'
+        ],
+        praise: "That's going straight into the security report. Three accounts got locked down before anyone got in.",
+        code: {
+          fn: 'flagAccounts',
+          starter:
+`// Return usernames with 5 or more FAILED sign-ins, sorted A-Z.
+// Each line: "2026-10-12T08:01:22Z FAILED jsmith 10.0.0.5"
+
+function flagAccounts(logLines) {
+  // your code here
+
+}
+`,
+          tests: [
+            { label: 'One account under attack', args: [[
+              '2026-10-12T08:01:22Z FAILED jsmith 10.0.0.5', '2026-10-12T08:01:25Z FAILED jsmith 10.0.0.5', '2026-10-12T08:01:29Z FAILED jsmith 10.0.0.5',
+              '2026-10-12T08:01:33Z FAILED jsmith 10.0.0.5', '2026-10-12T08:01:38Z FAILED jsmith 10.0.0.5', '2026-10-12T08:02:10Z SUCCESS alee 10.0.0.9'
+            ]], expect: ['jsmith'] },
+            { label: 'Successes don’t count', args: [[
+              '2026-10-12T09:00:00Z SUCCESS mkhan 10.0.0.2', '2026-10-12T09:00:01Z SUCCESS mkhan 10.0.0.2', '2026-10-12T09:00:02Z SUCCESS mkhan 10.0.0.2',
+              '2026-10-12T09:00:03Z SUCCESS mkhan 10.0.0.2', '2026-10-12T09:00:04Z SUCCESS mkhan 10.0.0.2'
+            ]], expect: [] },
+            { label: 'Empty log', args: [[]], expect: [] }
+          ],
+          hidden: [
+            { label: 'Exactly 4 failures is not flagged', args: [[
+              '2026-10-12T08:00:00Z FAILED bob 1.1.1.1', '2026-10-12T08:00:01Z FAILED bob 1.1.1.1', '2026-10-12T08:00:02Z FAILED bob 1.1.1.1', '2026-10-12T08:00:03Z FAILED bob 1.1.1.1'
+            ]], expect: [] },
+            { label: 'Several accounts, sorted A-Z', args: [[
+              ...Array.from({ length: 6 }, (_, i) => `2026-10-12T08:00:0${i}Z FAILED zoe 2.2.2.2`),
+              ...Array.from({ length: 5 }, (_, i) => `2026-10-12T08:01:0${i}Z FAILED adam 3.3.3.3`),
+              '2026-10-12T08:02:00Z FAILED carl 4.4.4.4'
+            ]], expect: ['adam', 'zoe'] },
+            { label: 'Extra spaces in lines', args: [[
+              ...Array.from({ length: 5 }, (_, i) => `  2026-10-12T08:00:0${i}Z   FAILED    priya   5.5.5.5  `)
+            ]], expect: ['priya'] },
+            { label: 'Failures mixed with a later success', args: [[
+              ...Array.from({ length: 5 }, (_, i) => `2026-10-12T08:00:0${i}Z FAILED tina 6.6.6.6`),
+              '2026-10-12T08:00:09Z SUCCESS tina 6.6.6.6'
+            ]], expect: ['tina'] }
+          ]
+        }
+      },
+      {
+        id: 'it-disk',
+        title: 'Build the server disk space report',
+        summary: 'Flag servers that are about to run out of space.',
+        tool: 'sheet', minutes: 15,
+        brief: "Last month a full disk took down the mail server. Never again. Build me a weekly disk report: free space and percent used for each server, a status for each one, and two totals at the bottom. Status rules: 90% used or more is Critical, 75% or more is Warning, anything else is OK. Use formulas so I can paste new numbers in every week.",
+        deliver: ['Free GB (D2:D7) and % used (E2:E7) for each server', 'A status from an IF formula (F2:F7)', 'Number of Critical servers (B9) and total free GB (B10)'],
+        hints: [
+          'Free GB is total minus used: =B2-C2. Percent used is used divided by total: =C2/B2. Fill both down.',
+          'Nest two IFs for three outcomes, checking the highest threshold first: =IF(E2>=0.9,"Critical",IF(E2>=0.75,"Warning","OK"))',
+          'Count the Critical servers with =COUNTIF(F2:F7,"Critical") and total free space with =SUM(D2:D7).'
+        ],
+        praise: 'Two Critical servers. I’m ordering more storage for web-01 and db-02 today. This report is going on the Monday checklist.',
+        sheet: {
+          cols: 6, rows: 10,
+          widths: { A: 110, B: 90, C: 90, D: 90, E: 90, F: 110 },
+          formats: { B: 'int', C: 'int', D: 'int', E: 'pct' },
+          cellFormats: { B9: 'int', B10: 'int' },
+          bold: ['A9', 'A10'],
+          grid: [
+            ['Server', 'Total GB', 'Used GB', 'Free GB', '% used', 'Status'],
+            ['web-01', 500, 470, null, null, null],
+            ['web-02', 500, 310, null, null, null],
+            ['db-01', 2000, 1640, null, null, null],
+            ['db-02', 2000, 1910, null, null, null],
+            ['file-01', 4000, 2900, null, null, null],
+            ['mail-01', 1000, 760, null, null, null],
+            [null, null, null, null, null, null],
+            ['Critical servers', null, null, null, null, null],
+            ['Total free GB', null, null, null, null, null]
+          ],
+          editable: ['D2:F7', 'B9', 'B10'],
+          groups: [
+            { label: 'Free GB for each server', weight: 20, cells: 'D2:D7', expect: [30, 190, 360, 90, 1100, 240], require: 'formula',
+              tip: 'Free space is total minus used: =B2-C2, filled down.' },
+            { label: 'Percent used', weight: 20, cells: 'E2:E7', expect: [0.94, 0.62, 0.82, 0.955, 0.725, 0.76], require: 'formula', pct: true,
+              tip: 'Percent used is used divided by total: =C2/B2. Leave it as a decimal; the column is formatted as a percent.' },
+            { label: 'Status for each server', weight: 35, cells: 'F2:F7', expect: ['Critical', 'OK', 'Warning', 'Critical', 'OK', 'Warning'], require: 'IF',
+              tip: 'Check the highest threshold first: =IF(E2>=0.9,"Critical",IF(E2>=0.75,"Warning","OK")).' },
+            { label: 'Count of Critical servers', weight: 15, cells: 'B9', expect: [2], require: 'COUNTIF',
+              tip: 'Count them with =COUNTIF(F2:F7,"Critical").' },
+            { label: 'Total free GB', weight: 10, cells: 'B10', expect: [2010], require: 'formula',
+              tip: 'Add up the free space with =SUM(D2:D7).' }
+          ]
+        }
+      },
+      {
+        id: 'it-outage',
+        title: 'Write the VPN outage update',
+        summary: 'Tell the whole company what’s broken, without the jargon.',
+        tool: 'writing', minutes: 12,
+        brief: "The VPN has been down since 7:40 AM. An expired security certificate caused it, and we expect it fixed by 11:00 AM. Until then, people can still get email through Outlook on the web at mail.brightline.co. Write the all-staff update. Everyone reading this is stressed and not technical, so: what's broken, what to do in the meantime, when it'll be fixed, and when they'll hear from us next (10:30 AM).",
+        deliver: ['A subject line that says what’s down', 'The workaround: Outlook on the web at mail.brightline.co', 'The expected fix time (11:00 AM) and next update time (10:30 AM)', 'Plain language, no technical jargon, 50–180 words'],
+        hints: [
+          'Lead with the impact: "The VPN is down, so you can’t reach internal systems from home." People want to know how it affects them.',
+          'Skip how certificates work. "A security setting expired" is all anyone needs.',
+          'Close with times: "We expect it back by 11:00 AM, and we’ll send another update at 10:30 AM."'
+        ],
+        praise: "Clear, calm, and no jargon. The help desk phone stopped ringing ten minutes after this went out.",
+        writing: {
+          fields: [
+            { id: 'subject', label: 'Subject line', type: 'input', placeholder: 'What people see in their inbox', counter: 'chars' },
+            { id: 'body', label: 'Message', type: 'textarea', rows: 10, placeholder: 'Hi everyone,', counter: 'words' }
+          ],
+          checks: [
+            { label: 'Subject says the VPN is down', weight: 15, test: f => /vpn/i.test(f.subject) && /down|outage|issue|problem|not working|unavailable/i.test(f.subject),
+              tip: 'Put the problem in the subject line, like "VPN outage: update and workaround".' },
+            { label: 'Explains the impact', weight: 10, test: f => /vpn/i.test(f.body) && /(can'?t|cannot|unable|won'?t|not able|down|unavailable)/i.test(f.body),
+              tip: 'Say what’s broken in plain words: the VPN is down, so people can’t reach internal systems remotely.' },
+            { label: 'Gives the workaround', weight: 20, test: f => /mail\.brightline\.co/i.test(f.body) || /outlook on the web|web ?mail|web version/i.test(f.body),
+              tip: 'Tell people what they can do now: use Outlook on the web at mail.brightline.co.' },
+            { label: 'Gives the expected fix time', weight: 15, test: f => /\b11(:00)?\s?(a\.?m\.?)/i.test(f.body),
+              tip: 'Include when you expect it fixed: 11:00 AM.' },
+            { label: 'Says when the next update comes', weight: 15, test: f => /10:30/.test(f.body),
+              tip: 'Promise the next update: 10:30 AM. People stop asking when they know when they’ll hear from you.' },
+            { label: 'No technical jargon', weight: 15, test: f => !/\b(ssl|tls|handshake|x\.?509|crl|ocsp|pki|cert chain|certificate chain|root ca|ca\b)/i.test(f.subject + ' ' + f.body),
+              tip: 'Drop the jargon (SSL, TLS, certificate chain). Most readers aren’t technical. "A security setting expired" says enough.' },
+            { label: '50–180 words', weight: 10, test: f => words(f.body) >= 50 && words(f.body) <= 180,
+              tip: f => `You’re at ${words(f.body)} words. Aim for 50 to 180. Outage updates get skimmed.` }
+          ]
+        }
+      },
+      {
+        id: 'it-audit',
+        title: "Audit a new tech's ticket notes",
+        summary: 'Flag the steps that broke security or support rules.',
+        tool: 'spot', minutes: 10,
+        brief: "Our new contractor closed a lot of tickets last week, but some of his notes worry me. Read through them and flag every step that broke security policy or our support standards. Leave the good ones alone. I don't want to retrain him on things he did right.",
+        deliver: ['Every risky or against-policy step flagged', 'Good practices left unflagged'],
+        hints: [
+          'Think about three rules: never share or send passwords insecurely, give people only the access they need, and never turn off security tools.',
+          'A ticket isn’t really closed until the user confirms it’s fixed.',
+          'Five are problems: asking for the password, disabling antivirus, closing without confirming, domain admin for the intern, and emailing the password to a personal Gmail.'
+        ],
+        praise: "You caught every one, and you didn't flag the good habits. I'll walk him through these five on Monday.",
+        spot: {
+          title: 'Ticket notes, week of Oct 5',
+          intro: 'Each line is one step from a different ticket.',
+          lines: [
+            { id: 'l1', text: 'Verified the caller’s identity with their employee ID before resetting the password.', flag: false, why: 'Verifying identity before a reset is exactly right. It stops social engineering.' },
+            { id: 'l2', text: 'Asked the user for her password so I could log in as her and check her settings.', flag: true, why: 'Never ask for a user’s password. Use remote support or an admin tool so their credentials stay private.' },
+            { id: 'l3', text: 'Restarted the print spooler service; the user confirmed printing works.', flag: false, why: 'Fixed it, then confirmed with the user. Good.' },
+            { id: 'l4', text: 'Turned off antivirus on the laptop because it was slowing down startup.', flag: true, why: 'Disabling security software leaves the machine exposed. Find what’s slow instead, or escalate.' },
+            { id: 'l5', text: 'Wrote up the fix in knowledge base article #214.', flag: false, why: 'Documenting fixes saves the next tech time. Keep doing it.' },
+            { id: 'l6', text: 'Closed the ticket after rebooting the router; didn’t hear back from the user.', flag: true, why: 'Don’t close until the user confirms the fix. A reboot isn’t proof the problem is gone.' },
+            { id: 'l7', text: 'Gave the marketing intern domain admin rights so she can install fonts.', flag: true, why: 'This breaks least privilege. Install the fonts for her, or give her a narrow permission, never domain admin.' },
+            { id: 'l8', text: 'Emailed the user’s new temporary password to his personal Gmail.', flag: true, why: 'Send passwords through an approved secure channel, never in plain email to an outside address.' },
+            { id: 'l9', text: 'Tested the patch on two laptops before rolling it out to the department.', flag: false, why: 'Testing on a small group first is good patch management.' }
+          ]
+        }
+      }
+    ],
+
+    /* ---------------- Finance ---------------- */
+    finance: [
+      {
+        id: 'fin-loan',
+        title: 'Compare equipment loan offers',
+        summary: 'Use PMT to find the real cost of three loans.',
+        tool: 'sheet', minutes: 15,
+        brief: "We're borrowing $250,000 for new equipment and three banks sent offers. Calculate the monthly payment for each with PMT, then the total we'd pay over the life of the loan and how much of that is interest. The CFO always asks two things: which payment is easiest on cash flow, and which loan is cheapest overall. They're usually not the same one.",
+        deliver: ['Monthly payment for each offer using PMT (E2:E4)', 'Total paid over the loan (F2:F4)', 'Total interest (G2:G4)', 'Answers to the CFO’s two questions'],
+        hints: [
+          'PMT needs a monthly rate and a number of months: =PMT(C2/12, D2*12, -B2). The minus sign makes the payment show as positive.',
+          'Total paid is the payment times the number of months: =E2*D2*12. Interest is total paid minus the loan: =F2-B2.',
+          'Bank B has the lowest payment because it stretches over 7 years, but Bank C costs the least in interest because it’s paid off in 3.'
+        ],
+        praise: "Perfect. That tradeoff, low payment versus low total cost, is exactly what the CFO needed to see. We're going with Bank C.",
+        sheet: {
+          cols: 7, rows: 4,
+          widths: { A: 80, B: 100, C: 70, D: 64, E: 120, F: 120, G: 120 },
+          formats: { B: 'money0', C: 'pct', D: 'int', E: 'money', F: 'money', G: 'money' },
+          grid: [
+            ['Offer', 'Loan', 'Rate', 'Years', 'Monthly payment', 'Total paid', 'Total interest'],
+            ['Bank A', 250000, 0.065, 5, null, null, null],
+            ['Bank B', 250000, 0.059, 7, null, null, null],
+            ['Bank C', 250000, 0.072, 3, null, null, null]
+          ],
+          editable: ['E2:G4'],
+          groups: [
+            { label: 'Monthly payment with PMT', weight: 40, cells: 'E2:E4', expect: [4891.5371, 3640.1656, 7742.1555], require: 'PMT', abs: true,
+              tip: 'Use PMT with a monthly rate and the number of months: =PMT(C2/12, D2*12, -B2).' },
+            { label: 'Total paid', weight: 20, cells: 'F2:F4', expect: [293492.2233, 305773.907, 278717.5996], require: 'formula', abs: true,
+              tip: 'Total paid is the monthly payment times the number of months: =E2*D2*12.' },
+            { label: 'Total interest', weight: 20, cells: 'G2:G4', expect: [43492.2233, 55773.907, 28717.5996], require: 'formula',
+              tip: 'Interest is everything you pay beyond the loan amount: =F2-B2.' }
+          ]
+        },
+        questions: [
+          { id: 'lowpay', prompt: 'Which offer has the lowest monthly payment?', options: ['Bank A', 'Bank B', 'Bank C'], answer: 'Bank B', weight: 10,
+            tip: 'Bank B spreads the loan over 7 years, so each payment is smallest.' },
+          { id: 'cheapest', prompt: 'Which offer costs the least in total interest?', options: ['Bank A', 'Bank B', 'Bank C'], answer: 'Bank C', weight: 10,
+            tip: 'Bank C has the highest rate but the shortest term, so it costs about $28,700 in interest versus $55,800 for Bank B.' }
+        ]
+      },
+      {
+        id: 'fin-npv',
+        title: 'Decide whether to buy the new machine',
+        summary: 'Run an NPV analysis and make the call.',
+        tool: 'sheet', minutes: 15,
+        brief: "Operations wants a $120,000 packaging machine. It should save us cash every year for five years. Our hurdle rate is 8%. Calculate the NPV and the cumulative cash flow by year so we can see the payback, then tell me: do we buy it?",
+        deliver: ['Cumulative cash flow for each year (B4:G4)', 'NPV at 8% using the NPV function (B6)', 'A yes-or-no decision'],
+        hints: [
+          'Cumulative cash flow is a running total. B4 is just =B3. Then C4 is =B4+C3, filled right... or typed for each year.',
+          'Excel’s NPV discounts starting at year 1, so add year 0 separately: =NPV(B5, C3:G3) + B3.',
+          'A positive NPV means the project earns more than our 8% hurdle rate. The cumulative cash flow turns positive in year 4.'
+        ],
+        praise: 'NPV of about $4,600 and payback in year 4. It clears the hurdle, but not by much. I’ll approve it and flag it as tight.',
+        sheet: {
+          cols: 7, rows: 6,
+          widths: { A: 160, B: 100, C: 100, D: 100, E: 100, F: 100, G: 100 },
+          formats: { B: 'money0', C: 'money0', D: 'money0', E: 'money0', F: 'money0', G: 'money0' },
+          cellFormats: { B5: 'pct', B6: 'money' },
+          bold: ['A6'],
+          grid: [
+            ['Year', 0, 1, 2, 3, 4, 5],
+            ['Description', 'Buy machine', 'Savings', 'Savings', 'Savings', 'Savings', 'Savings'],
+            ['Cash flow', -120000, 30000, 35000, 35000, 30000, 25000],
+            ['Cumulative cash flow', null, null, null, null, null, null],
+            ['Hurdle rate', 0.08, null, null, null, null, null],
+            ['NPV', null, null, null, null, null, null]
+          ],
+          editable: ['B4:G4', 'B6'],
+          groups: [
+            { label: 'Cumulative cash flow by year', weight: 40, cells: 'B4:G4', expect: [-120000, -90000, -55000, -20000, 10000, 35000], require: 'formula',
+              tip: 'Make it a running total: B4 is =B3, then C4 is =B4+C3, D4 is =C4+D3, and so on.' },
+            { label: 'NPV at 8%', weight: 40, cells: 'B6', expect: [4634.2404], require: 'NPV',
+              tip: 'Discount years 1–5 with NPV, then add year 0: =NPV(B5, C3:G3) + B3.' }
+          ]
+        },
+        questions: [
+          { id: 'buy', prompt: 'Should we buy the machine?', options: ['Yes. The NPV is positive', 'No. The NPV is negative', 'No. It takes 5 years to pay back'], answer: 'Yes. The NPV is positive', weight: 20,
+            tip: 'A positive NPV at our 8% hurdle rate means the project creates value, even though payback takes until year 4.' }
+        ]
+      },
+      {
+        id: 'fin-variance',
+        title: 'Explain budget vs. actual',
+        summary: 'Find who overspent, by line and by department.',
+        tool: 'sheet', minutes: 15,
+        brief: "Quarter's closed. Fill in the variance for every line, then roll it up by department with SUMIF so I can see who went over. In the meeting, I'll be asked which department is furthest over budget as a percent, not just in dollars.",
+        deliver: ['Variance in dollars (E2:E9) and percent (F2:F9) for each line', 'Budget, actual, and variance by department with SUMIF (B12:D14)', 'Variance percent by department (E12:E14)'],
+        hints: [
+          'Variance is actual minus budget: =D2-C2. Percent is variance over budget: =E2/C2. Positive means over budget.',
+          'Total a department with SUMIF: =SUMIF($A$2:$A$9, A12, $C$2:$C$9) for budget. Change the last range to D for actual.',
+          'Department variance is =C12-B12 and percent is =D12/B12. Marketing is over by the most dollars, but Operations is over by the biggest percent.'
+        ],
+        praise: "That's the slide. Marketing is over by the most dollars, but Operations is over the most proportionally. Good catch on the difference.",
+        sheet: {
+          cols: 6, rows: 14,
+          widths: { A: 110, B: 110, C: 96, D: 96, E: 96, F: 86 },
+          formats: { C: 'money0', D: 'money0', E: 'money0', F: 'pct' },
+          cellFormats: { B12: 'money0', B13: 'money0', B14: 'money0', E12: 'pct', E13: 'pct', E14: 'pct' },
+          bold: ['A11', 'B11', 'C11', 'D11', 'E11'],
+          grid: [
+            ['Department', 'Line item', 'Budget', 'Actual', 'Variance $', 'Variance %'],
+            ['Marketing', 'Ads', 18000, 21500, null, null],
+            ['Marketing', 'Events', 6000, 4800, null, null],
+            ['Sales', 'Travel', 9000, 11200, null, null],
+            ['Sales', 'Software', 4000, 4000, null, null],
+            ['Operations', 'Supplies', 7500, 6900, null, null],
+            ['Operations', 'Shipping', 12000, 14100, null, null],
+            ['Marketing', 'Agency fees', 10000, 9600, null, null],
+            ['Sales', 'Training', 3000, 1750, null, null],
+            [null, null, null, null, null, null],
+            ['Department', 'Budget', 'Actual', 'Variance $', 'Variance %', null],
+            ['Marketing', null, null, null, null, null],
+            ['Sales', null, null, null, null, null],
+            ['Operations', null, null, null, null, null]
+          ],
+          editable: ['E2:F9', 'B12:E14'],
+          groups: [
+            { label: 'Variance $ by line', weight: 15, cells: 'E2:E9', expect: [3500, -1200, 2200, 0, -600, 2100, -400, -1250], require: 'formula',
+              tip: 'Variance is actual minus budget: =D2-C2, filled down.' },
+            { label: 'Variance % by line', weight: 15, cells: 'F2:F9', expect: [0.194444, -0.2, 0.244444, 0, -0.08, 0.175, -0.04, -0.416667], require: 'formula', pct: true,
+              tip: 'Divide the variance by the budget: =E2/C2. Leave it as a decimal.' },
+            { label: 'Department budgets with SUMIF', weight: 15, cells: 'B12:B14', expect: [34000, 16000, 19500], require: 'SUMIF',
+              tip: 'Total each department’s budget: =SUMIF($A$2:$A$9, A12, $C$2:$C$9).' },
+            { label: 'Department actuals with SUMIF', weight: 15, cells: 'C12:C14', expect: [35900, 16950, 21000], require: 'SUMIF',
+              tip: 'Same idea for actual spending: =SUMIF($A$2:$A$9, A12, $D$2:$D$9).' },
+            { label: 'Department variance $', weight: 10, cells: 'D12:D14', expect: [1900, 950, 1500], require: 'formula',
+              tip: 'Department variance is actual minus budget: =C12-B12.' },
+            { label: 'Department variance %', weight: 10, cells: 'E12:E14', expect: [0.055882, 0.059375, 0.076923], require: 'formula', pct: true,
+              tip: 'Divide each department’s variance by its budget: =D12/B12.' }
+          ]
+        },
+        questions: [
+          { id: 'worst', prompt: 'Which department is furthest over budget as a percent?', options: ['Marketing', 'Sales', 'Operations'], answer: 'Operations', weight: 20,
+            tip: 'Marketing is over by the most dollars ($1,900), but Operations is over by 7.7% of its budget, more than Marketing (5.6%) or Sales (5.9%).' }
+        ]
+      },
+      {
+        id: 'fin-ratios',
+        title: 'Run a credit check on a new customer',
+        summary: 'Calculate liquidity, leverage, and margin ratios.',
+        tool: 'sheet', minutes: 12,
+        brief: "Harlow Supply wants to buy from us on 60-day credit terms. Before we say yes, run the four ratios our credit policy requires. Our policy approves credit if the current ratio is at least 1.5, the quick ratio is at least 1.0, and debt-to-equity is under 1.0.",
+        deliver: ['Current ratio (B11)', 'Quick ratio (B12)', 'Debt-to-equity (B13)', 'Gross margin (B14)', 'A credit decision'],
+        hints: [
+          'Current ratio = current assets ÷ current liabilities. Quick ratio leaves out inventory: (current assets − inventory) ÷ current liabilities.',
+          'Debt-to-equity = total debt ÷ equity. Gross margin = (revenue − cost of goods sold) ÷ revenue.',
+          'B11 =B2/B4, B12 =(B2-B3)/B4, B13 =B5/B6, B14 =(B7-B8)/B7. All three policy tests pass.'
+        ],
+        praise: 'Strong on every test. Approve them for 60-day terms. Thanks for running it properly instead of eyeballing it.',
+        sheet: {
+          cols: 2, rows: 14,
+          widths: { A: 230, B: 130 },
+          formats: { B: 'money0' },
+          cellFormats: { B11: 'x2', B12: 'x2', B13: 'x2', B14: 'pct' },
+          bold: ['A10'],
+          grid: [
+            ['Harlow Supply (last fiscal year)', null],
+            ['Current assets', 184000],
+            ['Inventory (included above)', 62000],
+            ['Current liabilities', 96000],
+            ['Total debt', 150000],
+            ['Shareholders’ equity', 240000],
+            ['Revenue', 820000],
+            ['Cost of goods sold', 508400],
+            [null, null],
+            ['Ratios', null],
+            ['Current ratio', null],
+            ['Quick ratio', null],
+            ['Debt-to-equity', null],
+            ['Gross margin', null]
+          ],
+          editable: ['B11:B14'],
+          groups: [
+            { label: 'Current ratio', weight: 20, cells: 'B11', expect: [1.916667], require: 'formula', tip: 'Current assets divided by current liabilities: =B2/B4.' },
+            { label: 'Quick ratio', weight: 20, cells: 'B12', expect: [1.270833], require: 'formula', tip: 'Take inventory out first: =(B2-B3)/B4.' },
+            { label: 'Debt-to-equity', weight: 20, cells: 'B13', expect: [0.625], require: 'formula', tip: 'Total debt divided by equity: =B5/B6.' },
+            { label: 'Gross margin', weight: 20, cells: 'B14', expect: [0.38], require: 'formula', pct: true, tip: 'Revenue minus cost of goods sold, divided by revenue: =(B7-B8)/B7.' }
+          ]
+        },
+        questions: [
+          { id: 'approve', prompt: 'Based on our credit policy, what do we do?', options: ['Approve 60-day terms', 'Decline: the quick ratio is too low', 'Decline: they have too much debt'], answer: 'Approve 60-day terms', weight: 20,
+            tip: 'Current ratio 1.92 (needs 1.5), quick ratio 1.27 (needs 1.0), and debt-to-equity 0.63 (needs under 1.0). All three pass.' }
+        ]
+      },
+      {
+        id: 'fin-proof',
+        title: 'Check the pitch deck numbers',
+        summary: 'Find the math errors before the client does.',
+        tool: 'spot', minutes: 10,
+        brief: "A junior analyst wrote the key-stats slide for tomorrow's client pitch. I don't trust it yet. Check every line and flag the ones where the math or the finance is wrong. If a client spots an error, we lose credibility on everything else in the deck.",
+        deliver: ['Every line with a math or concept error flagged', 'Correct lines left alone'],
+        hints: [
+          'Do the arithmetic yourself. Growth is (new − old) ÷ old, not ÷ new.',
+          'Gross margin is the share of revenue you keep after cost of goods sold, not the share you spend.',
+          'Four are wrong: the 20% growth, the gross margin definition, the debt-to-equity of 2.0, and the $12M working capital.'
+        ],
+        praise: "Four errors caught, and you didn't flag a single correct line. That's the attention to detail this job is about.",
+        spot: {
+          title: 'Draft slide: Key financial stats',
+          lines: [
+            { id: 'f1', text: 'Revenue grew from $40M to $50M, a 20% increase.', flag: true, why: 'Growth is (50 − 40) ÷ 40 = 25%. Dividing by the new number gives the wrong answer.' },
+            { id: 'f2', text: 'At a P/E of 18x, investors pay $18 for every $1 of annual earnings.', flag: false, why: 'That’s exactly what P/E means.' },
+            { id: 'f3', text: 'An EBITDA margin of 30% on $50M of revenue means $15M of EBITDA.', flag: false, why: '30% × $50M = $15M. Correct.' },
+            { id: 'f4', text: 'A 45% gross margin means 45% of revenue goes to cost of goods sold.', flag: true, why: 'Backwards. A 45% gross margin means the company keeps 45%, so 55% goes to cost of goods sold.' },
+            { id: 'f5', text: 'With $30M of debt and $60M of equity, debt-to-equity is 2.0.', flag: true, why: 'It’s $30M ÷ $60M = 0.5. Someone divided the wrong way.' },
+            { id: 'f6', text: 'A $1.50 annual dividend on a $50 share price is a 3% yield.', flag: false, why: '$1.50 ÷ $50 = 3%. Correct.' },
+            { id: 'f7', text: 'A 50 basis point increase takes the rate from 4.00% to 4.50%.', flag: false, why: '50 basis points is 0.50 percentage points. Correct.' },
+            { id: 'f8', text: 'Working capital is $12M: $20M of current assets minus $12M of current liabilities.', flag: true, why: '$20M − $12M = $8M. The slide repeated the liabilities number by mistake.' }
+          ]
+        }
+      },
+      {
+        id: 'fin-memo',
+        title: 'Write the investment recommendation',
+        summary: 'A short memo the CFO can act on in two minutes.',
+        tool: 'writing', minutes: 15,
+        brief: "Write the memo to our CFO, Grace Liu, recommending we buy the $120,000 packaging machine. Key facts: NPV of about $4,600 at our 8% hurdle rate, payback in year 4, and it saves $155,000 of cash over five years. The risk: the margin of safety is thin. If savings come in about 4% lower than forecast, NPV goes negative. Recommendation first, then the numbers, then the risk, then what you need from her.",
+        deliver: ['The recommendation in the first sentence', 'The NPV, the 8% rate, and the payback year', 'The main risk, stated plainly', 'A clear ask at the end, in 70–170 words'],
+        hints: [
+          'Start with "I recommend we buy..." Executives read the first line and decide whether to keep going.',
+          'Give the three numbers together: NPV of about $4,600 at 8%, payback in year 4, $155,000 of savings over five years.',
+          'Name the risk honestly, then end with the decision you need: "Can you approve the purchase by Friday?"'
+        ],
+        praise: "Grace approved it in one reply and said it was the clearest memo she'd read this quarter.",
+        writing: {
+          fields: [
+            { id: 'body', label: 'Memo to Grace Liu, CFO', type: 'textarea', rows: 11, placeholder: 'Grace,', counter: 'words' }
+          ],
+          checks: [
+            { label: 'Leads with the recommendation', weight: 20, test: f => { const s = sentences(f.body.replace(/^\s*(grace|hi grace|dear grace)[^\n]*\n/i, '')); return /recommend|propose|suggest|should (buy|approve|purchase)/i.test(s[0] || ''); },
+              tip: 'Put your recommendation in the first sentence: "I recommend we buy the packaging machine."' },
+            { label: 'States the NPV', weight: 15, test: f => /npv|net present value/i.test(f.body) && /4,?6\d\d|4\.6\s?k|\$4\.6/i.test(f.body),
+              tip: 'Include the NPV: about $4,600.' },
+            { label: 'States the 8% hurdle rate', weight: 10, test: f => /\b8\s?%|8 percent|eight percent/i.test(f.body),
+              tip: 'Mention the 8% hurdle rate so she knows what the NPV was measured against.' },
+            { label: 'States the payback', weight: 10, test: f => /payback|pays (for )?itself|pay(s)? back|break[- ]?even/i.test(f.body) && /year 4|fourth year|4 years|four years|3\.7|3\.67/i.test(f.body),
+              tip: 'Include the payback: the machine pays for itself in year 4.' },
+            { label: 'Names the risk', weight: 20, test: f => /risk|thin|tight|margin of safety|sensitiv|downside|if savings/i.test(f.body),
+              tip: 'Be honest about the risk: the margin is thin, and savings about 4% below forecast would make the NPV negative.' },
+            { label: 'Ends with a clear ask', weight: 15, test: f => { const s = sentences(f.body.replace(/\n\s*(thanks|thank you|best|regards|sincerely)[\s\S]*$/i, '')); return /approv|sign off|decision|by (monday|tuesday|wednesday|thursday|friday)|let me know|can you|could you|please/i.test(s[s.length - 1] || ''); },
+              tip: 'End with the decision you need from her, like "Can you approve the purchase by Friday?"' },
+            { label: '70–170 words', weight: 10, test: f => words(f.body) >= 70 && words(f.body) <= 170,
+              tip: f => `You're at ${words(f.body)} words. Keep it between 70 and 170 so it reads in two minutes.` }
+          ]
+        }
+      }
+    ],
+
+    /* ---------------- Marketing ---------------- */
+    marketing: [
+      {
+        id: 'mkt-abtest',
+        title: 'Read the A/B test results',
+        summary: 'Decide which landing page wins, and which test isn’t done yet.',
+        tool: 'sheet', minutes: 15,
+        brief: "Two A/B tests finished this week. Test 1 compared two headlines on the landing page. Test 2 compared two button colors. Calculate the conversion rate for each version and the lift of B over A. Then tell me what to do with each test. Don't just pick the biggest number; look at how many people actually saw each version.",
+        deliver: ['Conversion rate for every version (D2:D5)', 'Lift of B over A for each test (E3 and E5)', 'A decision on each test'],
+        hints: [
+          'Conversion rate is conversions ÷ visitors: =C2/B2, filled down.',
+          'Lift is how much better B did than A, relative to A: =(D3-D2)/D2 for Test 1, and =(D5-D4)/D4 for Test 2.',
+          'Test 2 shows a huge lift, but only about 50 people saw each button. A couple of extra sign-ups swing it wildly. That test needs more traffic before anyone trusts it.'
+        ],
+        praise: "Exactly right. Ship headline B, and keep the button test running. A 54% lift on 100 visitors is noise, not a result.",
+        sheet: {
+          cols: 5, rows: 5,
+          widths: { A: 170, B: 90, C: 104, D: 104, E: 90 },
+          formats: { B: 'int', C: 'int', D: 'pct', E: 'pct' },
+          grid: [
+            ['Version', 'Visitors', 'Conversions', 'Conv. rate', 'Lift (B vs A)'],
+            ['Test 1 · Headline A', 12400, 372, null, null],
+            ['Test 1 · Headline B', 12150, 450, null, null],
+            ['Test 2 · Blue button', 48, 3, null, null],
+            ['Test 2 · Orange button', 52, 5, null, null]
+          ],
+          editable: ['D2:D5', 'E3', 'E5'],
+          groups: [
+            { label: 'Conversion rate for each version', weight: 40, cells: 'D2:D5', expect: [0.03, 0.037037, 0.0625, 0.096154], require: 'formula', pct: true,
+              tip: 'Conversion rate is conversions ÷ visitors: =C2/B2, filled down. Leave it as a decimal.' },
+            { label: 'Lift of B over A', weight: 30, cells: 'E3,E5', expect: [0.234568, 0.538462], require: 'formula', pct: true,
+              tip: 'Lift is the difference divided by A’s rate: =(D3-D2)/D2 for Test 1 and =(D5-D4)/D4 for Test 2.' }
+          ]
+        },
+        questions: [
+          { id: 'test1', prompt: 'Test 1 (headlines): what should we do?', options: ['Roll out Headline B', 'Keep Headline A', 'Keep testing'], answer: 'Roll out Headline B', weight: 15,
+            tip: 'Headline B converts 23% better, and with about 12,000 visitors per version, that difference is real.' },
+          { id: 'test2', prompt: 'Test 2 (button color): what should we do?', options: ['Switch to the orange button', 'Keep the blue button', 'Keep testing. The sample is too small'], answer: 'Keep testing. The sample is too small', weight: 15,
+            tip: 'Only about 50 visitors saw each button. Two extra sign-ups created that "54% lift." Run it until each version has thousands of visitors.' }
+        ]
+      },
+      {
+        id: 'mkt-utm',
+        title: 'Automate campaign tracking links',
+        summary: 'Write a function that builds clean UTM links.',
+        tool: 'code', minutes: 15,
+        brief: "Our analytics are a mess because everyone types tracking links by hand: \"Facebook\", \"facebook\", \"FB \"... Write buildLink(url, source, medium, campaign) that adds UTM tags in a standard format: utm_source, utm_medium, and utm_campaign, in that order. Values must be lowercase, trimmed, with spaces turned into hyphens. If the URL already has a ?, join with & instead.",
+        deliver: ['Tags in the order utm_source, utm_medium, utm_campaign', 'Values lowercase, trimmed, spaces as hyphens', 'Works when the URL already has a query string'],
+        hints: [
+          'Write a helper to clean each value: v.trim().toLowerCase().replace(/\\s+/g, "-")',
+          'Pick the separator: url.includes("?") ? "&" : "?"',
+          'Return url + sep + "utm_source=" + clean(source) + "&utm_medium=" + clean(medium) + "&utm_campaign=" + clean(campaign)'
+        ],
+        praise: "I ran our whole Q4 calendar through it. For the first time, every Facebook click lands in one bucket. The analytics team owes you lunch.",
+        code: {
+          fn: 'buildLink',
+          starter:
+`// Add UTM tracking tags to a link.
+// buildLink("https://shop.com/spring", "Instagram", "Social", "Spring Launch")
+//   -> "https://shop.com/spring?utm_source=instagram&utm_medium=social&utm_campaign=spring-launch"
+
+function buildLink(url, source, medium, campaign) {
+  // your code here
+
+}
+`,
+          tests: [
+            { label: 'Basic link', args: ['https://shop.com/spring', 'Instagram', 'Social', 'Spring Launch'], expect: 'https://shop.com/spring?utm_source=instagram&utm_medium=social&utm_campaign=spring-launch' },
+            { label: 'Messy capitals and spaces', args: ['https://shop.com', '  Facebook ', 'PAID social', 'Q4  Sale'], expect: 'https://shop.com?utm_source=facebook&utm_medium=paid-social&utm_campaign=q4-sale' },
+            { label: 'Email campaign', args: ['https://shop.com/new', 'newsletter', 'email', 'october'], expect: 'https://shop.com/new?utm_source=newsletter&utm_medium=email&utm_campaign=october' }
+          ],
+          hidden: [
+            { label: 'URL that already has a query string', args: ['https://shop.com/p?id=42', 'Google', 'CPC', 'Brand Terms'], expect: 'https://shop.com/p?id=42&utm_source=google&utm_medium=cpc&utm_campaign=brand-terms' },
+            { label: 'Tabs and double spaces', args: ['https://shop.com', 'tik\ttok', 'paid   video', 'Fall Drop'], expect: 'https://shop.com?utm_source=tik-tok&utm_medium=paid-video&utm_campaign=fall-drop' },
+            { label: 'Already clean', args: ['https://a.co', 'x', 'y', 'z'], expect: 'https://a.co?utm_source=x&utm_medium=y&utm_campaign=z' }
+          ]
+        }
+      },
+      {
+        id: 'mkt-ltv',
+        title: 'Find which channels bring valuable customers',
+        summary: 'Calculate lifetime value and LTV:CAC by channel.',
+        tool: 'sheet', minutes: 12,
+        brief: "Cheap customers aren't always good customers. For each channel, calculate customer lifetime value (LTV) from average order, orders per year, and years they stay. Then compare it to what we paid to get them (CAC). A healthy business wants LTV to be at least 3 times CAC. Tell me which channels fall short.",
+        deliver: ['LTV for each channel (F2:F5)', 'LTV:CAC ratio for each channel (G2:G5)', 'Which channels fall below 3:1'],
+        hints: [
+          'LTV = average order × orders per year × years retained: =B2*C2*D2.',
+          'LTV:CAC = LTV ÷ CAC: =F2/E2. Fill both down.',
+          'Email is spectacular (70:1). Social is 2.25:1 and Display is 0.4:1. Display loses money on every customer.'
+        ],
+        praise: "That's the clearest case for moving budget I've seen. Email customers are worth 17 times what Display brings in.",
+        sheet: {
+          cols: 7, rows: 5,
+          widths: { A: 84, B: 96, C: 96, D: 104, E: 70, F: 90, G: 90 },
+          formats: { B: 'money0', C: 'int', D: 'int', E: 'money0', F: 'money0', G: 'x' },
+          grid: [
+            ['Channel', 'Avg order', 'Orders / year', 'Years retained', 'CAC', 'LTV', 'LTV:CAC'],
+            ['Search', 60, 3, 2, 25, null, null],
+            ['Social', 45, 2, 1.5, 60, null, null],
+            ['Email', 70, 4, 3, 12, null, null],
+            ['Display', 50, 1, 1, 125, null, null]
+          ],
+          editable: ['F2:G5'],
+          groups: [
+            { label: 'Customer lifetime value', weight: 40, cells: 'F2:F5', expect: [360, 135, 840, 50], require: 'formula',
+              tip: 'LTV is average order × orders per year × years retained: =B2*C2*D2.' },
+            { label: 'LTV:CAC ratio', weight: 40, cells: 'G2:G5', expect: [14.4, 2.25, 70, 0.4], require: 'formula',
+              tip: 'Divide lifetime value by acquisition cost: =F2/E2.' }
+          ]
+        },
+        questions: [
+          { id: 'weak', prompt: 'Which channels fall below a healthy 3:1 LTV:CAC?', options: ['Display only', 'Social and Display', 'Search and Social', 'None of them'], answer: 'Social and Display', weight: 20,
+            tip: 'Social is 2.25:1 and Display is 0.4:1. Both are under 3:1, and Display doesn’t even earn back what it costs.' }
+        ]
+      },
+      {
+        id: 'mkt-proof',
+        title: 'Proof the ad before it goes live',
+        summary: 'Catch the errors and risky claims in the launch copy.',
+        tool: 'spot', minutes: 10,
+        brief: "This landing page goes live in an hour. The facts: 20% off the spring collection with code SPRING20, ends Sunday at midnight, free shipping on orders over $50, 30-day returns. Legal also reminds us we can't make claims we can't prove. Flag every line that's wrong or risky.",
+        deliver: ['Every factual error flagged', 'Every claim we can’t back up flagged', 'Fine lines left alone'],
+        hints: [
+          'Check every fact against the brief: the code, the deadline, the shipping rule, the return window.',
+          'Watch for claims nobody can prove, like "#1" or "guaranteed forever." Those get companies in legal trouble.',
+          'Look closely at the code. Is that a zero or the letter O? Six lines have problems.'
+        ],
+        praise: "Six for six. The SPRING2O typo alone would've broken checkout for every customer. You just saved launch day.",
+        spot: {
+          title: 'Spring launch landing page (draft)',
+          lines: [
+            { id: 'm1', text: 'Spring is here. So is 20% off the entire spring collection.', flag: false, why: 'Matches the offer.' },
+            { id: 'm2', text: 'Use code SPRING2O at checkout.', flag: true, why: 'That’s the letter O, not a zero. The real code is SPRING20, and this one won’t work at checkout.' },
+            { id: 'm3', text: 'Hurry, the sale ends Saturday at midnight!', flag: true, why: 'The sale ends Sunday at midnight. A wrong deadline makes people miss it, or makes us look careless.' },
+            { id: 'm4', text: 'Free shipping on every order.', flag: true, why: 'Free shipping is only on orders over $50. Promising more than we offer leads to angry customers.' },
+            { id: 'm5', text: 'America’s #1 rated outdoor brand.', flag: true, why: 'We can’t prove that, and unprovable "#1" claims can get the company in legal trouble.' },
+            { id: 'm6', text: 'Made with recycled materials in every jacket.', flag: false, why: 'This one is fine, as long as it’s true, which product confirmed last week.' },
+            { id: 'm7', text: 'Guaranteed to last forever.', flag: true, why: 'Nothing lasts forever. This is an unprovable guarantee that invites complaints.' },
+            { id: 'm8', text: 'Not the right fit? Return it within 30 days.', flag: false, why: 'Matches our 30-day return policy.' },
+            { id: 'm9', text: 'Your going to love how it feels on the trail.', flag: true, why: 'Typo: it should be "You’re," as in "you are." Typos on a landing page cost trust.' }
+          ]
+        }
+      },
+      {
+        id: 'mkt-funnel',
+        title: 'Map campaign ideas to the funnel',
+        summary: 'Sort each idea by the stage of the customer journey it serves.',
+        tool: 'sort', minutes: 10,
+        brief: "Brainstorm went great. We have more ideas than budget. Before we prioritize, sort each one by the funnel stage it serves: awareness (people who've never heard of us), consideration (comparing options), conversion (ready to buy), or retention (already customers). I want to make sure we're not spending everything in one stage.",
+        deliver: ['Every idea sorted into one stage', 'Each idea matched to the customer it’s actually for'],
+        hints: [
+          'Ask who the idea is for. Someone who’s never heard of us? Someone comparing brands? Someone with an item in their cart? An existing customer?',
+          'Comparison guides and case studies help people who are already shopping around: consideration.',
+          'Cart reminders and expiring trials push people to buy now (conversion). Loyalty points and how-to webinars keep existing customers (retention).'
+        ],
+        praise: "Nice. We've got two ideas in every stage, which is the balance I wanted.",
+        sort: {
+          buckets: [
+            { id: 'aware', label: 'Awareness' },
+            { id: 'consider', label: 'Consideration' },
+            { id: 'convert', label: 'Conversion' },
+            { id: 'retain', label: 'Retention' }
+          ],
+          items: [
+            { id: 'p1', text: 'Sponsor a popular hiking podcast', answer: 'aware', why: 'Podcast listeners mostly haven’t heard of us yet. This builds awareness.' },
+            { id: 'p2', text: '"Us vs. the big brands" comparison guide', answer: 'consider', why: 'Comparison content is for people already weighing their options.' },
+            { id: 'p3', text: 'Email reminder for carts left at checkout', answer: 'convert', why: 'These people were about to buy. A reminder pushes them over the line.' },
+            { id: 'p4', text: 'Loyalty points reminder for past buyers', answer: 'retain', why: 'It brings existing customers back. That’s retention.' },
+            { id: 'p5', text: 'Short brand video on TikTok', answer: 'aware', why: 'Short video on a discovery platform puts the brand in front of new people.' },
+            { id: 'p6', text: '10% off that expires in 24 hours on the product page', answer: 'convert', why: 'A deadline on the product page pushes ready-to-buy shoppers to act now.' },
+            { id: 'p7', text: 'Webinar: "Get more out of your gear"', answer: 'retain', why: 'It’s for people who already own the product, so it keeps them engaged and loyal.' },
+            { id: 'p8', text: 'Customer case study: a 500-mile thru-hike', answer: 'consider', why: 'Proof from a real customer helps people decide between us and competitors.' }
+          ]
+        }
+      },
+      {
+        id: 'mkt-social',
+        title: 'Write the launch posts for three platforms',
+        summary: 'Same launch, three platforms, three styles.',
+        tool: 'writing', minutes: 15,
+        brief: "We're launching the Summit Bottle on Tuesday: it keeps drinks cold for 24 hours, it's made from 90% recycled steel, and it costs $34. Write one post for each platform. LinkedIn is professional and leads with the sustainability story. Instagram is upbeat, with 3 to 8 hashtags. X has a hard 280-character limit. Every post needs a reason to click.",
+        deliver: ['A LinkedIn post (40–150 words) that mentions the recycled steel', 'An Instagram caption with 3–8 hashtags', 'An X post under 280 characters', 'A call to action in every post'],
+        hints: [
+          'Each platform has its own crowd. LinkedIn wants the "why it matters," Instagram wants energy and visuals, and X wants it short.',
+          'Hashtags: 3 to 8 on Instagram, at most 2 on X, and LinkedIn can skip them.',
+          'Give every post a next step: "Shop now," "Learn more," or "Link in bio."'
+        ],
+        praise: "These are ready to schedule. Each one sounds like it belongs on its platform, and none of them reads like a press release.",
+        writing: {
+          fields: [
+            { id: 'linkedin', label: 'LinkedIn post', type: 'textarea', rows: 6, placeholder: 'Professional, with the sustainability story', counter: 'words' },
+            { id: 'instagram', label: 'Instagram caption', type: 'textarea', rows: 5, placeholder: 'Upbeat, 3–8 hashtags', counter: 'words' },
+            { id: 'x', label: 'X post', type: 'textarea', rows: 3, placeholder: 'Under 280 characters', counter: 'chars' }
+          ],
+          checks: [
+            { label: 'LinkedIn post is 40–150 words', weight: 10, test: f => words(f.linkedin) >= 40 && words(f.linkedin) <= 150,
+              tip: f => `Your LinkedIn post is ${words(f.linkedin)} words. Aim for 40 to 150.` },
+            { label: 'LinkedIn post tells the sustainability story', weight: 15, test: f => /recycl|sustainab|90\s?%/i.test(f.linkedin),
+              tip: 'Lead LinkedIn with the sustainability angle: the bottle is made from 90% recycled steel.' },
+            { label: 'Instagram uses 3–8 hashtags', weight: 15, test: f => { const n = (f.instagram.match(/#[A-Za-z0-9_]+/g) || []).length; return n >= 3 && n <= 8; },
+              tip: f => `Your Instagram caption has ${(f.instagram.match(/#[A-Za-z0-9_]+/g) || []).length} hashtags. Use 3 to 8.` },
+            { label: 'X post fits in 280 characters', weight: 15, test: f => f.x.trim().length > 0 && f.x.trim().length <= 280,
+              tip: f => f.x.trim().length ? `Your X post is ${f.x.trim().length} characters. The limit is 280.` : 'Write the X post.' },
+            { label: 'X post uses 2 hashtags or fewer', weight: 5, test: f => (f.x.match(/#[A-Za-z0-9_]+/g) || []).length <= 2,
+              tip: 'Keep X to two hashtags at most. More looks spammy.' },
+            { label: 'Mentions a real product detail everywhere', weight: 15, test: f => [f.linkedin, f.instagram, f.x].every(t => /24\s?(hours|hrs|h)|recycl|\$34|cold/i.test(t)),
+              tip: 'Give every post at least one concrete detail: 24 hours cold, 90% recycled steel, or $34.' },
+            { label: 'Every post has a call to action', weight: 20, test: f => [f.linkedin, f.instagram, f.x].every(t => /shop|buy|order|get yours|learn more|link in bio|check it out|grab|pre-?order|available (now|tuesday)|discover/i.test(t)),
+              tip: 'Each post needs a next step, like "Shop now," "Learn more," or "Link in bio."' },
+            { label: 'Names the product', weight: 5, test: f => [f.linkedin, f.instagram, f.x].every(t => /summit/i.test(t)),
+              tip: 'Name the Summit Bottle in every post. People don’t read posts in order.' }
+          ]
+        }
+      }
+    ],
+
+    /* ---------------- Accounting ---------------- */
+    accounting: [
+      {
+        id: 'acct-accrue',
+        title: 'Accrue unpaid wages at month-end',
+        summary: 'Record wages employees earned but haven’t been paid yet.',
+        tool: 'journal', minutes: 8,
+        brief: "It's March 31. Our hourly staff earned $6,200 in wages from March 28 to 31, but that money won't be paid until the April 5 payroll. Under accrual accounting, March has to carry that expense. Record the adjusting entry.",
+        deliver: ['The expense recorded in March', 'The amount we owe recorded as a liability', 'A balanced entry with a description'],
+        hints: [
+          'The work happened in March, so the expense belongs in March, even though cash goes out in April.',
+          'Two accounts: an expense for the wages, and a liability for what you still owe.',
+          'Debit Wages Expense $6,200. Credit Wages Payable $6,200.'
+        ],
+        praise: "Clean accrual. March's labor cost is complete now, and when payroll runs we'll clear the payable.",
+        journal: {
+          accounts: ['Cash', 'Accounts Receivable', 'Prepaid Insurance', 'Equipment', 'Accounts Payable', 'Wages Payable', 'Unearned Revenue', 'Revenue', 'Wages Expense', 'Insurance Expense', 'Rent Expense'],
+          answer: [
+            { account: 'Wages Expense', side: 'debit', amount: 6200, why: 'The wages were earned in March, so March records the expense. Expenses increase with a debit.' },
+            { account: 'Wages Payable', side: 'credit', amount: 6200, why: 'We owe the employees $6,200 until payday. Liabilities increase with a credit. No cash moves yet.' }
+          ]
+        }
+      },
+      {
+        id: 'acct-prepaid',
+        title: 'Adjust prepaid insurance',
+        summary: 'Use up one month of an insurance policy paid in advance.',
+        tool: 'journal', minutes: 8,
+        brief: "On January 1 we paid $7,200 for a 12-month insurance policy and recorded it all as Prepaid Insurance. It's now January 31, and one month of coverage is used up. Record the adjusting entry.",
+        deliver: ['One month of insurance expense', 'The prepaid asset reduced by the same amount', 'A balanced entry with a description'],
+        hints: [
+          'One month is 1/12 of the policy: $7,200 ÷ 12.',
+          'The used-up part becomes an expense. The prepaid asset shrinks by the same amount.',
+          'Debit Insurance Expense $600. Credit Prepaid Insurance $600.'
+        ],
+        praise: "Right. $600 a month, eleven more to go. Set that up as a recurring entry so we don't miss one.",
+        journal: {
+          accounts: ['Cash', 'Accounts Receivable', 'Prepaid Insurance', 'Equipment', 'Accounts Payable', 'Wages Payable', 'Unearned Revenue', 'Revenue', 'Wages Expense', 'Insurance Expense', 'Rent Expense'],
+          answer: [
+            { account: 'Insurance Expense', side: 'debit', amount: 600, why: 'One month of coverage ($7,200 ÷ 12 = $600) was used up in January, so it becomes an expense.' },
+            { account: 'Prepaid Insurance', side: 'credit', amount: 600, why: 'The prepaid asset shrinks by the $600 we used. Assets decrease with a credit.' }
+          ]
+        }
+      },
+      {
+        id: 'acct-unearned',
+        title: 'Record a customer’s advance payment',
+        summary: 'Cash came in for work you haven’t done yet.',
+        tool: 'journal', minutes: 8,
+        brief: "Lakeside Clinic just paid us $9,000 in cash for a three-month maintenance contract that starts next month. Record the entry for today. Be careful: we haven't done any of the work yet.",
+        deliver: ['The cash received', 'No revenue yet, because nothing has been earned', 'A balanced entry with a description'],
+        hints: [
+          'Cash came in, so Cash goes up. But you can’t call it revenue until you do the work.',
+          'Money received for future work is a liability: you owe the customer the service.',
+          'Debit Cash $9,000. Credit Unearned Revenue $9,000.'
+        ],
+        praise: "Exactly. If you'd booked revenue today, we'd have overstated this month's income by $9,000. Auditors love catching that one.",
+        journal: {
+          accounts: ['Cash', 'Accounts Receivable', 'Prepaid Insurance', 'Equipment', 'Accounts Payable', 'Wages Payable', 'Unearned Revenue', 'Revenue', 'Wages Expense', 'Insurance Expense', 'Rent Expense'],
+          answer: [
+            { account: 'Cash', side: 'debit', amount: 9000, why: 'We received $9,000 in cash. Assets increase with a debit.' },
+            { account: 'Unearned Revenue', side: 'credit', amount: 9000, why: 'We owe Lakeside three months of service. Until we deliver it, the money is a liability, not revenue.' }
+          ]
+        }
+      },
+      {
+        id: 'acct-depr',
+        title: 'Build a depreciation schedule',
+        summary: 'Spread a delivery van’s cost over its useful life.',
+        tool: 'sheet', minutes: 15,
+        brief: "We bought a delivery van for $48,000. We expect to use it for 6 years and sell it for $6,000 at the end. Build the straight-line depreciation schedule: the annual depreciation using SLN, then accumulated depreciation and book value at the end of each year. The book value at the end of year 6 should land exactly on the salvage value.",
+        deliver: ['Annual depreciation using SLN (B6:B11)', 'Accumulated depreciation each year (C6:C11)', 'Book value each year (D6:D11)'],
+        hints: [
+          'SLN(cost, salvage, life) gives the yearly depreciation: =SLN($B$1,$B$2,$B$3). Lock the inputs with $ so Fill down works.',
+          'Accumulated depreciation is a running total: C6 is =B6, then C7 is =C6+B7, filled down.',
+          'Book value is cost minus accumulated depreciation: =$B$1-C6. Year 6 should end at $6,000.'
+        ],
+        praise: "Lands right on $6,000 in year 6. I'm attaching this to the fixed asset register.",
+        sheet: {
+          cols: 4, rows: 11,
+          widths: { A: 140, B: 120, C: 150, D: 120 },
+          formats: { B: 'money0', C: 'money0', D: 'money0' },
+          cellFormats: { B3: 'int' },
+          bold: ['A5', 'B5', 'C5', 'D5'],
+          grid: [
+            ['Cost', 48000, null, null],
+            ['Salvage value', 6000, null, null],
+            ['Useful life (years)', 6, null, null],
+            [null, null, null, null],
+            ['Year', 'Depreciation', 'Accumulated', 'Book value'],
+            ['Year 1', null, null, null],
+            ['Year 2', null, null, null],
+            ['Year 3', null, null, null],
+            ['Year 4', null, null, null],
+            ['Year 5', null, null, null],
+            ['Year 6', null, null, null]
+          ],
+          editable: ['B6:D11'],
+          groups: [
+            { label: 'Annual depreciation with SLN', weight: 35, cells: 'B6:B11', expect: [7000, 7000, 7000, 7000, 7000, 7000], require: 'SLN',
+              tip: 'Use =SLN($B$1,$B$2,$B$3) and fill down. The $ signs keep it pointing at the inputs.' },
+            { label: 'Accumulated depreciation', weight: 30, cells: 'C6:C11', expect: [7000, 14000, 21000, 28000, 35000, 42000], require: 'formula',
+              tip: 'Make a running total: C6 is =B6, then C7 is =C6+B7, filled down.' },
+            { label: 'Book value', weight: 35, cells: 'D6:D11', expect: [41000, 34000, 27000, 20000, 13000, 6000], require: 'formula',
+              tip: 'Book value is cost minus accumulated depreciation: =$B$1-C6, filled down.' }
+          ]
+        }
+      },
+      {
+        id: 'acct-aging',
+        title: 'Build the accounts receivable aging report',
+        summary: 'Bucket unpaid invoices by age and total each bucket.',
+        tool: 'sheet', minutes: 15,
+        brief: "Collections wants the AR aging report. For every open invoice, assign an aging bucket from its days outstanding: Current (30 days or less), 31-60, 61-90, or 90+. Then total each bucket with SUMIF, plus a grand total. The old stuff is what I'm worried about.",
+        deliver: ['A bucket for every invoice using IF (D2:D10)', 'Totals by bucket with SUMIF (B13:B16)', 'Grand total (B17)'],
+        hints: [
+          'Nest IFs from the smallest bucket up: =IF(C2<=30,"Current",IF(C2<=60,"31-60",IF(C2<=90,"61-90","90+")))',
+          'Total a bucket with =SUMIF($D$2:$D$10, A13, $B$2:$B$10). Fill it down for the other buckets.',
+          'The grand total should equal the sum of all invoices: =SUM(B13:B16) or =SUM(B2:B10). Both give $30,550.'
+        ],
+        praise: "Almost a third of our receivables is over 90 days old. I'm sending invoices 1003 and 1006 to collections today.",
+        sheet: {
+          cols: 4, rows: 17,
+          widths: { A: 110, B: 110, C: 140, D: 110 },
+          formats: { B: 'money0', C: 'int' },
+          bold: ['A12', 'B12', 'A17'],
+          grid: [
+            ['Invoice', 'Amount', 'Days outstanding', 'Bucket'],
+            ['#1001', 4200, 12, null],
+            ['#1002', 1850, 45, null],
+            ['#1003', 7300, 95, null],
+            ['#1004', 960, 28, null],
+            ['#1005', 3100, 67, null],
+            ['#1006', 2240, 130, null],
+            ['#1007', 5600, 52, null],
+            ['#1008', 1400, 88, null],
+            ['#1009', 3900, 5, null],
+            [null, null, null, null],
+            ['Bucket', 'Total', null, null],
+            ['Current', null, null, null],
+            ['31-60', null, null, null],
+            ['61-90', null, null, null],
+            ['90+', null, null, null],
+            ['Grand total', null, null, null]
+          ],
+          editable: ['D2:D10', 'B13:B17'],
+          groups: [
+            { label: 'Aging bucket for each invoice', weight: 40, cells: 'D2:D10', expect: ['Current', '31-60', '90+', 'Current', '61-90', '90+', '31-60', '61-90', 'Current'], require: 'IF',
+              tip: 'Nest IFs: =IF(C2<=30,"Current",IF(C2<=60,"31-60",IF(C2<=90,"61-90","90+"))). Spell the bucket names exactly like column A below.' },
+            { label: 'Totals by bucket with SUMIF', weight: 45, cells: 'B13:B16', expect: [9060, 7450, 4500, 9540], require: 'SUMIF',
+              tip: 'Use =SUMIF($D$2:$D$10, A13, $B$2:$B$10) and fill down.' },
+            { label: 'Grand total', weight: 15, cells: 'B17', expect: [30550], require: 'formula',
+              tip: 'Add the buckets: =SUM(B13:B16). It should match the total of all invoices.' }
+          ]
+        }
+      },
+      {
+        id: 'acct-close',
+        title: 'Put the month-end close in order',
+        summary: 'Sequence the close so nothing gets done twice.',
+        tool: 'order', minutes: 8,
+        brief: "Our new staff accountant keeps doing close steps out of order, then redoing them. Put the steps in the right sequence so I can turn it into a checklist. Think about what each step depends on.",
+        deliver: ['All six close steps in order', 'Each step after the steps it depends on'],
+        hints: [
+          'You can’t adjust or report on transactions that haven’t been recorded yet. Recording comes first.',
+          'Reconciling the bank tells you what’s missing from the books, so it comes before the adjusting entries.',
+          'Order: record transactions, reconcile the bank, adjusting entries, adjusted trial balance, financial statements, closing entries.'
+        ],
+        praise: "That's our checklist now. Laminated and taped to the monitor.",
+        order: {
+          title: 'Close steps',
+          items: [
+            { id: 'statements', text: 'Prepare the financial statements', why: 'Statements are built from the adjusted trial balance, so they come after it.' },
+            { id: 'bankrec', text: 'Reconcile the bank account', why: 'The reconciliation finds fees, interest, and errors that need adjusting entries, so it comes before them.' },
+            { id: 'closing', text: 'Post closing entries to zero out revenue and expenses', why: 'Closing resets the temporary accounts for next month. It’s always last.' },
+            { id: 'record', text: 'Record all of the month’s invoices, bills, and payments', why: 'Everything else depends on the month’s transactions being in the books first.' },
+            { id: 'tb', text: 'Run the adjusted trial balance and check that it balances', why: 'After the adjustments, you check that debits equal credits before building statements.' },
+            { id: 'adjust', text: 'Book adjusting entries: accruals, prepaids, depreciation', why: 'Adjustments come once the transactions are recorded and the bank is reconciled.' }
+          ],
+          answer: ['record', 'bankrec', 'adjust', 'tb', 'statements', 'closing']
+        }
+      },
+      {
+        id: 'acct-expenses',
+        title: 'Review employee expense reports',
+        summary: 'Approve, reject, or send back each claim based on policy.',
+        tool: 'inbox', minutes: 12,
+        brief: "Expense reports are piling up. Apply the policy exactly: meals up to $75 per person; receipts required for anything over $25; alcohol is never reimbursed; mileage at $0.67 per mile. Approve what follows the policy, reject what breaks it, and send back anything missing a receipt so they can fix it.",
+        deliver: ['A decision on every expense report', 'Decisions based only on the written policy'],
+        hints: [
+          'Check each claim against the four rules: the $75 meal limit, receipts over $25, no alcohol, $0.67 per mile.',
+          'Missing a receipt isn’t a rejection. It’s fixable, so send it back.',
+          'Do the math on mileage and per-person meals. 120 miles × $0.67 = $80.40.'
+        ],
+        praise: "Spot on. Policy applied consistently, which is the whole point. People trust the process when it's the same for everyone.",
+        inbox: {
+          title: 'Expense reports awaiting review',
+          actions: [
+            { id: 'approve', label: 'Approve' },
+            { id: 'reject', label: 'Reject' },
+            { id: 'back', label: 'Send back for receipt' }
+          ],
+          emails: [
+            { id: 'x1', from: 'Maya Chen', time: 'Mon', subject: 'Client lunch: $142.00 for 2 people',
+              body: 'Lunch with the Harlow Supply buyer. Itemized receipt attached. No drinks.', answer: 'approve',
+              why: '$142 for 2 people is $71 per person, under the $75 limit, with a receipt and no alcohol.' },
+            { id: 'x2', from: 'Luis Ortega', time: 'Mon', subject: 'Mileage: 120 miles = $80.40',
+              body: 'Drove to the Dayton warehouse and back for the inventory count. Map printout attached.', answer: 'approve',
+              why: '120 × $0.67 = $80.40, exactly the policy rate.' },
+            { id: 'x3', from: 'Priya Natarajan', time: 'Tue', subject: 'Team dinner: $340.00 for 3 people',
+              body: 'Celebration dinner after the audit wrapped. Receipt attached. Includes a $96 bottle of wine.', answer: 'reject',
+              why: 'Alcohol is never reimbursed, and even without the $96 wine, $244 for 3 people is about $81 per person, over the $75 limit.' },
+            { id: 'x4', from: 'Sam Brooks', time: 'Tue', subject: 'Office supplies: $48.75',
+              body: 'Printer toner and folders for the AP team. I lost the receipt, sorry!', answer: 'back',
+              why: 'Anything over $25 needs a receipt. That’s fixable (the store can reprint it), so send it back rather than rejecting.' },
+            { id: 'x5', from: 'Ava Kim', time: 'Wed', subject: 'Parking: $18.00',
+              body: 'Parking at the client site for the quarterly review. No receipt. The meter was coins only.', answer: 'approve',
+              why: 'Under $25, so no receipt is required. It’s a legitimate business expense.' },
+            { id: 'x6', from: 'Jordan Lee', time: 'Wed', subject: 'Hotel bar tab: $64.00',
+              body: 'Drinks with the vendor team during the conference. Receipt attached.', answer: 'reject',
+              why: 'It’s all alcohol, which the policy never reimburses, receipt or not.' }
+          ]
+        }
+      }
+    ],
+
+    /* ---------------- Consulting ---------------- */
+    consulting: [
+      {
+        id: 'con-sizing',
+        title: 'Size the specialty coffee market',
+        summary: 'Build a bottom-up market estimate and the client’s share.',
+        tool: 'sheet', minutes: 15,
+        brief: "The partner wants to know how much room our coffee client has to grow. Build a bottom-up market size for the region: adults who buy specialty coffee, how often they visit, and what they spend. Then calculate the client's market share from their $38M in revenue. Every number should flow from the assumptions so we can change them live in the meeting.",
+        deliver: ['Specialty coffee customers (B8)', 'Annual visits (B9)', 'Market size in dollars (B10)', 'The client’s market share (B12)'],
+        hints: [
+          'Customers = adults × the share who buy specialty coffee: =B2*B3.',
+          'Annual visits = customers × visits per week × weeks per year: =B8*B4*B6. Market size = annual visits × average ticket: =B9*B5.',
+          'Market share = client revenue ÷ market size: =B11/B10. It comes out just under 4%, which means lots of room to grow.'
+        ],
+        praise: "About a $1 billion market, and they have under 4% of it. That's the headline for the growth section.",
+        sheet: {
+          cols: 2, rows: 12,
+          widths: { A: 280, B: 150 },
+          formats: { B: 'int' },
+          cellFormats: { B3: 'pct', B5: 'money', B10: 'money0', B11: 'money0', B12: 'pct' },
+          bold: ['A10', 'A12'],
+          grid: [
+            ['Assumption', 'Value'],
+            ['Adults in the region', 4200000],
+            ['Share who buy specialty coffee', 0.35],
+            ['Visits per customer per week', 2],
+            ['Average ticket', 6.5],
+            ['Weeks per year', 52],
+            [null, null],
+            ['Specialty coffee customers', null],
+            ['Annual visits', null],
+            ['Market size (annual $)', null],
+            ['Client revenue', 38000000],
+            ['Client market share', null]
+          ],
+          editable: ['B8:B10', 'B12'],
+          groups: [
+            { label: 'Specialty coffee customers', weight: 20, cells: 'B8', expect: [1470000], require: 'formula', tip: 'Multiply adults by the specialty share: =B2*B3.' },
+            { label: 'Annual visits', weight: 25, cells: 'B9', expect: [152880000], require: 'formula', tip: 'Customers × visits per week × weeks per year: =B8*B4*B6.' },
+            { label: 'Market size', weight: 25, cells: 'B10', expect: [993720000], require: 'formula', tip: 'Annual visits × average ticket: =B9*B5.' },
+            { label: 'Client market share', weight: 15, cells: 'B12', expect: [0.03824], require: 'formula', pct: true, tip: 'Client revenue ÷ market size: =B11/B10.' }
+          ]
+        },
+        questions: [
+          { id: 'room', prompt: 'What does this tell the client?', options: ['They already dominate the market', 'They hold under 4% of a roughly $1B market, so there’s room to grow', 'The market is too small to grow in'], answer: 'They hold under 4% of a roughly $1B market, so there’s room to grow', weight: 15,
+            tip: '$38M out of about $994M is 3.8% share. Growth is about taking share, not the market running out.' }
+        ]
+      },
+      {
+        id: 'con-payback',
+        title: 'Prioritize the client’s initiatives',
+        summary: 'Rank five ideas by how fast they pay for themselves.',
+        tool: 'sheet', minutes: 15,
+        brief: "The client can't fund everything this year. For each initiative, calculate the payback period in months (how long until the one-time cost is earned back) and the first-year return. Then help me decide what to lead with and what to push to next year.",
+        deliver: ['Payback in months (D2:D6)', 'First-year return (E2:E6)', 'What to recommend first and what to defer'],
+        hints: [
+          'Monthly impact is annual impact ÷ 12. Payback months = one-time cost ÷ monthly impact: =C2/(B2/12).',
+          'First-year return = (annual impact − cost) ÷ cost: =(B2-C2)/C2. A negative return means year one loses money.',
+          'The price increase pays back in two weeks. Store remodels take five years to pay back, so they go to next year.'
+        ],
+        praise: "Price increase first, bean contract second. And the remodels wait. That's exactly the sequencing I'll take to the client.",
+        sheet: {
+          cols: 5, rows: 6,
+          widths: { A: 210, B: 130, C: 120, D: 110, E: 120 },
+          formats: { B: 'money0', C: 'money0', D: 'x', E: 'pct' },
+          grid: [
+            ['Initiative', 'Annual impact', 'One-time cost', 'Payback (mo)', 'Year-1 return'],
+            ['5% specialty price increase', 1200000, 50000, null, null],
+            ['Expand the loyalty program', 800000, 400000, null, null],
+            ['New coffee bean supplier contract', 950000, 150000, null, null],
+            ['Remodel all stores', 600000, 3000000, null, null],
+            ['Mobile ordering app', 700000, 1400000, null, null]
+          ],
+          editable: ['D2:E6'],
+          groups: [
+            { label: 'Payback period in months', weight: 40, cells: 'D2:D6', expect: [0.5, 6, 1.894737, 60, 24], require: 'formula',
+              tip: 'Cost ÷ monthly impact: =C2/(B2/12), filled down.' },
+            { label: 'First-year return', weight: 30, cells: 'E2:E6', expect: [23, 1, 5.333333, -0.8, -0.5], require: 'formula', pct: true,
+              tip: 'Net gain over cost: =(B2-C2)/C2. Leave it as a decimal.' }
+          ]
+        },
+        questions: [
+          { id: 'first', prompt: 'Which initiative should we lead with?', options: ['5% specialty price increase', 'Expand the loyalty program', 'Remodel all stores', 'Mobile ordering app'], answer: '5% specialty price increase', weight: 15,
+            tip: 'It pays back in half a month and returns 23x its cost in year one.' },
+          { id: 'defer', prompt: 'Which should we push to next year?', options: ['New coffee bean supplier contract', 'Expand the loyalty program', 'Remodel all stores'], answer: 'Remodel all stores', weight: 15,
+            tip: 'A 60-month payback and a negative first-year return. It ties up $3M that faster wins could use.' }
+        ]
+      },
+      {
+        id: 'con-deck',
+        title: 'Pressure-test the draft deck',
+        summary: 'Flag the weak logic before the partner sees it.',
+        tool: 'spot', minutes: 12,
+        brief: "Here are the key lines from our draft deck for the coffee client. Before the partner review, flag every line with a logic problem: claims without evidence, conclusions from a tiny sample, buckets that overlap, or recommendations that contradict each other. Our evidence: bean costs explain about 70% of the profit drop, loyalty members spend 2x, and we interviewed 6 customers.",
+        deliver: ['Every line with weak or broken logic flagged', 'Well-supported lines left alone'],
+        hints: [
+          'For each line, ask: what’s the evidence? "The economy" isn’t in our data, and bean costs are.',
+          'Six interviews can tell you what to explore. They can’t tell you what every customer will do.',
+          'Check the profit tree for overlap: coffee beans are a variable cost, so listing them separately double-counts. Four lines are problems.'
+        ],
+        praise: "That's a partner-ready deck now. You caught the overlap in the tree, which most people miss.",
+        spot: {
+          title: 'Draft deck: Northside Coffee profitability',
+          lines: [
+            { id: 'c1', text: 'Profit fell 22% this year, mainly because the economy is weak.', flag: true, why: 'Our data says bean costs drive about 70% of the drop. "The economy" is a guess with no evidence behind it.' },
+            { id: 'c2', text: 'Coffee bean costs rose 30% and explain about 70% of the profit decline.', flag: false, why: 'Specific, quantified, and backed by our analysis.' },
+            { id: 'c3', text: 'Loyalty members spend twice as much per year as non-members.', flag: false, why: 'Backed by the client’s sales data.' },
+            { id: 'c4', text: 'All 6 customers we interviewed love the brand, so a price increase won’t hurt traffic.', flag: true, why: 'Six interviews can’t predict how thousands of customers react to a price change. Recommend a pilot instead.' },
+            { id: 'c5', text: 'Profit tree: revenue (price, volume); costs (variable, fixed, coffee beans).', flag: true, why: 'Not MECE: coffee beans are a variable cost, so listing them separately double-counts.' },
+            { id: 'c6', text: 'A 5% increase on specialty drinks would add about $1.2M in annual profit.', flag: false, why: 'Quantified, and it matches our model.' },
+            { id: 'c7', text: 'We recommend raising prices on specialty drinks and cutting prices on all drinks to drive traffic.', flag: true, why: 'These contradict each other. Cutting prices on all drinks undoes the specialty increase.' },
+            { id: 'c8', text: 'Next step: pilot the price increase in 5 stores for 6 weeks before rolling it out.', flag: false, why: 'Specific and testable. A pilot is exactly the right next step.' }
+          ]
+        }
+      },
+      {
+        id: 'con-inbox',
+        title: 'Triage the engagement inbox',
+        summary: 'Decide what to do now, schedule, delegate, or drop.',
+        tool: 'inbox', minutes: 10,
+        brief: "It's Monday at 8 AM and the client presentation is Wednesday. Go through the inbox and decide what happens to each email: do it now (urgent and important), schedule it (important, not urgent), delegate it (someone else can do it well), or drop it (neither). Protect time for the work that matters.",
+        deliver: ['A decision for every email', 'Client-critical work handled first', 'Work delegated when someone else is better placed'],
+        hints: [
+          'Urgent means it has to happen today. Important means it affects the client or the deliverable.',
+          'If someone on the team offered to take it, and it doesn’t need you specifically, delegate.',
+          'Do now: the CFO’s data request and the wrong number in the deck. Delegate: appendix formatting. Schedule: training and the offsite. Drop: the newsletter.'
+        ],
+        praise: "That's how you protect a Wednesday deadline. You fixed the client-facing risk first and handed off what Ravi could do.",
+        inbox: {
+          title: 'Inbox, Monday 8:00 AM',
+          actions: [
+            { id: 'now', label: 'Do now' },
+            { id: 'schedule', label: 'Schedule' },
+            { id: 'delegate', label: 'Delegate' },
+            { id: 'drop', label: 'Drop' }
+          ],
+          emails: [
+            { id: 'i1', from: 'Laura Kim (client CFO)', time: '7:45 AM', subject: 'Need the store-level margin file by noon today',
+              body: 'Our board chair asked for it before our 1 PM call. Can you send it by noon?', answer: 'now',
+              why: 'The client’s CFO, with a deadline today. Urgent and important.' },
+            { id: 'i2', from: 'Ravi Patel (analyst)', time: '7:50 AM', subject: 'Want me to take the appendix formatting?',
+              body: 'I have a free morning. Happy to clean up fonts and footnotes on the appendix slides.', answer: 'delegate',
+              why: 'Ravi can do this well and offered. Hand it off and spend your time on the client-critical work.' },
+            { id: 'i3', from: 'Elena Park (engagement manager)', time: '7:52 AM', subject: 'Slide 12 shows $1.2B, should be $1.2M',
+              body: 'The client caught this in the pre-read. Please fix and resend before 10 AM.', answer: 'now',
+              why: 'A wrong number the client already noticed. Fixing it fast protects our credibility.' },
+            { id: 'i4', from: 'Firm Learning Team', time: 'Sun', subject: 'Sign up for November’s modeling course',
+              body: 'Registration closes Friday. Strongly recommended for first-year staff.', answer: 'schedule',
+              why: 'Important for your growth, but not due until Friday. Block 5 minutes later this week.' },
+            { id: 'i5', from: 'Office Team', time: 'Sun', subject: 'Poll: team offsite dates next quarter',
+              body: 'Pick the dates that work for you by the end of next week.', answer: 'schedule',
+              why: 'Takes a minute and isn’t due for a week. Handle it after Wednesday.' },
+            { id: 'i6', from: 'Industry Digest', time: 'Sat', subject: 'This week in retail: 12 trends to watch',
+              body: 'Our weekly roundup of retail news and opinion.', answer: 'drop',
+              why: 'Not urgent and not important this week. Archive it.' }
+          ]
+        }
+      },
+      {
+        id: 'con-client-email',
+        title: 'Reschedule the steering committee',
+        summary: 'A polished client email that moves a meeting without friction.',
+        tool: 'writing', minutes: 10,
+        brief: "Our steering committee with Northside Coffee's CEO, Ana Torres, is Thursday at 2 PM, but the pilot data won't be ready until Friday. Write to Ana asking to move the meeting to next week. Offer two specific times: Tuesday at 10 AM or Wednesday at 3 PM. Explain the reason in one line, say a pre-read will arrive 24 hours before, and list the three agenda items: pilot results, pricing recommendation, and loyalty program next steps.",
+        deliver: ['A clear subject line', 'A one-line reason tied to the client’s benefit', 'Two specific time options', 'The pre-read promise and a three-item agenda, in 60–160 words'],
+        hints: [
+          'Give the reason as a benefit to the client: waiting means they see real pilot data, not estimates.',
+          'Make it easy to say yes: two specific options she can reply to with one word.',
+          'Use a short list for the agenda so it’s scannable: pilot results, pricing recommendation, loyalty next steps.'
+        ],
+        praise: "Ana replied \"Tuesday works\" in four minutes. That's what a good client email does.",
+        writing: {
+          fields: [
+            { id: 'subject', label: 'Subject line', type: 'input', placeholder: 'Subject', counter: 'chars' },
+            { id: 'body', label: 'Email to Ana Torres', type: 'textarea', rows: 12, placeholder: 'Hi Ana,', counter: 'words' }
+          ],
+          checks: [
+            { label: 'Subject line is clear', weight: 10, test: f => /reschedul|steering|new time|move|meeting/i.test(f.subject),
+              tip: 'Make the subject say what you need, like "Rescheduling Thursday’s steering committee."' },
+            { label: 'Greets Ana by name', weight: 5, test: f => /ana/i.test(f.body.slice(0, 60)), tip: 'Open with "Hi Ana," or "Dear Ana,".' },
+            { label: 'Gives the reason', weight: 15, test: f => /pilot|data|results/i.test(f.body) && /(friday|ready|final|complete)/i.test(f.body),
+              tip: 'Explain why in one line: the pilot data won’t be ready until Friday, and you want her to see real results.' },
+            { label: 'Offers both time options', weight: 20, test: f => /tuesday/i.test(f.body) && /wednesday/i.test(f.body) && /\b10(:00)?\s?(a\.?m\.?)/i.test(f.body) && /\b3(:00)?\s?(p\.?m\.?)/i.test(f.body),
+              tip: 'Offer both specific times: Tuesday at 10 AM or Wednesday at 3 PM.' },
+            { label: 'Promises the pre-read', weight: 15, test: f => /pre-?read|materials|deck|slides/i.test(f.body) && /24 hours|day before|a day ahead|ahead of time|in advance/i.test(f.body),
+              tip: 'Say the pre-read will arrive 24 hours before the meeting.' },
+            { label: 'Lists all three agenda items', weight: 20, test: f => /pilot/i.test(f.body) && /pric/i.test(f.body) && /loyalty/i.test(f.body),
+              tip: 'List the three agenda items: pilot results, pricing recommendation, and loyalty program next steps.' },
+            { label: 'Stays polite and professional', weight: 5, test: f => /thank|appreciate|please|let me know/i.test(f.body) && !/!!|\bASAP\b|sorry for the inconvenience!/i.test(f.body),
+              tip: 'Keep it polite: a "thank you" or "let me know which works" goes a long way with a CEO.' },
+            { label: '60–160 words', weight: 10, test: f => words(f.body) >= 60 && words(f.body) <= 160,
+              tip: f => `You're at ${words(f.body)} words. Aim for 60 to 160. CEOs skim.` }
+          ]
+        }
+      }
+    ],
+
+    /* ---------------- HR ---------------- */
+    hr: [
+      {
+        id: 'hr-guide',
+        title: 'Review the interview guide',
+        summary: 'Flag the questions that are illegal or risky to ask.',
+        tool: 'spot', minutes: 10,
+        brief: "A hiring manager wrote her own interview guide for the Sales Coordinator role, and I need it cleaned up before Thursday's interviews. Flag every question we can't legally or fairly ask, the ones touching age, family, religion, national origin, disability, or arrest records. Leave the job-related ones alone.",
+        deliver: ['Every illegal or risky question flagged', 'Job-related questions left alone'],
+        hints: [
+          'Ask whether each question is about the job or about who the person is. Only the job is fair game.',
+          'You can ask if someone is authorized to work in the U.S., but not where they’re from. You can ask if they can do the job’s essential functions, but not about disabilities.',
+          'Six are problems: marriage and kids, age, country of origin, disabilities, church, and arrests.'
+        ],
+        praise: "Every risky question caught. I'll send her the cleaned-up version with your notes. This protects the candidates and us.",
+        spot: {
+          title: 'Interview guide: Sales Coordinator (draft)',
+          lines: [
+            { id: 'q1', text: 'Tell me about a time you turned around an upset customer.', flag: false, why: 'Job-related and behavioral. A great question.' },
+            { id: 'q2', text: 'Are you married, or planning to have kids soon?', flag: true, why: 'Marital status and family plans are protected. They have nothing to do with the job.' },
+            { id: 'q3', text: 'How old are you?', flag: true, why: 'Age is protected. You can only ask whether they meet a legal minimum age, if the job has one.' },
+            { id: 'q4', text: 'Are you legally authorized to work in the United States?', flag: false, why: 'This one is allowed and asked of every candidate the same way.' },
+            { id: 'q5', text: 'What country are you originally from?', flag: true, why: 'National origin is protected. Work authorization (the previous question) is all you need.' },
+            { id: 'q6', text: 'This role works Tuesday through Saturday. Can you work that schedule?', flag: false, why: 'Asking about the actual job schedule is fine.' },
+            { id: 'q7', text: 'Do you have any disabilities we should know about?', flag: true, why: 'You can’t ask about disabilities. Ask whether they can perform the essential functions, with or without accommodation.' },
+            { id: 'q8', text: 'Which church do you attend?', flag: true, why: 'Religion is protected and has no place in an interview.' },
+            { id: 'q9', text: 'Can you perform the essential functions of this job, with or without reasonable accommodation?', flag: false, why: 'This is the correct, legal way to ask about ability.' },
+            { id: 'q10', text: 'Have you ever been arrested?', flag: true, why: 'An arrest isn’t a conviction, and many states ban this question. Follow the background-check process instead.' },
+            { id: 'q11', text: 'Why do you want to work in sales here?', flag: false, why: 'Job-related motivation. Fine.' }
+          ]
+        }
+      },
+      {
+        id: 'hr-payroll',
+        title: 'Run weekly payroll with overtime',
+        summary: 'Split regular and overtime hours and calculate gross pay.',
+        tool: 'sheet', minutes: 15,
+        brief: "Payroll is due to the provider by 3 PM. For each hourly employee, split their hours into regular (up to 40) and overtime (anything over 40), then calculate gross pay. Overtime pays 1.5 times the hourly rate. That's the law, and getting it wrong is how companies get sued. Use formulas so I can reuse this sheet every week.",
+        deliver: ['Regular hours using MIN (D2:D6)', 'Overtime hours using MAX (E2:E6)', 'Gross pay (F2:F6) and the total (F8)'],
+        hints: [
+          'Regular hours are capped at 40: =MIN(B2,40). Overtime is anything over 40, and never negative: =MAX(B2-40,0).',
+          'Gross pay = regular hours × rate + overtime hours × rate × 1.5: =D2*C2+E2*C2*1.5.',
+          'Total payroll is =SUM(F2:F6). It should be $4,080.50.'
+        ],
+        praise: "Matches the provider's numbers to the cent. Dev's 12 overtime hours would've been easy to underpay.",
+        sheet: {
+          cols: 6, rows: 8,
+          widths: { A: 100, B: 80, C: 90, D: 100, E: 100, F: 110 },
+          formats: { B: 'default', C: 'money', D: 'default', E: 'default', F: 'money' },
+          bold: ['A8'],
+          grid: [
+            ['Employee', 'Hours', 'Rate', 'Regular hrs', 'Overtime hrs', 'Gross pay'],
+            ['Ana', 38, 18, null, null, null],
+            ['Ben', 45, 20, null, null, null],
+            ['Cleo', 40, 22.5, null, null, null],
+            ['Dev', 52, 17, null, null, null],
+            ['Eli', 29.5, 19, null, null, null],
+            [null, null, null, null, null, null],
+            ['Total payroll', null, null, null, null, null]
+          ],
+          editable: ['D2:F6', 'F8'],
+          groups: [
+            { label: 'Regular hours, capped at 40', weight: 20, cells: 'D2:D6', expect: [38, 40, 40, 40, 29.5], require: 'MIN',
+              tip: 'Cap regular hours at 40: =MIN(B2,40).' },
+            { label: 'Overtime hours', weight: 25, cells: 'E2:E6', expect: [0, 5, 0, 12, 0], require: 'MAX',
+              tip: 'Overtime is hours over 40, never negative: =MAX(B2-40,0).' },
+            { label: 'Gross pay with time-and-a-half', weight: 40, cells: 'F2:F6', expect: [684, 950, 900, 986, 560.5], require: 'formula',
+              tip: 'Pay regular hours at the rate and overtime at 1.5 times the rate: =D2*C2+E2*C2*1.5.' },
+            { label: 'Total payroll', weight: 15, cells: 'F8', expect: [4080.5], require: 'formula',
+              tip: 'Add up gross pay: =SUM(F2:F6).' }
+          ]
+        }
+      },
+      {
+        id: 'hr-turnover',
+        title: 'Report turnover by department',
+        summary: 'Find where people are leaving fastest.',
+        tool: 'sheet', minutes: 12,
+        brief: "Leadership asked why we keep hiring for the same roles. Calculate annual turnover for each department: separations divided by average headcount, where average headcount is the start and end of year averaged together. Add a company-wide row. Then tell me where to focus retention efforts.",
+        deliver: ['Average headcount (E2:E5) and turnover rate (F2:F5)', 'Company totals (B6:F6)', 'The department to focus on'],
+        hints: [
+          'Average headcount = (start + end) ÷ 2: =(B2+C2)/2. Turnover = separations ÷ average headcount: =D2/E2.',
+          'For the company row, total the columns with SUM (B6 =SUM(B2:B5)), then use the same average and turnover formulas.',
+          'The warehouse loses about 30% of its people a year, the highest of any department.'
+        ],
+        praise: "Warehouse at 30.5% is the story. I'm setting up exit interviews there this week.",
+        sheet: {
+          cols: 6, rows: 6,
+          widths: { A: 110, B: 96, C: 96, D: 100, E: 110, F: 96 },
+          formats: { B: 'int', C: 'int', D: 'int', E: 'default', F: 'pct' },
+          bold: ['A6'],
+          grid: [
+            ['Department', 'Start of year', 'End of year', 'Separations', 'Avg headcount', 'Turnover'],
+            ['Sales', 40, 36, 10, null, null],
+            ['Support', 25, 27, 4, null, null],
+            ['Engineering', 30, 34, 3, null, null],
+            ['Warehouse', 60, 58, 18, null, null],
+            ['Company', null, null, null, null, null]
+          ],
+          editable: ['E2:F5', 'B6:F6'],
+          groups: [
+            { label: 'Average headcount', weight: 20, cells: 'E2:E5', expect: [38, 26, 32, 59], require: 'formula', tip: 'Average the start and end of year: =(B2+C2)/2.' },
+            { label: 'Turnover rate', weight: 30, cells: 'F2:F5', expect: [0.263158, 0.153846, 0.09375, 0.305085], require: 'formula', pct: true, tip: 'Separations ÷ average headcount: =D2/E2. Leave it as a decimal.' },
+            { label: 'Company totals', weight: 20, cells: 'B6:D6', expect: [155, 155, 35], require: 'formula', tip: 'Add up each column: =SUM(B2:B5), =SUM(C2:C5), =SUM(D2:D5).' },
+            { label: 'Company turnover', weight: 15, cells: 'E6:F6', expect: [155, 0.225806], require: 'formula', tip: 'Use the same formulas on the company row: =(B6+C6)/2 and =D6/E6.' }
+          ]
+        },
+        questions: [
+          { id: 'focus', prompt: 'Where should retention efforts start?', options: ['Sales', 'Support', 'Engineering', 'Warehouse'], answer: 'Warehouse', weight: 15,
+            tip: 'The warehouse has the highest turnover rate, about 30.5%, and the most people leaving (18).' }
+        ]
+      },
+      {
+        id: 'hr-inbox',
+        title: 'Handle the HR inbox',
+        summary: 'Answer, escalate, or redirect employee questions.',
+        tool: 'inbox', minutes: 12,
+        brief: "You're covering the HR inbox today. For each message, decide: answer it yourself from the handbook, escalate it to me because it's sensitive or legal (harassment, discrimination, protected leave), or redirect it to the team that owns it (payroll or our benefits provider). When in doubt about something sensitive, escalate.",
+        deliver: ['A decision on every message', 'Every harassment, discrimination, or protected-leave issue escalated', 'Routine policy questions answered, not escalated'],
+        hints: [
+          'Routine policy questions (dress code, PTO) can be answered straight from the handbook.',
+          'Anything involving harassment, discrimination, or legally protected leave goes to the HR manager, every time.',
+          'Payroll errors go to payroll. Insurance claim disputes go to the benefits provider, which is the only one that can see the claim.'
+        ],
+        praise: "All six handled right, and the two sensitive ones came straight to me. That's the judgment this job needs.",
+        inbox: {
+          title: 'hr@ inbox',
+          actions: [
+            { id: 'answer', label: 'Answer from handbook' },
+            { id: 'escalate', label: 'Escalate to HR manager' },
+            { id: 'redirect', label: 'Redirect to the right team' }
+          ],
+          emails: [
+            { id: 'h1', from: 'Chris Delgado', time: '8:12 AM', subject: 'How much PTO do I get in my first year?',
+              body: 'I started last month and wanted to plan a trip in the spring.', answer: 'answer',
+              why: 'Routine policy question. The handbook spells out first-year PTO.' },
+            { id: 'h2', from: 'Name withheld', time: '8:40 AM', subject: 'Comments about my religion',
+              body: 'My manager keeps making jokes about my religion in team meetings. It’s getting worse and I don’t know who to tell.', answer: 'escalate',
+              why: 'Possible religious harassment. It needs a prompt, confidential investigation by the HR manager.' },
+            { id: 'h3', from: 'Tasha Green', time: '9:05 AM', subject: 'Wrong tax withholding on my paycheck',
+              body: 'My last check took out way more federal tax than usual. I didn’t change anything.', answer: 'redirect',
+              why: 'Payroll owns withholding and can see the calculation. Send it to them.' },
+            { id: 'h4', from: 'Omar Haddad', time: '9:30 AM', subject: 'Jeans on Fridays?',
+              body: 'Is it okay to wear jeans on Fridays, or is it business casual all week?', answer: 'answer',
+              why: 'The dress code is in the handbook. Answer it directly.' },
+            { id: 'h5', from: 'Rachel Moore', time: '10:02 AM', subject: 'Am I paid less because I’m a woman?',
+              body: 'I found out a male coworker with the same title and less experience makes $8,000 more than I do.', answer: 'escalate',
+              why: 'A possible pay discrimination complaint. That has legal implications and needs the HR manager right away.' },
+            { id: 'h6', from: 'Ben Ito', time: '10:20 AM', subject: 'My dental claim was denied',
+              body: 'I got a letter saying my cleaning wasn’t covered. I thought it was covered at 100%?', answer: 'redirect',
+              why: 'Only the benefits provider can see and appeal the claim. Point him to them, with their phone number.' }
+          ]
+        }
+      },
+      {
+        id: 'hr-offer',
+        title: 'Write the offer email',
+        summary: 'Make the offer clear, complete, and warm.',
+        tool: 'writing', minutes: 12,
+        brief: "Good news: we're offering Jordan Patel the Sales Coordinator role. Details: $52,000 a year, start date Monday, November 2, reporting to Maria Gomez. The offer depends on a background check, and we need an answer by Friday, October 23. The formal letter is attached. Write the email that goes with it. Make it warm, but every detail needs to be exactly right.",
+        deliver: ['Congratulations and the job title', 'Salary, start date, and manager', 'The background check and the response deadline', 'A warm, clear email of 70–200 words'],
+        hints: [
+          'Open with the good news, using the job title: "I’m thrilled to offer you the Sales Coordinator role."',
+          'Put the details where they’re easy to find: $52,000 a year, start Monday, November 2, reporting to Maria Gomez.',
+          'Don’t bury the fine print: the offer depends on a background check, and you need an answer by Friday, October 23.'
+        ],
+        praise: "Jordan accepted the same afternoon. Clear details and a warm tone. That's the whole job of an offer email.",
+        writing: {
+          fields: [
+            { id: 'subject', label: 'Subject line', type: 'input', placeholder: 'Subject', counter: 'chars' },
+            { id: 'body', label: 'Email to Jordan Patel', type: 'textarea', rows: 12, placeholder: 'Hi Jordan,', counter: 'words' }
+          ],
+          checks: [
+            { label: 'Subject line names the offer', weight: 10, test: f => /offer/i.test(f.subject), tip: 'Put "offer" in the subject, like "Your offer from Brightline: Sales Coordinator."' },
+            { label: 'Congratulates Jordan by name', weight: 10, test: f => /jordan/i.test(f.body.slice(0, 80)) && /congrat|thrilled|excited|delighted|pleased|happy/i.test(f.body),
+              tip: 'Greet Jordan by name and lead with the good news.' },
+            { label: 'States the job title', weight: 10, test: f => /sales coordinator/i.test(f.subject + ' ' + f.body), tip: 'Name the role: Sales Coordinator.' },
+            { label: 'States the salary', weight: 15, test: f => /\$?52,?000|\$52k|52k/i.test(f.body), tip: 'Include the salary: $52,000 a year.' },
+            { label: 'States the start date', weight: 10, test: f => /november\s*2(nd)?|nov\.?\s*2(nd)?|11\/2/i.test(f.body), tip: 'Include the start date: Monday, November 2.' },
+            { label: 'Names the manager', weight: 10, test: f => /maria/i.test(f.body), tip: 'Say who Jordan will report to: Maria Gomez.' },
+            { label: 'Mentions the background check', weight: 15, test: f => /background/i.test(f.body), tip: 'Be upfront that the offer depends on a background check.' },
+            { label: 'Gives the response deadline', weight: 10, test: f => /october\s*23(rd)?|oct\.?\s*23(rd)?|10\/23/i.test(f.body), tip: 'Ask for an answer by Friday, October 23.' },
+            { label: '70–200 words', weight: 10, test: f => words(f.body) >= 70 && words(f.body) <= 200,
+              tip: f => `You're at ${words(f.body)} words. Aim for 70 to 200.` }
+          ]
+        }
+      },
+      {
+        id: 'hr-hiring',
+        title: 'Map out the hiring process',
+        summary: 'Put the steps of a fair, legal hiring process in order.',
+        tool: 'order', minutes: 8,
+        brief: "We're writing down our hiring process for new managers. Put the steps in order. Two details matter here: we don't post a job until the role is approved, and we only run background checks after making a conditional offer.",
+        deliver: ['All eight steps in order', 'Approval before posting', 'The background check after the conditional offer'],
+        hints: [
+          'Nothing starts until the role is approved and budgeted.',
+          'Screening narrows the pool step by step: resumes, then a short phone screen, then full interviews.',
+          'Order: approve, post, screen resumes, phone screen, interviews, conditional offer, background check, onboarding.'
+        ],
+        praise: "That's our process. And yes, the background check after the conditional offer is how we stay fair and legal.",
+        order: {
+          title: 'Hiring steps',
+          items: [
+            { id: 'phone', text: 'Hold 20-minute phone screens', why: 'A quick screen narrows the pool before you invest in full interviews.' },
+            { id: 'offer', text: 'Extend a conditional offer', why: 'After interviews, you offer the job, conditional on the background check.' },
+            { id: 'approve', text: 'Get the role approved and budgeted', why: 'Nothing should be posted until leadership approves the role and budget.' },
+            { id: 'onboard', text: 'Start onboarding on day one', why: 'Onboarding begins once the offer is accepted and the check clears.' },
+            { id: 'screen', text: 'Screen resumes against the posted requirements', why: 'Screening happens once applications come in, using only the posted requirements.' },
+            { id: 'interview', text: 'Run structured panel interviews', why: 'Full interviews come after the phone screen narrows the pool.' },
+            { id: 'post', text: 'Write and post the job description', why: 'Once approved, you post the role so people can apply.' },
+            { id: 'check', text: 'Run the background check', why: 'Running it after a conditional offer keeps the process fair and follows many state laws.' }
+          ],
+          answer: ['approve', 'post', 'screen', 'phone', 'interview', 'offer', 'check', 'onboard']
+        }
+      }
+    ]
+  };
+  Object.keys(MORE_JOBS).forEach(track => { JOBS[track].push(...MORE_JOBS[track]); });
 
   /* ---------------- Mock interviews ---------------- */
   function starChecks() {
@@ -2247,8 +3602,11 @@ function overdueTickets(tickets, now) {
       track: prev ? prev.track : null,
       tosAcceptedAt: prev ? prev.tosAcceptedAt : null
     }));
+    isAdmin = Boolean(p.isAdmin);
+    if (isAdmin && !state.pro) { state.pro = true; state.proCode = 'ADMIN'; }
     persist();
     updateNavStart();
+    updateAdminNav();
     const modalWasOpen = !modal.hidden && (modalMode === 'signup' || modalMode === 'login');
     if (!oauthIntent && !modalWasOpen) return; // silent session restore on load — don't interrupt the landing page
     if (!state.tosAcceptedAt) { openModal('terms'); return; }
@@ -2281,6 +3639,8 @@ function overdueTickets(tickets, now) {
 
   window.addEventListener('firstday:signed-out', () => {
     authed = false;
+    isAdmin = false;
+    updateAdminNav();
     updateNavStart();
   });
 
@@ -2442,6 +3802,7 @@ function overdueTickets(tickets, now) {
       <div class="menu-sep" role="separator"></div>` : '';
     ensureChat();
     updateChatBadge();
+    updateAdminNav();
     updateNavStart();
   }
 
@@ -2489,6 +3850,7 @@ function overdueTickets(tickets, now) {
     else if (view === 'goals') renderGoals();
     else if (view === 'account') renderAccount();
     else if (view === 'chat') renderChat();
+    else if (view === 'admin') renderAdmin();
     else renderDashboard();
     window.scrollTo(0, 0);
   }
@@ -2966,6 +4328,13 @@ function overdueTickets(tickets, now) {
     : s >= 77 ? 'C+' : s >= 73 ? 'C' : s >= 70 ? 'C-' : s >= 67 ? 'D+' : s >= 60 ? 'D' : 'F';
   const gradeTone = s => s >= 90 ? 'great' : s >= 80 ? 'good' : s >= PASS ? 'ok' : 'low';
   const tipText = (tip, fields) => typeof tip === 'function' ? tip(fields) : tip;
+  const clip = (s, n = 70) => s.length > n ? s.slice(0, n - 1).trimEnd() + '\u2026' : s;
+  // The order someone has arranged a Prioritize list in, defaulting to how it was handed to them.
+  function currentOrder(task, d) {
+    const ids = task.order.items.map(x => x.id);
+    const saved = (d.order || []).filter(id => ids.includes(id));
+    return saved.concat(ids.filter(id => !saved.includes(id)));
+  }
 
   function jobStats() {
     const tasks = jobTasks();
@@ -2988,7 +4357,9 @@ function overdueTickets(tickets, now) {
 
   /* =========================================================
      Spreadsheet engine: A1 refs, ranges, + - * / ^ &, comparisons,
-     SUM AVERAGE MIN MAX COUNT ROUND ABS IF IFERROR VLOOKUP SUMIF COUNTIF
+     SUM AVERAGE MIN MAX MEDIAN COUNT COUNTA ROUND ROUNDUP ROUNDDOWN ABS
+     IF IFERROR AND OR NOT VLOOKUP INDEX MATCH SUMIF(S) COUNTIF(S)
+     AVERAGEIF(S) PMT NPV SLN
      ========================================================= */
   const colLetter = i => String.fromCharCode(65 + i);
   const parseRef = ref => { const m = /^\$?([A-Z])\$?(\d+)$/.exec(ref); return m ? { c: m[1].charCodeAt(0) - 65, r: +m[2] } : null; };
@@ -3003,7 +4374,7 @@ function overdueTickets(tickets, now) {
     }
     return out;
   }
-  const cellsIn = spec => spec.includes(':') ? expandRange(...spec.split(':')).flat() : [spec];
+  const cellsIn = spec => spec.split(',').map(x => x.trim()).flatMap(part => part.includes(':') ? expandRange(...part.split(':')).flat() : [part]);
 
   const ERR = code => ({ err: code });
   const isErr = v => Boolean(v && typeof v === 'object' && 'err' in v);
@@ -3199,6 +4570,116 @@ function overdueTickets(tickets, now) {
         }
         return last < 0 ? ERR('#N/A') : get(rows[last][col - 1]);
       }
+      case 'MEDIAN': {
+        const ns = numbers();
+        if (isErr(ns)) return ns;
+        if (!ns.length) return ERR('#NUM!');
+        const sorted = ns.slice().sort((a, b) => a - b), mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+      case 'COUNTA': return flat().filter(v => v !== '' && v != null).length;
+      case 'ROUNDUP':
+      case 'ROUNDDOWN': {
+        const x = toNum(val(args[0])), d = args[1] ? toNum(val(args[1])) : 0;
+        if (isErr(x)) return x;
+        if (isErr(d)) return d;
+        const f = Math.pow(10, d), fn = name === 'ROUNDUP' ? Math.ceil : Math.floor;
+        return Math.sign(x) * fn(Math.abs(x) * f - (name === 'ROUNDUP' ? 1e-9 : -1e-9)) / f;
+      }
+      case 'AND':
+      case 'OR': {
+        const vals = flat();
+        const bad = vals.find(isErr);
+        if (bad) return bad;
+        const bools = vals.filter(v => v !== '').map(v => typeof v === 'boolean' ? v : toNum(v) !== 0);
+        return name === 'AND' ? bools.every(Boolean) : bools.some(Boolean);
+      }
+      case 'NOT': { const v = val(args[0]); return isErr(v) ? v : !(typeof v === 'boolean' ? v : toNum(v) !== 0); }
+      case 'PMT': {
+        // PMT(rate, periods, present value, [future value], [type]) — like Excel, money paid out is negative
+        const r = toNum(val(args[0])), n = toNum(val(args[1])), pv = toNum(val(args[2]));
+        const fv = args[3] ? toNum(val(args[3])) : 0, type = args[4] ? toNum(val(args[4])) : 0;
+        for (const x of [r, n, pv, fv, type]) if (isErr(x)) return x;
+        if (!n) return ERR('#NUM!');
+        if (r === 0) return -(pv + fv) / n;
+        const f = Math.pow(1 + r, n);
+        return -(r * (pv * f + fv)) / ((1 + r * type) * (f - 1));
+      }
+      case 'NPV': {
+        if (args.length < 2) return ERR('#N/A');
+        const r = toNum(val(args[0]));
+        if (isErr(r)) return r;
+        const rest = args.slice(1);
+        const vals = [];
+        for (const a of rest) {
+          const v = val(a);
+          if (v && v.range) v.range.flat().forEach(ref => vals.push(get(ref)));
+          else vals.push(v);
+        }
+        const bad = vals.find(isErr);
+        if (bad) return bad;
+        return vals.filter(v => typeof v === 'number').reduce((sum, v, i) => sum + v / Math.pow(1 + r, i + 1), 0);
+      }
+      case 'SLN': {
+        const cost = toNum(val(args[0])), salvage = toNum(val(args[1])), life = toNum(val(args[2]));
+        for (const x of [cost, salvage, life]) if (isErr(x)) return x;
+        return life ? (cost - salvage) / life : ERR('#DIV/0!');
+      }
+      case 'INDEX': {
+        const t = val(args[0]);
+        if (!t || !t.range) return ERR('#VALUE!');
+        const rows = t.range;
+        let r = toNum(val(args[1])), c = args[2] ? toNum(val(args[2])) : 1;
+        if (isErr(r)) return r;
+        if (isErr(c)) return c;
+        if (rows.length === 1 && !args[2]) { c = r; r = 1; }
+        if (r < 1 || r > rows.length || c < 1 || c > rows[0].length) return ERR('#REF!');
+        return get(rows[r - 1][c - 1]);
+      }
+      case 'MATCH': {
+        const look = val(args[0]);
+        if (isErr(look)) return look;
+        const t = val(args[1]);
+        if (!t || !t.range) return ERR('#VALUE!');
+        const cells = t.range.flat();
+        const type = args[2] ? toNum(val(args[2])) : 1;
+        if (type === 0) {
+          const k = cells.findIndex(ref => get(ref) !== '' && cmpVals(get(ref), look) === 0);
+          return k < 0 ? ERR('#N/A') : k + 1;
+        }
+        let last = -1;
+        for (let k = 0; k < cells.length; k++) {
+          const v = get(cells[k]);
+          if (v === '' || v == null) continue;
+          if (cmpVals(v, look) <= 0) last = k; else break;
+        }
+        return last < 0 ? ERR('#N/A') : last + 1;
+      }
+      case 'SUMIFS':
+      case 'COUNTIFS':
+      case 'AVERAGEIFS': {
+        const counting = name === 'COUNTIFS';
+        const sumR = counting ? null : val(args[0]);
+        if (!counting && (!sumR || !sumR.range)) return ERR('#VALUE!');
+        const pairs = [];
+        for (let k = counting ? 0 : 1; k + 1 < args.length; k += 2) {
+          const rng = val(args[k]);
+          if (!rng || !rng.range) return ERR('#VALUE!');
+          pairs.push({ cells: rng.range.flat(), crit: val(args[k + 1]) });
+        }
+        if (!pairs.length) return ERR('#N/A');
+        const n = pairs[0].cells.length;
+        let total = 0, count = 0;
+        for (let k = 0; k < n; k++) {
+          if (!pairs.every(p => p.cells[k] && matchesCriteria(get(p.cells[k]), p.crit))) continue;
+          count++;
+          if (!counting) { const v = get(sumR.range.flat()[k]); if (typeof v === 'number') total += v; }
+        }
+        if (counting) return count;
+        if (name === 'AVERAGEIFS') return count ? total / count : ERR('#DIV/0!');
+        return total;
+      }
+      case 'AVERAGEIF':
       case 'SUMIF':
       case 'COUNTIF': {
         const rng = val(args[0]);
@@ -3206,7 +4687,7 @@ function overdueTickets(tickets, now) {
         const crit = val(args[1]);
         const cells = rng.range.flat();
         let sumCells = cells;
-        if (name === 'SUMIF' && args[2]) {
+        if ((name === 'SUMIF' || name === 'AVERAGEIF') && args[2]) {
           const s = val(args[2]);
           if (!s || !s.range) return ERR('#VALUE!');
           sumCells = s.range.flat();
@@ -3219,6 +4700,7 @@ function overdueTickets(tickets, now) {
             if (typeof v === 'number') total += v;
           }
         });
+        if (name === 'AVERAGEIF') return count ? total / count : ERR('#DIV/0!');
         return name === 'SUMIF' ? total : count;
       }
     }
@@ -3387,10 +4869,13 @@ function overdueTickets(tickets, now) {
           const v = get(ref);
           const src = String(raw[ref] == null ? '' : raw[ref]).trim();
           const isFormula = src.startsWith('=');
+          const needFn = g.require && g.require !== 'formula' ? g.require : null;
+          const usesFn = !needFn || new RegExp(`\\b${needFn}\\s*\\(`, 'i').test(src);
+          const signFlipped = typeof exp === 'number' && typeof v === 'number' && exp !== 0 && nearly(-v, exp);
           let valueOk = typeof exp === 'number'
-            ? typeof v === 'number' && nearly(v, exp)
+            ? typeof v === 'number' && (nearly(v, exp) || (g.abs && signFlipped))
             : typeof v === 'string' && v.trim().toLowerCase() === String(exp).toLowerCase();
-          let ok = valueOk && isFormula && (g.require !== 'VLOOKUP' || /VLOOKUP\s*\(/i.test(src));
+          let ok = valueOk && isFormula && usesFn;
           if (ok) { good++; return; }
           wrong.push(ref);
           if (tip !== g.tip) return; // keep the first specific tip
@@ -3398,6 +4883,8 @@ function overdueTickets(tickets, now) {
           else if (isErr(v)) tip = `${ref} shows ${v.err}. ${v.err === '#N/A' ? 'VLOOKUP couldn\u2019t find a match — use FALSE for an exact match and lock the table with $ signs.' : v.err === '#DIV/0!' ? 'Something is dividing by an empty or zero cell — check your references.' : v.err === '#NAME?' ? 'Check the spelling of your function name.' : 'Check the formula.'} ${g.tip}`;
           else if (valueOk && !isFormula) tip = `${ref} has the right number typed in, but I asked for formulas so it updates when the data changes. ${g.tip}`;
           else if (valueOk && g.require === 'VLOOKUP') tip = `${ref} is right, but use VLOOKUP so it works for any ticker. ${g.tip}`;
+          else if (valueOk && needFn) tip = `${ref} has the right value, but I asked you to use ${needFn} here. ${g.tip}`;
+          else if (signFlipped) tip = `${ref} has the right amount but the wrong sign. ${g.tip}`;
           else if (g.pct && typeof v === 'number' && nearly(v, exp * 100)) tip = `${ref} looks multiplied by 100. Leave it as a decimal — the column is already formatted as a percent.`;
         });
         const max = g.weight;
@@ -3448,6 +4935,50 @@ function overdueTickets(tickets, now) {
       });
     }
 
+    if (task.tool === 'spot') {
+      const flags = d.flags || {};
+      const issues = task.spot.lines.filter(l => l.flag);
+      const fine = task.spot.lines.filter(l => !l.flag);
+      const per = 80 / issues.length;
+      issues.forEach(l => {
+        const ok = !!flags[l.id];
+        items.push({ label: `Caught: "${clip(l.text)}"`, ok, points: ok ? per : 0, max: per, tip: ok ? '' : `You missed this one. ${l.why}` });
+      });
+      const falseFlags = fine.filter(l => flags[l.id]);
+      items.push({
+        label: 'No false alarms', ok: !falseFlags.length, points: Math.max(0, 20 - falseFlags.length * 10), max: 20,
+        detail: falseFlags.length ? `${falseFlags.length} line${falseFlags.length === 1 ? '' : 's'} flagged that ${falseFlags.length === 1 ? 'was' : 'were'} fine` : '',
+        tip: falseFlags.length ? `"${clip(falseFlags[0].text)}" is fine. ${falseFlags[0].why}` : ''
+      });
+    }
+
+    if (task.tool === 'order') {
+      const order = currentOrder(task, d);
+      const per = 100 / task.order.answer.length;
+      task.order.answer.forEach((id, k) => {
+        const it = task.order.items.find(x => x.id === id);
+        const at = order.indexOf(id);
+        const off = Math.abs(at - k);
+        items.push({
+          label: it.text, ok: off === 0, points: off === 0 ? per : off === 1 ? per / 2 : 0, max: per,
+          detail: off === 0 ? `#${k + 1}` : `You put it #${at + 1}. It belongs at #${k + 1}`,
+          tip: `#${k + 1}: ${it.text}. ${it.why}`
+        });
+      });
+    }
+
+    if (task.tool === 'inbox') {
+      const per = 100 / task.inbox.emails.length;
+      const action = id => (task.inbox.actions.find(a => a.id === id) || {}).label;
+      task.inbox.emails.forEach(m => {
+        const pick = d.assign && d.assign[m.id];
+        const ok = pick === m.answer;
+        items.push({ label: `${m.from}: ${m.subject}`, ok, points: ok ? per : 0, max: per,
+          detail: pick ? (ok ? action(pick) : `You chose ${action(pick)}`) : 'No decision',
+          tip: `${pick ? '' : 'You skipped this email. '}"${m.subject}": ${action(m.answer)}. ${m.why}` });
+      });
+    }
+
     if (task.tool === 'sort') {
       const per = 100 / task.sort.items.length;
       const bucket = id => (task.sort.buckets.find(b => b.id === id) || {}).label;
@@ -3495,7 +5026,7 @@ function overdueTickets(tickets, now) {
   const statusFor = task => {
     const r = taskRecord(task.id);
     if (r) return { text: `Best: ${letter(r.best)}`, cls: 'st-' + gradeTone(r.best) };
-    if (drafts[task.id] && Object.keys(drafts[task.id]).length) return { text: 'In progress', cls: 'st-progress' };
+    if (draftStarted(task)) return { text: 'In progress', cls: 'st-progress' };
     return { text: 'New', cls: 'st-new' };
   };
 
@@ -3544,7 +5075,7 @@ function overdueTickets(tickets, now) {
               <span class="job-card-sum">${esc(t.summary)}</span>
               <span class="job-card-foot">
                 <span>About ${t.minutes} min</span>
-                <span class="job-card-cta">${r ? (r.best >= 90 ? 'Review' : 'Improve your grade') : drafts[t.id] ? 'Continue' : 'Start'}</span>
+                <span class="job-card-cta">${r ? (r.best >= 90 ? 'Review' : 'Improve your grade') : draftStarted(t) ? 'Continue' : 'Start'}</span>
               </span>
             </button>`;
         }).join('')}
@@ -3796,6 +5327,68 @@ function overdueTickets(tickets, now) {
                 ${task.sort.buckets.map(b => `<button type="button" class="pill ${d.assign[it.id] === b.id ? 'is-on' : ''}" aria-pressed="${d.assign[it.id] === b.id}" data-sort="${it.id}" data-bucket="${b.id}">${esc(b.label)}</button>`).join('')}
               </div>
             </div>`).join('')}
+        </div>`;
+    }
+
+    if (task.tool === 'spot') {
+      d.flags = d.flags || {};
+      const n = Object.values(d.flags).filter(Boolean).length;
+      return `
+        <div class="tool-head"><span>${esc(task.spot.title)}</span><span class="hint">Click every line that has a problem &middot; ${n} flagged</span></div>
+        ${task.spot.intro ? `<p class="spot-intro">${esc(task.spot.intro)}</p>` : ''}
+        <div class="spot-doc">
+          ${task.spot.lines.map((l, k) => `
+            <button type="button" class="spot-line ${d.flags[l.id] ? 'is-flagged' : ''}" data-spot="${l.id}" aria-pressed="${!!d.flags[l.id]}">
+              <span class="spot-n" aria-hidden="true">${k + 1}</span>
+              <span class="spot-text">${esc(l.text)}</span>
+              <span class="spot-tag">${d.flags[l.id] ? 'Flagged' : 'Flag'}</span>
+            </button>`).join('')}
+        </div>`;
+    }
+
+    if (task.tool === 'order') {
+      const order = currentOrder(task, d);
+      const byId = id => task.order.items.find(x => x.id === id);
+      return `
+        <div class="tool-head"><span>${esc(task.order.title)}</span><span class="hint">Move each item up or down. #1 goes first.</span></div>
+        <ol class="order-list">
+          ${order.map((id, k) => {
+            const it = byId(id);
+            return `
+              <li class="order-item">
+                <span class="order-n" aria-hidden="true">${k + 1}</span>
+                <div class="order-text">
+                  <p class="sort-title">${esc(it.text)}</p>
+                  ${it.sub ? `<p class="sort-sub">${esc(it.sub)}</p>` : ''}
+                </div>
+                <div class="order-btns">
+                  <button type="button" class="order-btn" data-move="${id}" data-dir="up" ${k === 0 ? 'disabled' : ''} aria-label="Move ${esc(it.text)} up">&uarr;</button>
+                  <button type="button" class="order-btn" data-move="${id}" data-dir="down" ${k === order.length - 1 ? 'disabled' : ''} aria-label="Move ${esc(it.text)} down">&darr;</button>
+                </div>
+              </li>`;
+          }).join('')}
+        </ol>`;
+    }
+
+    if (task.tool === 'inbox') {
+      d.assign = d.assign || {};
+      const done = task.inbox.emails.filter(m => d.assign[m.id]).length;
+      return `
+        <div class="tool-head"><span>${esc(task.inbox.title || 'Inbox')}</span><span class="hint">${done} of ${task.inbox.emails.length} handled</span></div>
+        <div class="inbox">
+          ${task.inbox.emails.map(m => `
+            <article class="mail ${d.assign[m.id] ? 'is-done' : ''}">
+              <header class="mail-head">
+                <span class="mail-from">${esc(m.from)}</span>
+                ${m.addr ? `<span class="mail-addr">&lt;${esc(m.addr)}&gt;</span>` : ''}
+                <span class="mail-time">${esc(m.time || '')}</span>
+              </header>
+              <p class="mail-subject">${esc(m.subject)}</p>
+              <p class="mail-body">${esc(m.body)}</p>
+              <div class="pill-row" role="group" aria-label="What to do with: ${esc(m.subject)}">
+                ${task.inbox.actions.map(a => `<button type="button" class="pill ${d.assign[m.id] === a.id ? 'is-on' : ''}" aria-pressed="${d.assign[m.id] === a.id}" data-sort="${m.id}" data-bucket="${a.id}">${esc(a.label)}</button>`).join('')}
+              </div>
+            </article>`).join('')}
         </div>`;
     }
     return '';
@@ -4386,7 +5979,10 @@ function overdueTickets(tickets, now) {
     sheet: ['spreadsheet', 'sheet', 'excel', 'formula', 'formulas', 'cell', 'cells'],
     journal: ['journal', 'entry', 'debit', 'credit'],
     writing: ['email', 'write', 'writing', 'draft', 'summary'],
-    sort: ['sort', 'sorting', 'bucket']
+    sort: ['sort', 'sorting', 'bucket'],
+    spot: ['proofread', 'proof', 'flag', 'review', 'errors', 'mistakes'],
+    order: ['order', 'prioritize', 'priority', 'rank', 'steps'],
+    inbox: ['inbox', 'emails', 'triage']
   };
   const STOP_TITLE = new Set(['the', 'a', 'an', 'and', 'for', 'with', 'new', 'your', 'our', 'write', 'build', 'into', 'from', 'that']);
 
@@ -4580,7 +6176,9 @@ function overdueTickets(tickets, now) {
     if (task.tool === 'sheet') return Object.values(d.cells || {}).some(v => String(v).trim());
     if (task.tool === 'journal') return (d.rows || []).some(r => r.account || r.debit || r.credit) || !!(d.memo || '').trim();
     if (task.tool === 'writing') return Object.values(d.fields || {}).some(v => String(v).trim());
-    if (task.tool === 'sort') return Object.keys(d.assign || {}).length > 0;
+    if (task.tool === 'sort' || task.tool === 'inbox') return Object.keys(d.assign || {}).length > 0 || Object.keys(d.answers || {}).length > 0;
+    if (task.tool === 'spot') return Object.values(d.flags || {}).some(Boolean);
+    if (task.tool === 'order') return !!d.moved;
     return Object.keys(d.answers || {}).length > 0;
   }
 
@@ -4906,6 +6504,185 @@ function overdueTickets(tickets, now) {
     refreshChat();
     const input = $('#chat-input');
     if (input && currentView === 'chat' && document.activeElement === document.body) input.focus();
+  }
+
+  /* =========================================================
+     ADMIN — only for accounts whose Supabase app_metadata has
+     role "admin" (set from the Supabase dashboard; users can't
+     change it). Everything here is about this browser's data
+     and the app's content, so it's safe to keep client-side.
+     ========================================================= */
+  let isAdmin = false;
+  let adminTrack = null;
+
+  function updateAdminNav() {
+    const item = $('#side-admin');
+    if (item) item.hidden = !isAdmin;
+  }
+
+  const adminFmt = (task, ref, v) => typeof v === 'number' ? fmtCell(v, cellFormat(task, ref)) : String(v);
+
+  // The answer key for one assignment, in whatever shape its tool uses.
+  function answerKeyHTML(task) {
+    const list = rows => `<ul class="ak-list">${rows.join('')}</ul>`;
+    let body = '';
+    if (task.tool === 'sheet') {
+      sheetBase(task);
+      body = `<table class="ak-table"><thead><tr><th>Check</th><th>Cells</th><th>Expected</th><th>Pts</th></tr></thead><tbody>
+        ${task.sheet.groups.map(g => {
+          const cells = cellsIn(g.cells);
+          return `<tr><td>${esc(g.label)}${g.require && g.require !== 'formula' ? ` <span class="ak-tag">uses ${esc(g.require)}</span>` : ''}<span class="ak-tip">${esc(g.tip)}</span></td>
+            <td>${esc(g.cells)}</td><td>${cells.map((ref, k) => `${ref}: <strong>${esc(adminFmt(task, ref, g.expect[k]))}</strong>`).join('<br>')}</td><td>${g.weight}</td></tr>`;
+        }).join('')}</tbody></table>`;
+    } else if (task.tool === 'code') {
+      const all = task.code.tests.map(t => ({ ...t, hidden: false })).concat(task.code.hidden.map(t => ({ ...t, hidden: true })));
+      body = `<p class="ak-note">Function: <code>${esc(task.code.fn)}</code></p>` + list(all.map(t =>
+        `<li>${t.hidden ? '<span class="ak-tag">hidden</span> ' : ''}${esc(t.label)}: returns <code>${esc(showVal(t.expect))}</code></li>`));
+    } else if (task.tool === 'journal') {
+      body = `<table class="ak-table"><thead><tr><th>Account</th><th>Debit</th><th>Credit</th></tr></thead><tbody>
+        ${task.journal.answer.map(a => `<tr><td>${esc(a.account)}</td><td>${a.side === 'debit' ? money(a.amount) : ''}</td><td>${a.side === 'credit' ? money(a.amount) : ''}</td></tr>`).join('')}
+        </tbody></table><p class="ak-note">Plus a description of at least 3 words.</p>`;
+    } else if (task.tool === 'writing') {
+      body = `<p class="ak-note">Graded on these checks:</p>` + list(task.writing.checks.map(c => `<li>${esc(c.label)} <span class="ak-pts">${c.weight} pts</span></li>`));
+    } else if (task.tool === 'sort') {
+      const label = id => task.sort.buckets.find(b => b.id === id).label;
+      body = list(task.sort.items.map(it => `<li>${esc(it.text)} &rarr; <strong>${esc(label(it.answer))}</strong></li>`));
+    } else if (task.tool === 'inbox') {
+      const label = id => task.inbox.actions.find(a => a.id === id).label;
+      body = list(task.inbox.emails.map(m => `<li>${esc(m.subject)} &rarr; <strong>${esc(label(m.answer))}</strong></li>`));
+    } else if (task.tool === 'spot') {
+      body = `<p class="ak-note">Flag these ${task.spot.lines.filter(l => l.flag).length} lines:</p>` + list(task.spot.lines.filter(l => l.flag).map(l => `<li>${esc(l.text)}</li>`));
+    } else if (task.tool === 'order') {
+      body = `<ol class="ak-list">${task.order.answer.map(id => `<li>${esc(task.order.items.find(x => x.id === id).text)}</li>`).join('')}</ol>`;
+    }
+    const qs = (task.questions || []).map(q => `<li>${esc(q.prompt)} &rarr; <strong>${esc(q.answer)}</strong></li>`).join('');
+    return body + (qs ? `<p class="ak-note">Questions:</p><ul class="ak-list">${qs}</ul>` : '');
+  }
+
+  function renderAdmin() {
+    if (!isAdmin) { go('dashboard'); return; }
+    adminTrack = adminTrack && TRACKS[adminTrack] ? adminTrack : state.track;
+    const all = Object.values(JOBS).flat();
+    const byTool = {};
+    all.forEach(t => { byTool[t.tool] = (byTool[t.tool] || 0) + 1; });
+    const ivCount = Object.values(INTERVIEWS).flat().length;
+    const termCount = Object.values(TERMS).flat().length;
+    const ctxCount = Object.values(CONTEXT).flat().length;
+    let bytes = 0;
+    try { Object.keys(localStorage).filter(k => k.startsWith('firstday:')).forEach(k => { bytes += (localStorage.getItem(k) || '').length * 2; }); } catch (e) { /* ignore */ }
+    const tasks = JOBS[adminTrack];
+
+    main.innerHTML = `
+      <div class="page-head">
+        <p class="eyebrow">Admin</p>
+        <h1>Admin tools</h1>
+        <p class="page-sub">Signed in as ${esc(state.email || state.name)}. Admin access comes from your Supabase account, so only you see this page.</p>
+      </div>
+
+      <div class="stat-cards admin-stats">
+        <div class="card"><p class="card-label">Assignments</p><div class="card-value">${all.length}</div><p class="hint">${Object.entries(byTool).map(([k, n]) => `${n} ${esc(TOOL_LABELS[k].toLowerCase())}`).join(' &middot; ')}</p></div>
+        <div class="card"><p class="card-label">Interview questions</p><div class="card-value">${ivCount}</div><p class="hint">Across ${Object.keys(TRACKS).length} tracks</p></div>
+        <div class="card"><p class="card-label">Key terms</p><div class="card-value">${termCount}</div><p class="hint">Plus ${ctxCount} in-context questions</p></div>
+        <div class="card"><p class="card-label">Saved on this device</p><div class="card-value card-value-sm">${(bytes / 1024).toFixed(1)} KB</div><p class="hint">Progress, drafts, documents, and chats</p></div>
+      </div>
+
+      <h2 class="block-title">Demo tools</h2>
+      <div class="card settings admin-tools">
+        <div class="admin-row">
+          <div><strong>FirstDay Pro</strong><p class="hint">${state.pro ? 'On: every track can stay open.' : 'Off: one track at a time.'}</p></div>
+          <button class="btn btn-ghost btn-small" data-action="admin-pro">${state.pro ? 'Turn off Pro' : 'Turn on Pro'}</button>
+        </div>
+        <div class="admin-row">
+          <div><strong>Open every track</strong><p class="hint">Turns on Pro and adds all ${Object.keys(TRACKS).length} tracks to your account menu.</p></div>
+          <button class="btn btn-ghost btn-small" data-action="admin-all-tracks">Open all tracks</button>
+        </div>
+        <div class="admin-row">
+          <div><strong>Fill ${esc(TRACKS[state.track].name)} with demo progress</strong><p class="hint">Marks every assignment and interview as passed, masters every term, and sets quiz bests to 100%. Good for showing the dashboard.</p></div>
+          <button class="btn btn-ghost btn-small" data-action="admin-fill-track">Fill track</button>
+        </div>
+        <div class="admin-row">
+          <div><strong>Clear ${esc(TRACKS[state.track].name)} progress</strong><p class="hint">Removes grades, drafts, mastered terms, quiz scores, and the boss chat for this track only.</p></div>
+          <button class="btn btn-ghost btn-small" data-action="admin-clear-track">Clear track</button>
+        </div>
+        <div class="admin-row">
+          <div><strong>Export this device's data</strong><p class="hint">Downloads progress, drafts, documents, and chats as a JSON file.</p></div>
+          <button class="btn btn-ghost btn-small" data-action="admin-export">Download JSON</button>
+        </div>
+      </div>
+
+      <h2 class="block-title">Answer key</h2>
+      <div class="preview-tabs admin-tabs" role="tablist" aria-label="Choose a track">
+        ${Object.entries(TRACKS).map(([id, t]) => `<button type="button" class="preview-tab ${id === adminTrack ? 'is-on' : ''}" role="tab" aria-selected="${id === adminTrack}" data-admin-track="${id}">${esc(t.name)}</button>`).join('')}
+      </div>
+      <div class="ak">
+        ${tasks.map((t, k) => {
+          const r = state.tasks && state.tasks[t.id];
+          return `
+          <details class="ak-item">
+            <summary>
+              <span class="ak-num">${k + 1}</span>
+              <span class="ak-title">${esc(t.title)}</span>
+              <span class="tool-chip tool-${t.tool}">${TOOL_LABELS[t.tool]}</span>
+              ${r ? `<span class="ak-best">${letter(r.best)}</span>` : ''}
+            </summary>
+            <div class="ak-body">
+              <p class="ak-note">${esc(t.summary)} About ${t.minutes} min.</p>
+              ${answerKeyHTML(t)}
+              <div class="btn-row">${adminTrack === state.track ? `<button class="btn btn-primary btn-small" data-open-task="${t.id}">Open assignment</button>` : `<button class="btn btn-ghost btn-small" data-action="switch-track" data-to="${adminTrack}">Switch to ${esc(TRACKS[adminTrack].name)} to open it</button>`}</div>
+            </div>
+          </details>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function adminAction(action) {
+    const track = state.track;
+    if (action === 'admin-pro') {
+      state.pro = !state.pro;
+      state.proCode = state.pro ? 'ADMIN' : null;
+      openTracks();
+      persist(); refreshHeader();
+      toast(state.pro ? 'Pro is on.' : 'Pro is off.');
+    } else if (action === 'admin-all-tracks') {
+      state.pro = true;
+      state.proCode = state.proCode || 'ADMIN';
+      state.openTracks = [state.track].concat(Object.keys(TRACKS).filter(id => id !== state.track));
+      persist(); refreshHeader();
+      toast('All tracks are open. Switch between them from the menu under your initials.');
+    } else if (action === 'admin-fill-track') {
+      if (!confirm(`Fill the ${TRACKS[track].name} track with demo progress? This overwrites its grades.`)) return;
+      JOBS[track].forEach(t => { state.tasks[t.id] = { best: 100, attempts: 1, last: 100 }; });
+      INTERVIEWS[track].forEach(q => { state.interviews[q.id] = { best: 100, attempts: 1, last: 100 }; });
+      state.mastered[track] = TERMS[track].map(x => x.t);
+      state.quizBest[track] = 100;
+      state.quizBest[track + ':context'] = 100;
+      persist();
+      toast(`${TRACKS[track].name} is filled with demo progress.`);
+    } else if (action === 'admin-clear-track') {
+      if (!confirm(`Clear all ${TRACKS[track].name} progress on this device? This can't be undone.`)) return;
+      JOBS[track].forEach(t => { delete state.tasks[t.id]; delete drafts[t.id]; delete lastResults[t.id]; delete hintsShown[t.id]; delete codeOutput[t.id]; });
+      INTERVIEWS[track].forEach(q => { delete state.interviews[q.id]; delete drafts[q.id]; delete lastResults[q.id]; });
+      delete state.mastered[track];
+      delete state.quizBest[track];
+      delete state.quizBest[track + ':context'];
+      if (state.chats) delete state.chats[track];
+      if (state.chatCtx) delete state.chatCtx[track];
+      if (state.chatUnread) delete state.chatUnread[track];
+      deck = null; quizzes = {};
+      saveDrafts(); persist(); refreshHeader();
+      toast(`${TRACKS[track].name} progress cleared.`);
+    } else if (action === 'admin-export') {
+      const data = JSON.stringify({ exportedAt: new Date().toISOString(), state, drafts, docs }, null, 2);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+      a.download = `firstday-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      toast('Downloading your data.');
+      return;
+    }
+    renderAdmin();
   }
 
   /* =========================================================
@@ -6684,7 +8461,7 @@ function overdueTickets(tickets, now) {
   document.addEventListener('click', async e => {
     // Close the account menu on any click outside it, or after picking an item
     if (!e.target.closest('.user-menu') || e.target.closest('.menu-item')) toggleUserMenu(false);
-    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-preview-track], [data-open-task], [data-open-interview], [data-answer], [data-sort], [data-chat-say], [data-chat-act]');
+    const el = e.target.closest('[data-action], [data-view], [data-tab], [data-track], [data-preview-track], [data-open-task], [data-open-interview], [data-answer], [data-sort], [data-spot], [data-move], [data-chat-say], [data-chat-act], [data-admin-track]');
     if (!el) {
       if (e.target.closest('.nav-links a')) toggleNav(false);
       return;
@@ -6700,6 +8477,7 @@ function overdueTickets(tickets, now) {
     }
     if (el.dataset.previewTrack) { previewTrack = el.dataset.previewTrack; renderPreview(); return; }
     if (el.dataset.chatSay) { sendChat(el.dataset.chatSay); return; }
+    if (el.dataset.adminTrack) { adminTrack = el.dataset.adminTrack; const y = window.scrollY; renderAdmin(); window.scrollTo({ top: y, behavior: 'instant' }); return; }
     if (el.dataset.chatAct === 'master') {
       const term = el.dataset.term;
       if (trackTerms().some(x => x.t === term)) {
@@ -6713,14 +8491,32 @@ function overdueTickets(tickets, now) {
     if (el.dataset.view) { go(el.dataset.view); return; }
     if (el.dataset.openTask) { openTask(el.dataset.openTask); return; }
     if (el.dataset.openInterview) { openInterview(el.dataset.openInterview); return; }
-    if (el.dataset.answer || el.dataset.sort) {
+    if (el.dataset.answer || el.dataset.sort || el.dataset.spot || el.dataset.move) {
       const d = getDraft(currentTaskId);
+      const task = findTask(currentTaskId);
       if (el.dataset.answer) { d.answers = d.answers || {}; d.answers[el.dataset.answer] = el.dataset.value; }
-      else { d.assign = d.assign || {}; d.assign[el.dataset.sort] = el.dataset.bucket; }
+      else if (el.dataset.sort) { d.assign = d.assign || {}; d.assign[el.dataset.sort] = el.dataset.bucket; }
+      else if (el.dataset.spot) { d.flags = d.flags || {}; d.flags[el.dataset.spot] = !d.flags[el.dataset.spot]; }
+      else if (task && task.order) {
+        const order = currentOrder(task, d);
+        const i = order.indexOf(el.dataset.move), j = i + (el.dataset.dir === 'up' ? -1 : 1);
+        if (i < 0 || j < 0 || j >= order.length) return;
+        [order[i], order[j]] = [order[j], order[i]];
+        d.order = order;
+        d.moved = true;
+      }
       saveDrafts();
       const y = window.scrollY;
       renderTask();
       window.scrollTo({ top: y, behavior: 'instant' });
+      if (el.dataset.move) {
+        const again = $(`[data-move="${el.dataset.move}"][data-dir="${el.dataset.dir}"]`, main);
+        const other = $(`[data-move="${el.dataset.move}"]:not([disabled])`, main);
+        (again && !again.disabled ? again : other || again)?.focus({ preventScroll: true });
+      } else if (el.dataset.spot) {
+        const again = $(`[data-spot="${el.dataset.spot}"]`, main);
+        if (again) again.focus({ preventScroll: true });
+      }
       return;
     }
     if (el.dataset.tab) {
@@ -6878,6 +8674,8 @@ function overdueTickets(tickets, now) {
         break;
       case 'signout':
         authed = false;
+        isAdmin = false;
+        updateAdminNav();
         if (window.FirstDayAuth) window.FirstDayAuth.signOut();
         closeModal(true);
         showLanding();
@@ -6940,6 +8738,13 @@ function overdueTickets(tickets, now) {
         }
         break;
       case 'nav-toggle': toggleNav(); break;
+      case 'admin-pro':
+      case 'admin-all-tracks':
+      case 'admin-fill-track':
+      case 'admin-clear-track':
+      case 'admin-export':
+        if (isAdmin) adminAction(el.dataset.action);
+        break;
       case 'chat-clear':
         if (chatTyping) break;
         if (confirm(`Clear your conversation with ${BOSSES[state.track].name}? Your grades and progress stay.`)) {
